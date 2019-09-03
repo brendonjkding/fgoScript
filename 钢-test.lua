@@ -4,7 +4,8 @@
     适用iphone8屏幕大小
     适用于：狂兰、cba、cba。充能衣服。我本人用于刷钢。
     目前实现了一到三面自动加buff和选卡，在三面没狂兰卡时洗一次牌再选卡。
-    如果还没有牌，或者没打死需要手动处理
+    version1.1：实现了4t自动选卡
+    
 ]]--
 
 -- 适用屏幕参数
@@ -32,11 +33,11 @@ red_g=0x18
 red_b=0x18
 
 --战斗结束取色
-end_x=0
-end_y=0
-end_r=0
-end_g=0
-end_b=0
+end_x=643
+end_y=125
+end_r=0xcf
+end_g=0x93
+end_b=0x10
 
 
 --模糊比较两个点
@@ -72,6 +73,8 @@ function select_card(a_x,a_y,b_x,b_y,c_x,c_y)
     if a_y==nil then
         a_x=542
         a_y=454
+    else
+        a_x=card_x
     end
     --普通指令卡x
     b_x=card_x
@@ -297,6 +300,10 @@ function info_init()
 end
 --判断三面该出什么卡
 function select_3t()
+    if count==0 then
+        return 1
+    end
+    
     if q_index~=0 then--有绿
         if b_num~=0 then--有红
             select_card(nil,nil,nil,card_y[b_index[1]],nil,card_y[q_index])
@@ -318,6 +325,9 @@ function select_3t()
     elseif a_index~=0 then--只有蓝
         select_card(nil,nil,nil,card_y[(a_index+1)%5],nil,card_y[a_index])
     else
+        if shuffled==1 then
+            select_card(nil,nil,nil,card_y[2],nil,card_y[3])
+        end
         return 1
     end
     return 0
@@ -351,6 +361,12 @@ function get_berserker_info()
 end
 --洗牌
 function shuffle()
+    --返回
+    mSleep(1184);
+    touchDown(4, 35, 1253)
+    mSleep(83);
+    touchUp(4)
+    
     mSleep(1184);
     touchDown(4, 426, 1254)
     mSleep(83);
@@ -360,6 +376,14 @@ function shuffle()
     touchDown(1, 426, 1132)
     mSleep(66);
     touchUp(1)
+    
+    --选卡
+    mSleep(685);
+    touchDown(3, 88, 1164)
+    mSleep(64);
+    touchUp(3)
+    
+    mSleep(1000)
 end
 --4t选卡
 function select_4t()
@@ -451,8 +475,9 @@ function select_4t()
                 index_2=(index_3+1)%5
                 index_1=(index_2+1)%5
             end
-        select_card(nil,card_y[index_1],nil,card_y[index_2],nil,card_y[index_3])
         end
+        --notifyMessage(string.format("%d %d %d",index_1,index_2,index_3))
+        select_card(nil,card_y[index_1],nil,card_y[index_2],nil,card_y[index_3])
     else
         return 1
     end
@@ -462,6 +487,8 @@ end
 function main()
     --
     rotateScreen(0);
+    
+    ----[[
     buff()--一二面
     
     shuffled=0
@@ -479,16 +506,36 @@ function main()
         info_init()
         get_card_info()
         get_berserker_info()
-        select_3t()
+        need_shuffle=select_3t()
+    end
+    if need_shuffle==1 then
+        return
     end
     
+    mSleep(14000)
+    --
+    touchDown(3, 455, 834)
+    mSleep(64);
+    touchUp(3)
+    
+    mSleep(1184);
+    touchDown(4, 455, 834)
+    mSleep(83);
+    touchUp(4)
+    --]]--
     --4t选卡
     battle_ended=compare_color_point(end_x,end_y,end_r,end_g,end_b)
-    if battle_ended==0 then
+    if battle_ended==false then
+        --选卡
+        mSleep(1000);
+        touchDown(3, 88, 1164)
+        mSleep(64);
+        touchUp(3)
+        
         info_init()
         get_card_info()
         get_berserker_info()
-        
+
         need_shuffle=select_4t()
         if need_shuffle==1 then
             if shuffled==0 then
@@ -496,15 +543,15 @@ function main()
                 info_init()
                 get_card_info()
                 get_berserker_info()
-                select_4t()
+                need_shuffle=select_4t()
+                if need_shuffle==1 then
+                    return
+                end
             end
         end
                 
     end
-    battle_ended=compare_color_point(end_x,end_y,end_r,end_g,end_b)
-    if battle_ended==0 then
-        notifyVibrate(500)
-    end
+
     
     mSleep(1000)
     notifyMessage("制作：面包")
