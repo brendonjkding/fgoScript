@@ -276,7 +276,7 @@ function buff()
     mSleep(1000);
 end
 --判断三面该出什么卡
-function select_order()
+function select_3t()
     if q_index~=0 then--有绿
         if b_num~=0 then--有红
             select_card(nil,nil,nil,card_y[b_index[1]],nil,card_y[q_index])
@@ -303,15 +303,7 @@ function select_order()
     return 0
 end
 
--- 主入口
-function main()
-    --
-    rotateScreen(0);
-    buff()--一二面
-    
-    --获取三面卡信息
-    local is_ber={}
-    local _color={}
+function get_card_info()
     for i=1,5 do
         if compare_color_point(feature_x,feature_y[i],ber_r,ber_g,ber_b,30) then
             is_ber[i]="yes"
@@ -320,12 +312,8 @@ function main()
         end
         _color[i]=get_color(i)
     end
-
-    q_index=0
-    a_index=0
-    b_index={}
-    b_num=0
-    count=0
+end
+function get_berserker_info()
     for i=1,5 do
         if is_ber[i]=="yes" then
             if _color[i]=="green" then
@@ -339,20 +327,43 @@ function main()
             count=count+1
         end
     end
+end
+function shuffle()
+    mSleep(1184);
+    touchDown(4, 426, 1254)
+    mSleep(83);
+    touchUp(4)
+
+    mSleep(685);
+    touchDown(1, 426, 1132)
+    mSleep(66);
+    touchUp(1)
+end
+-- 主入口
+function main()
+    --
+    rotateScreen(0);
+    buff()--一二面
+    
+    --获取三面卡信息
+    is_ber={}
+    _color={}
+    get_card_info()
+
+
+    q_index=0
+    a_index=0
+    b_index={}
+    b_num=0
+    count=0
+    get_berserker_info()
+    
     
     --三面选卡
-    local need_shuffle=select_order()
+    local need_shuffle=select_3t()
     if need_shuffle==1 then
-        mSleep(1184);
-        touchDown(4, 426, 1254)
-        mSleep(83);
-        touchUp(4)
-
-        mSleep(685);
-        touchDown(1, 426, 1132)
-        mSleep(66);
-        touchUp(1)
-        local temp=select_order()
+        shuffle()
+        local temp=select_3t()
         if temp==1 then
             notifyVibrate(500)
         end
