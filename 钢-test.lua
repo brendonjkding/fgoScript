@@ -30,6 +30,14 @@ blue_b=0xa0
 red_r=0x9d
 red_g=0x18
 red_b=0x18
+
+--战斗结束取色
+end_x=0
+end_y=0
+end_r=0
+end_g=0
+end_b=0
+
 --模糊比较两个点
 function compare_color_point(x,y,r,g,b,sim)
     sim=20
@@ -276,6 +284,8 @@ function buff()
     mSleep(1000);
 end
 --判断三面该出什么卡
+function info_init()
+    
 function select_3t()
     if q_index~=0 then--有绿
         if b_num~=0 then--有红
@@ -339,6 +349,15 @@ function shuffle()
     mSleep(66);
     touchUp(1)
 end
+function select_4t()
+    is_ber={}
+    _color={}
+    q_index=0
+    a_index=0
+    b_index={}
+    b_num=0
+    count=0
+then
 -- 主入口
 function main()
     --
@@ -346,28 +365,27 @@ function main()
     buff()--一二面
     
     --获取三面卡信息
-    is_ber={}
-    _color={}
+    info_init()
     get_card_info()
-
-
-    q_index=0
-    a_index=0
-    b_index={}
-    b_num=0
-    count=0
     get_berserker_info()
     
-    
+    shuffled=0
     --三面选卡
     local need_shuffle=select_3t()
     if need_shuffle==1 then
         shuffle()
-        local temp=select_3t()
-        if temp==1 then
-            notifyVibrate(500)
-        end
+        shuffled=1
+        select_3t()
     end
+    
+    battle_ended=compare_color_point(end_x,end_y,end_r,end_g,end_b)
+    if battle_ended==0 then
+        info_init()
+        get_card_info()
+        get_berserker_info()
+        select_4t()
+    end
+    
     mSleep(1000)
     notifyMessage("制作：面包")
 end
