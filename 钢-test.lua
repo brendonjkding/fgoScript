@@ -38,6 +38,7 @@ end_r=0
 end_g=0
 end_b=0
 
+
 --模糊比较两个点
 function compare_color_point(x,y,r,g,b,sim)
     sim=20
@@ -283,7 +284,7 @@ function buff()
     
     mSleep(1000);
 end
---判断三面该出什么卡
+--卡信息初始化
 function info_init()
     q_index=0
     a_index=0
@@ -294,6 +295,7 @@ function info_init()
     is_ber={}
     _color={}
 end
+--判断三面该出什么卡
 function select_3t()
     if q_index~=0 then--有绿
         if b_num~=0 then--有红
@@ -320,20 +322,21 @@ function select_3t()
     end
     return 0
 end
-
+--判断卡
 function get_card_info()
     for i=1,5 do
         if compare_color_point(feature_x,feature_y[i],ber_r,ber_g,ber_b,30) then
-            is_ber[i]="yes"
+            is_ber[i]=true
         else
-            is_ber[i]="no"
+            is_ber[i]=false
         end
         _color[i]=get_color(i)
     end
 end
+--判断狂兰卡和颜色
 function get_berserker_info()
     for i=1,5 do
-        if is_ber[i]=="yes" then
+        if is_ber[i]==true then
             if _color[i]=="green" then
                 q_index=i
             elseif _color[i]=="blue" then
@@ -346,6 +349,7 @@ function get_berserker_info()
         end
     end
 end
+--洗牌
 function shuffle()
     mSleep(1184);
     touchDown(4, 426, 1254)
@@ -357,6 +361,7 @@ function shuffle()
     mSleep(66);
     touchUp(1)
 end
+--4t选卡
 function select_4t()
     if count==3 then
         if b_num==3 then--bbb
@@ -391,10 +396,10 @@ function select_4t()
                 index_3=b_index[1]
             end
             
-            local red_index=0
+            --local red_index=0
             for i=1,5 do
-                if is_ber[i]=="yes" and _color[i]=="red" then
-                    red_index=i
+                if is_ber[i]==false and _color[i]=="red" then
+                    index_1=i
                     break
                 end
             end
@@ -407,8 +412,51 @@ function select_4t()
             select_card(nil,card_y[index_1],nil,card_y[index_2],nil,card_y[index_3])
         end
     elseif count==1 then
-        --
+        local index_1=0
+        local index_2,index_3
+        local red_index=0
+        for i=1,5 do
+            if is_ber[i]==false and _color[i]=="red" then
+                red_index=i
+                break
+            end
+        end
+        
+        if b_num~=0 then--b
+            if red_index~=0 then
+                index_1=red_index
+                index_3=b_index[1]
+                index_2=(index_1+1)%5
+                if index_2==index_3 then
+                    index_2=(index_2+1)%5
+                end
+            else
+                index_1=b_index[1]
+                index_2=(index_1+1)%5
+                index_3=(index_2+1)%5
+            end
+        else
+            if q_index~=0 then--q
+                index_3=q_index
+            else               --a
+                index_3=a_index
+            end
+            if red_index~=0 then
+                index_1=red_index
+                index_2=(index_1+1)%5
+                if index_2==index_3 then
+                    index_2=(index_2+1)%5
+                end
+            else
+                index_2=(index_3+1)%5
+                index_1=(index_2+1)%5
+            end
+        select_card(nil,card_y[index_1],nil,card_y[index_2],nil,card_y[index_3])
+        end
+    else
+        return 1
     end
+    return 0
 end
 -- 主入口
 function main()
@@ -428,6 +476,9 @@ function main()
     if need_shuffle==1 then
         shuffle()
         shuffled=1
+        info_init()
+        get_card_info()
+        get_berserker_info()
         select_3t()
     end
     
@@ -438,7 +489,21 @@ function main()
         get_card_info()
         get_berserker_info()
         
-        select_4t()
+        need_shuffle=select_4t()
+        if need_shuffle==1 then
+            if shuffled==0 then
+                shuffle()
+                info_init()
+                get_card_info()
+                get_berserker_info()
+                select_4t()
+            end
+        end
+                
+    end
+    battle_ended=compare_color_point(end_x,end_y,end_r,end_g,end_b)
+    if battle_ended==0 then
+        notifyVibrate(500)
     end
     
     mSleep(1000)
