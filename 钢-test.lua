@@ -68,7 +68,7 @@ end
 --根据坐标选卡
 function select_card(a_x,a_y,b_x,b_y,c_x,c_y)
     --宝具卡1
-    if a_x==nil then
+    if a_y==nil then
         a_x=542
         a_y=454
     end
@@ -285,7 +285,15 @@ function buff()
 end
 --判断三面该出什么卡
 function info_init()
+    q_index=0
+    a_index=0
+    b_index={}
+    b_num=0
+    count=0
     
+    is_ber={}
+    _color={}
+end
 function select_3t()
     if q_index~=0 then--有绿
         if b_num~=0 then--有红
@@ -350,27 +358,72 @@ function shuffle()
     touchUp(1)
 end
 function select_4t()
-    is_ber={}
-    _color={}
-    q_index=0
-    a_index=0
-    b_index={}
-    b_num=0
-    count=0
-then
+    if count==3 then
+        if b_num==3 then--bbb
+            select_card(nil,card_y[b_index[1]],nil,card_y[b_index[2]],nil,card_y[b_index[3]])
+        elseif b_num==2 then
+            if q_index~=0 then--bbq
+                select_card(nil,card_y[b_index[1]],nil,card_y[q_index],nil,card_y[b_index[2]])
+            else --bba
+                select_card(nil,card_y[b_index[1]],nil,card_y[a_index],nil,card_y[b_index[2]])
+            end
+        else--baq
+            select_card(nil,card_y[b_index[1]],nil,card_y[a_index],nil,card_y[q_index])
+        end
+    elseif count==2 then
+        if q_index~=0 and a_index~=0 then--raq
+            local temp_index=(q_index+1)%5
+            if temp_index==a_index then
+                temp_index=(temp_index+1)%5
+            end
+            select_card(nil,card_y[temp_index],nil,card_y[a_index],nil,card_y[q_index])
+        else
+            local index_1=0
+            local index_2,index_3
+            if b_num==2 then--bb
+                index_2=b_index[1]
+                index_3=b_index[2]
+            elseif a_index~=0 then--ab
+                index_2=a_index
+                index_3=b_index[1]
+            else                --qb
+                index_2=q_index
+                index_3=b_index[1]
+            end
+            
+            local red_index=0
+            for i=1,5 do
+                if is_ber[i]=="yes" and _color[i]=="red" then
+                    red_index=i
+                    break
+                end
+            end
+            if index_1==0 then
+                index_1=(index_2+1)%5
+                if index_1==index_3 then
+                    index_1=(index_1+1)%5
+                end
+            end
+            select_card(nil,card_y[index_1],nil,card_y[index_2],nil,card_y[index_3])
+        end
+    elseif count==1 then
+        --
+    end
+end
 -- 主入口
 function main()
     --
     rotateScreen(0);
     buff()--一二面
     
-    --获取三面卡信息
+    shuffled=0
+    
+    --获取卡信息
     info_init()
     get_card_info()
     get_berserker_info()
     
-    shuffled=0
-    --三面选卡
+    --3t选卡
     local need_shuffle=select_3t()
     if need_shuffle==1 then
         shuffle()
@@ -378,11 +431,13 @@ function main()
         select_3t()
     end
     
+    --4t选卡
     battle_ended=compare_color_point(end_x,end_y,end_r,end_g,end_b)
     if battle_ended==0 then
         info_init()
         get_card_info()
         get_berserker_info()
+        
         select_4t()
     end
     
