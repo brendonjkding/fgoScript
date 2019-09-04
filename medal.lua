@@ -406,8 +406,10 @@ function select_3t()
     else
         return true
     end
-    
-    for i=3,1,-1 do
+    if index[1]==0 then
+        choose_card(1)
+    end
+    for i=3,2,-1 do
         if index[i]==0 then
             choose_card(i)
         end
@@ -497,7 +499,10 @@ function select_4t()
         return true
     end
     
-    for i=3,1,-1 do
+    if index[1]==0 then
+        choose_card(1)
+    end
+    for i=3,2,-1 do
         if index[i]==0 then
             choose_card(i)
         end
