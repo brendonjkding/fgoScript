@@ -39,6 +39,7 @@ end_r=0xcf
 end_g=0x93
 end_b=0x10
 
+--下一张卡
 function next_card(index)
     local temp=index
     temp=temp+1
