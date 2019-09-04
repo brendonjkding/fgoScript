@@ -6,6 +6,7 @@
     
     
 ]]--
+function init()
 -- 适用屏幕参数
 SCREEN_RESOLUTION="750x1334";
 SCREEN_COLOR_BITS=32;
@@ -39,20 +40,11 @@ end_y=125
 end_r=0xcf
 end_g=0x93
 end_b=0x10
-function init()
+
     for i=2,5 do
         feature_start_y[i]=feature_start_y[i-1]+268
         feature_end_y[i]=feature_end_y[i-1]+268
     end
-end
---下一张卡
-function next_card(index)
-    local temp=index
-    temp=temp+1
-    if temp==6 then
-        temp=1
-    end
-    return temp
 end
 
 --模糊比较两个点
@@ -325,21 +317,21 @@ function has_cba_b()
     return temp
 end
 --
-function choose_red()
+function choose_first()
     if index[1]~=0 then
         return
     end
     
     local x=1
     for i=1,5 do
-        if not used[i] and color[i]=="red"  then
+        if not used[i] and color[i]=="red" and not is_ata[i] then
             index[x]=i
             used[i]=true
             return
         end
     end
     for i=1,5 do
-        if not used[i] and color[i]=="red" and is_ata[i] then
+        if not used[i] and color[i]=="red" then
             index[x]=i
             used[i]=true
             return
@@ -414,7 +406,7 @@ function select_3t()
     else
         return true
     end
-    choose_red()
+    choose_first()
     for i=3,1,-1 do
         if index[i]==0 then
             choose_card(i)
@@ -488,10 +480,18 @@ end
 
 --4t选卡
 function select_4t()
-     if count==0 then
+    if count==0 then
         return 1
     end
     index={0,0,0}
+    if count==3 then
+        if b_num==1 then--有红
+            index[1]=b_index[b_num]
+            b_num=b_num-1
+            used[index[1]]=true
+        end
+    end
+    
     if count>=1 then--2 3
         if b_num==1 then--有红
             if has_cba_b==false then--有红没cba红
@@ -505,7 +505,7 @@ function select_4t()
         return true
     end
     
-    choose_red()
+    choose_first()
     for i=3,1,-1 do
         if index[i]==0 then
             choose_card(i)
