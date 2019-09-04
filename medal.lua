@@ -324,25 +324,33 @@ function has_cba_b()
     end
     return temp
 end
---决定x号卡
-function choose_card(x)
-    if x==1 then
-        for i=1,5 do
-            if not used[i] and color[i]=="red" and is_ata[i] then
-                index[x]=i
-                used[i]=true
-                return
-            end
-        end
-        for i=1,5 do
-            if not used[i] and color[i]=="red"  then
-                index[x]=i
-                used[i]=true
-                return
-            end
-        end
+--
+function choose_red()
+    if index[1]~=0 then
+        return
     end
     
+    local x=1
+    for i=1,5 do
+        if not used[i] and color[i]=="red"  then
+            index[x]=i
+            used[i]=true
+            return
+        end
+    end
+    for i=1,5 do
+        if not used[i] and color[i]=="red" and is_ata[i] then
+            index[x]=i
+            used[i]=true
+            return
+        end
+    end
+
+end
+
+
+--决定x号卡
+function choose_card(x)
     if q_num>0 then
         if not used[q_index[q_num]] then
             index[x]=q_index[q_num]
@@ -406,10 +414,8 @@ function select_3t()
     else
         return true
     end
-    if index[1]==0 then
-        choose_card(1)
-    end
-    for i=3,2,-1 do
+    choose_red()
+    for i=3,1,-1 do
         if index[i]==0 then
             choose_card(i)
         end
@@ -499,10 +505,8 @@ function select_4t()
         return true
     end
     
-    if index[1]==0 then
-        choose_card(1)
-    end
-    for i=3,2,-1 do
+    choose_red()
+    for i=3,1,-1 do
         if index[i]==0 then
             choose_card(i)
         end
