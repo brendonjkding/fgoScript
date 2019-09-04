@@ -39,7 +39,14 @@ end_r=0xcf
 end_g=0x93
 end_b=0x10
 
-
+function next_card(index)
+    local temp=index
+    temp=temp+1
+    if temp==6 then
+        temp=1
+    end
+    return temp
+end
 --模糊比较两个点
 function compare_color_point(x,y,r,g,b,sim)
     sim=20
@@ -310,7 +317,7 @@ function select_3t()
         elseif a_index~=0 then--有蓝
             select_card(nil,nil,nil,card_y[a_index],nil,card_y[q_index])
         else
-            select_card(nil,nil,nil,card_y[(q_index+1)%5],nil,card_y[q_index])
+            select_card(nil,nil,nil,card_y[next_card(q_index)],nil,card_y[q_index])
         end
     elseif b_num~=0 then--有红
         if b_num>=2 then--两红
@@ -319,11 +326,11 @@ function select_3t()
             if a_index~=0 then--一红一蓝
                 select_card(nil,nil,nil,card_y[a_index],nil,card_y[b_index[1]])
             else--一红
-                select_card(nil,nil,nil,card_y[(b_index[1]+1)%5],nil,card_y[b_index[1]])
+                select_card(nil,nil,nil,card_y[next_card(b_index[1])],nil,card_y[b_index[1]])
             end
         end
     elseif a_index~=0 then--只有蓝
-        select_card(nil,nil,nil,card_y[(a_index+1)%5],nil,card_y[a_index])
+        select_card(nil,nil,nil,card_y[next_card(a_index)],nil,card_y[a_index])
     else
         if shuffled==1 then
             select_card(nil,nil,nil,card_y[2],nil,card_y[3])
@@ -401,9 +408,9 @@ function select_4t()
         end
     elseif count==2 then
         if q_index~=0 and a_index~=0 then--raq
-            local temp_index=(q_index+1)%5
+            local temp_index=next_card(q_index)
             if temp_index==a_index then
-                temp_index=(temp_index+1)%5
+                temp_index=next_card(temp_index)
             end
             select_card(nil,card_y[temp_index],nil,card_y[a_index],nil,card_y[q_index])
         else
@@ -428,9 +435,9 @@ function select_4t()
                 end
             end
             if index_1==0 then
-                index_1=(index_2+1)%5
+                index_1=next_card(index_2)
                 if index_1==index_3 then
-                    index_1=(index_1+1)%5
+                    index_1=next_card(index_1)
                 end
             end
             select_card(nil,card_y[index_1],nil,card_y[index_2],nil,card_y[index_3])
@@ -450,14 +457,14 @@ function select_4t()
             if red_index~=0 then
                 index_1=red_index
                 index_3=b_index[1]
-                index_2=(index_1+1)%5
+                index_2=next_card(index_1)
                 if index_2==index_3 then
-                    index_2=(index_2+1)%5
+                    index_2=next_card(index_2)
                 end
             else
                 index_1=b_index[1]
-                index_2=(index_1+1)%5
-                index_3=(index_2+1)%5
+                index_2=next_card(index_1)
+                index_3=next_card(index_2)
             end
         else
             if q_index~=0 then--q
@@ -467,13 +474,13 @@ function select_4t()
             end
             if red_index~=0 then
                 index_1=red_index
-                index_2=(index_1+1)%5
+                index_2=next_card(index_1)
                 if index_2==index_3 then
-                    index_2=(index_2+1)%5
+                    index_2=next_card(index_2)
                 end
             else
-                index_2=(index_3+1)%5
-                index_1=(index_2+1)%5
+                index_2=next_card(index_3)
+                index_1=next_card(index_2)
             end
         end
         --notifyMessage(string.format("%d %d %d",index_1,index_2,index_3))
@@ -497,7 +504,7 @@ function main()
     info_init()
     get_card_info()
     get_berserker_info()
-    
+    --notifyMessage(string.format("%d ",b_index[1]),5000);
     --3t选卡
     local need_shuffle=select_3t()
     if need_shuffle==1 then
