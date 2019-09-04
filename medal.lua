@@ -540,7 +540,7 @@ function main()
     
     ----[[
     --3t选卡
-    local need_shuffle=select_4t()
+    local need_shuffle=select_3t()
     ----[[
     if need_shuffle then
         shuffle()
