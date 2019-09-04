@@ -10,8 +10,11 @@
 SCREEN_RESOLUTION="750x1334";
 SCREEN_COLOR_BITS=32;
 --指令卡选择坐标
-card_x=222
-card_y={150,400,680,940,1200}--266
+card_x={222,222,222,222,222,542}--1,2,3,4,5,np
+card_y={150,400,680,940,1200,454}--266
+
+
+
 
 --阿塔取色 眼睛
 feature_start_x=229
@@ -83,18 +86,14 @@ end
 --判断第i张卡的颜色
 
 --根据坐标选卡
-function select_card(a_x,a_y,b_x,b_y,c_x,c_y)
-    --宝具卡1
-    if a_y==nil then
-        a_x=542
-        a_y=454
-    else
-        a_x=card_x
-    end
-    --普通指令卡x
-    b_x=card_x
-    c_x=card_x
-
+function select_card(a,b,c)
+    a_x=card_x[a]
+    a_y=card_y[a]
+    b_x=card_x[b]
+    b_y=card_y[b]
+    c_x=card_x[c]
+    c_y=card_y[c]
+    
     
     mSleep(600);
     touchDown(5, a_x, a_y)
@@ -118,7 +117,187 @@ end
 
 --一二面的死操作
 function buff()
-    
+    rotateScreen(0);
+    mSleep(890);
+    touchDown(4, 278, 842)
+    mSleep(82);
+    touchUp(4)
+
+    mSleep(568);
+    touchDown(5, 400, 104)
+    mSleep(64);
+    touchUp(5)
+
+    mSleep(919);
+    touchDown(2, 140, 284)
+    mSleep(33);
+    touchMove(2, 140, 284)
+    mSleep(48);
+    touchUp(2)
+
+    mSleep(1135);
+    touchDown(1, 148, 394)
+    mSleep(50);
+    touchMove(1, 148, 394)
+    mSleep(48);
+    touchUp(1)
+
+    mSleep(369);
+    touchDown(6, 284, 314)
+    mSleep(17);
+    touchMove(6, 284, 314)
+    mSleep(16);
+    touchMove(6, 284, 314)
+    mSleep(17);
+    touchMove(6, 284, 314)
+    mSleep(48);
+    touchUp(6)
+
+    mSleep(1336);
+    touchDown(3, 138, 728)
+    mSleep(64);
+    touchUp(3)
+
+    mSleep(536);
+    touchDown(6, 304, 334)
+    mSleep(64);
+    touchUp(6)
+
+    mSleep(3585);
+    touchDown(4, 64, 1138)
+    mSleep(67);
+    touchUp(4)
+
+    mSleep(1033);
+    touchDown(5, 258, 426)
+    mSleep(84);
+    touchUp(5)
+
+    mSleep(150);
+    touchDown(2, 464, 456)
+    mSleep(16);
+    touchMove(2, 464, 456)
+    mSleep(17);
+    touchMove(2, 464, 456)
+    mSleep(17);
+    touchMove(2, 464, 456)
+    mSleep(32);
+    touchUp(2)
+
+    mSleep(135);
+    touchDown(1, 228, 668)
+    mSleep(33);
+    touchMove(1, 228, 668)
+    mSleep(17);
+    touchMove(1, 228, 668)
+    mSleep(16);
+    touchUp(1)
+
+    mSleep(10584);
+    touchDown(3, 410, 1246)
+    mSleep(34);
+    touchMove(3, 410, 1246)
+    mSleep(32);
+    touchUp(3)
+
+    mSleep(535);
+    touchDown(6, 418, 1034)
+    mSleep(33);
+    touchMove(6, 418, 1034)
+    mSleep(33);
+    touchUp(6)
+
+    mSleep(401);
+    touchDown(4, 290, 340)
+    mSleep(33);
+    touchMove(4, 290, 340)
+    mSleep(32);
+    touchUp(4)
+
+    mSleep(1450);
+    touchDown(5, 150, 608)
+    mSleep(34);
+    touchMove(5, 150, 608)
+    mSleep(17);
+    touchMove(5, 150, 608)
+    mSleep(32);
+    touchUp(5)
+
+    mSleep(568);
+    touchDown(4, 260, 324)
+    mSleep(65);
+    touchUp(4)
+
+    mSleep(1451);
+    touchDown(2, 154, 500)
+    mSleep(83);
+    touchUp(2)
+
+    mSleep(1617);
+    touchDown(1, 144, 70)
+    mSleep(52);
+    touchMove(1, 144, 70)
+    mSleep(14);
+    touchUp(1)
+
+    mSleep(1602);
+    touchDown(3, 96, 1180)
+    mSleep(50);
+    touchMove(3, 96, 1180)
+    mSleep(16);
+    touchMove(3, 96, 1180)
+    mSleep(17);
+    touchUp(3)
+
+    mSleep(1783);
+    touchDown(6, 492, 420)
+    mSleep(50);
+    touchMove(6, 492, 420)
+    mSleep(49);
+    touchUp(6)
+
+    mSleep(152);
+    touchDown(5, 266, 410)
+    mSleep(16);
+    touchMove(5, 266, 410)
+    mSleep(16);
+    touchMove(5, 266, 410)
+    mSleep(17);
+    touchMove(5, 266, 410)
+    mSleep(32);
+    touchUp(5)
+
+    mSleep(136);
+    touchDown(4, 226, 652)
+    mSleep(15);
+    touchMove(4, 226, 652)
+    mSleep(35);
+    touchUp(4)
+
+    mSleep(8082);
+    touchDown(2, 122, 934)
+    mSleep(51);
+    touchUp(2)
+
+    mSleep(817);
+    touchDown(1, 296, 322)
+    mSleep(33);
+    touchMove(1, 296, 322)
+    mSleep(49);
+    touchUp(1)
+
+    mSleep(2001);
+    touchDown(3, 134, 826)
+    mSleep(82);
+    touchUp(3)
+
+    --三面选卡
+    mSleep(1469);
+    touchDown(3, 88, 1164)
+    mSleep(64);
+    touchUp(3)
+
+    mSleep(1000);
 end
 
 --卡信息初始化
@@ -135,9 +314,91 @@ function info_init()
     is_ata={}
     color={}
 end
+function has_cba_b()
+    local temp=false
+    for i=1,5 do
+        if is_ata[i]==false and color=="red" then
+            temp=true
+            break
+        end
+    end
+    return temp
+end
+function choose_card(x)
+    if q_num>0 then
+        if not used[q_index[q_num]] then
+            index[x]=q_index[q_num]
+            
+            --notifyMessage(string.format("%s %s %s %s %s",used[1],used[2],used[3],used[4],used[5]))
+            used[q_index[q_num]]=true
+            q_num=q_num-1
+            return
+        end
+    elseif b_num>0 then
+        if not used[b_index[b_num]] then
+            index[x]=b_index[b_num]
+            
+            used[b_index[b_num]]=true
+            b_num=b_num-1
+            return
+        end
+    elseif a_num>0 then
+        if not used[a_index[a_num]] then
+            index[x]=a_index[a_num]
+            
+            used[a_index[a_num]]=true
+            a_num=a_num-1
+            return
+        end
+    else
+        for i=1,5 do
+            if not used[i] then
+                index[x]=i
+                used[i]=true
+                return
+            end
+        end
+    end
+    
+end
 
 --判断三面该出什么卡
 function select_3t()
+    if count==0 then
+        return 1
+    end
+    index={0,0,0}
+    
+    if count>=2 then
+        if b_num==1 then
+            index[1]=b_index[b_num]
+            b_num=b_num-1
+            used[index[1]]=true
+            
+            index[2]=6
+        end
+    elseif count==1 then
+        if b_num==1 then
+            if has_cba_b==false then
+                index[1]=b_index[b_num]
+                b_num=b_num-1
+                used[index[1]]=true
+            
+                index[2]=6
+            end
+        end
+    else
+        return true
+    end
+    for i=3,1,-1 do
+        if index[i]==0 then
+            choose_card(i)
+        end
+    end
+    --notifyMessage(string.format("%d %d %d",index[1],index[2],index[3]))
+    select_card(index[1],index[2],index[3])
+    return false
+    
 end
 
 --判断卡
@@ -211,7 +472,7 @@ function main()
     rotateScreen(0);
     
     ----[[
-    buff()--一二面
+    --buff()--一二面
     
     shuffled=0
     
@@ -219,10 +480,11 @@ function main()
     info_init()
     get_card_info()
     get_ata_info()
-    notifyMessage(string.format("%s %s, %s %s, %s %s, %s %s, %s %s, ",is_ata[1],color[1],is_ata[2],color[2],is_ata[3],color[3],is_ata[4],color[4],is_ata[5],color[5]),7000);
-    --[[
+    --notifyMessage(string.format("%s %s, %s %s, %s %s, %s %s, %s %s, ",is_ata[1],color[1],is_ata[2],color[2],is_ata[3],color[3],is_ata[4],color[4],is_ata[5],color[5]),7000);
+    ----[[
     --3t选卡
     local need_shuffle=select_3t()
+    ----[[
     if need_shuffle==1 then
         shuffle()
         shuffled=1
@@ -232,9 +494,9 @@ function main()
         need_shuffle=select_3t()
     end
     if need_shuffle==1 then
-        return
+        select_card(6,1,2)
     end
-    ]]--
+    --]]--
 end
 
 
