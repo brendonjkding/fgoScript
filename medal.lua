@@ -326,6 +326,23 @@ function has_cba_b()
 end
 --决定x号卡
 function choose_card(x)
+    if x==1 then
+        for i=1,5 do
+            if not used[i] and color[i]=="red" and is_ata[i] then
+                index[x]=i
+                used[i]=true
+                return
+            end
+        end
+        for i=1,5 do
+            if not used[i] and color[i]=="red"  then
+                index[x]=i
+                used[i]=true
+                return
+            end
+        end
+    end
+    
     if q_num>0 then
         if not used[q_index[q_num]] then
             index[x]=q_index[q_num]
@@ -367,23 +384,25 @@ function select_3t()
     index={0,0,0}
     
     if count>=2 then
-        if b_num==1 then
+        if b_num==1 then--有红
             index[1]=b_index[b_num]
             b_num=b_num-1
             used[index[1]]=true
             
             index[2]=6
+        else
+            index[1]=6
         end
     elseif count==1 then
         if b_num==1 then
-            if has_cba_b==false then
+            if has_cba_b==false then--有红没cba红
                 index[1]=b_index[b_num]
                 b_num=b_num-1
                 used[index[1]]=true
-            
-                index[2]=6
             end
+            
         end
+        index[2]=6
     else
         return true
     end
@@ -456,43 +475,115 @@ function shuffle()
     mSleep(64);
     touchUp(3)
     
-    mSleep(1000)
+    mSleep(2000)
 end
 
 --4t选卡
 function select_4t()
+     if count==0 then
+        return 1
+    end
+    index={0,0,0}
+    if count>=1 then--2 3
+        if b_num==1 then--有红
+            if has_cba_b==false then--有红没cba红
+                index[1]=b_index[b_num]
+                b_num=b_num-1
+                used[index[1]]=true
+            end
+        end
+    
+    else
+        return true
+    end
+    
+    for i=3,1,-1 do
+        if index[i]==0 then
+            choose_card(i)
+        end
+    end
+    --notifyMessage(string.format("%d %d %d",index[1],index[2],index[3]))
+    select_card(index[1],index[2],index[3])
+    return false
+    
 end
 
 -- 主入口
 function main()
     init()
-    --
     rotateScreen(0);
     
-    ----[[
+    
     buff()--一二面
     
-    shuffled=0
+    shuffled=false
     
+    -------------------------------------3t
     --获取卡信息
     info_init()
     get_card_info()
     get_ata_info()
-    --notifyMessage(string.format("%s %s, %s %s, %s %s, %s %s, %s %s, ",is_ata[1],color[1],is_ata[2],color[2],is_ata[3],color[3],is_ata[4],color[4],is_ata[5],color[5]),7000);
+    
+    
+    --notifyMessage(string.format("%s %s, %s %s, %s %s, %s %s, %s %s, %d",is_ata[1],color[1],is_ata[2],color[2],is_ata[3],color[3],is_ata[4],color[4],is_ata[5],color[5],count),3000);
+    --notifyMessage(string.format("%d %d %d",b_num,a_num,q_num),3000);
+    
+    
     ----[[
     --3t选卡
-    local need_shuffle=select_3t()
+    local need_shuffle=select_4t()
     ----[[
-    if need_shuffle==1 then
+    if need_shuffle then
         shuffle()
-        shuffled=1
+        shuffled=true
         info_init()
         get_card_info()
         get_ata_info()
         need_shuffle=select_3t()
     end
-    if need_shuffle==1 then
+    if need_shuffle then
         select_card(6,1,2)
+    end
+    
+    
+    ----------------------4t
+    mSleep(10000)
+    --
+    touchDown(3, 455, 834)
+    mSleep(64);
+    touchUp(3)
+    
+    mSleep(1184);
+    touchDown(4, 455, 834)
+    mSleep(83);
+    touchUp(4)
+    --4t选卡
+    battle_ended=compare_color_point(end_x,end_y,end_r,end_g,end_b)
+    if not battle_ended then
+        --选卡
+        mSleep(1000);
+        touchDown(3, 88, 1164)
+        mSleep(64);
+        touchUp(3)
+        
+        info_init()
+        get_card_info()
+        get_ata_info()
+
+        need_shuffle=select_4t()
+        if need_shuffle then
+            if not shuffled then
+                shuffle()
+                info_init()
+                get_card_info()
+                get_ata_info()
+                need_shuffle=select_4t()
+                if need_shuffle then
+                    return
+                end
+            end
+        end
+                
     end
     --]]--
 end
