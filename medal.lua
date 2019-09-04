@@ -484,15 +484,13 @@ function select_4t()
         return 1
     end
     index={0,0,0}
-    if count==3 then
+    if count>=3 then
         if b_num==1 then--有红
             index[1]=b_index[b_num]
             b_num=b_num-1
             used[index[1]]=true
         end
-    end
-    
-    if count>=1 then--2 3
+    elseif count>=1 then--1 2
         if b_num==1 then--有红
             if has_cba_b==false then--有红没cba红
                 index[1]=b_index[b_num]
