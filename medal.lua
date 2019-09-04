@@ -83,9 +83,9 @@ function get_color(i)
     return "green"
 end
 
---判断第i张卡的颜色
 
---根据坐标选卡
+
+--根据序号选卡
 function select_card(a,b,c)
     a_x=card_x[a]
     a_y=card_y[a]
@@ -117,7 +117,6 @@ end
 
 --一二面的死操作
 function buff()
-    rotateScreen(0);
     mSleep(890);
     touchDown(4, 278, 842)
     mSleep(82);
@@ -314,6 +313,7 @@ function info_init()
     is_ata={}
     color={}
 end
+--有非打手红卡
 function has_cba_b()
     local temp=false
     for i=1,5 do
@@ -324,12 +324,11 @@ function has_cba_b()
     end
     return temp
 end
+--决定x号卡
 function choose_card(x)
     if q_num>0 then
         if not used[q_index[q_num]] then
             index[x]=q_index[q_num]
-            
-            --notifyMessage(string.format("%s %s %s %s %s",used[1],used[2],used[3],used[4],used[5]))
             used[q_index[q_num]]=true
             q_num=q_num-1
             return
@@ -337,7 +336,6 @@ function choose_card(x)
     elseif b_num>0 then
         if not used[b_index[b_num]] then
             index[x]=b_index[b_num]
-            
             used[b_index[b_num]]=true
             b_num=b_num-1
             return
@@ -345,7 +343,6 @@ function choose_card(x)
     elseif a_num>0 then
         if not used[a_index[a_num]] then
             index[x]=a_index[a_num]
-            
             used[a_index[a_num]]=true
             a_num=a_num-1
             return
@@ -390,6 +387,7 @@ function select_3t()
     else
         return true
     end
+    
     for i=3,1,-1 do
         if index[i]==0 then
             choose_card(i)
@@ -472,7 +470,7 @@ function main()
     rotateScreen(0);
     
     ----[[
-    --buff()--一二面
+    buff()--一二面
     
     shuffled=0
     
