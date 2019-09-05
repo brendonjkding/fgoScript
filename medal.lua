@@ -8,31 +8,31 @@
 ]]--
 function init()
 -- 适用屏幕参数
-SCREEN_RESOLUTION="750x1334";
-SCREEN_COLOR_BITS=32;
+    SCREEN_RESOLUTION="750x1334";
+    SCREEN_COLOR_BITS=32;
 --指令卡选择坐标
-card_x={222,222,222,222,222,542}--1,2,3,4,5,np
-card_y={150,400,680,940,1200,454}--266
+    card_x={222,222,222,222,222,542}--1,2,3,4,5,np
+    card_y={150,400,680,940,1200,454}--266
 
 
 
 
 --阿塔取色 眼睛
-feature_start_x=229
-feature_start_y={82}
-feature_end_x=300
-feature_end_y={143}
+    feature_start_x=229
+    feature_start_y={82}
+    feature_end_x=300
+    feature_end_y={143}
 
 --卡色取色坐标 卡上不被英灵挡住的点
-color_x=252
-color_y={72,338,604,873,1145}
+    color_x=252
+    color_y={72,338,604,873,1145}
 
-blue_r=0x16
-blue_g=0x45
-blue_b=0xa0
-red_r=0x9d
-red_g=0x18
-red_b=0x18
+    blue_r=0x16
+    blue_g=0x45
+    blue_b=0xa0
+    red_r=0x9d
+    red_g=0x18
+    red_b=0x18
 
 --战斗结束取色
 end_x=643
@@ -41,10 +41,10 @@ end_r=0xcf
 end_g=0x93
 end_b=0x10
 
-    for i=2,5 do
-        feature_start_y[i]=feature_start_y[i-1]+268
-        feature_end_y[i]=feature_end_y[i-1]+268
-    end
+for i=2,5 do
+    feature_start_y[i]=feature_start_y[i-1]+268
+    feature_end_y[i]=feature_end_y[i-1]+268
+end
 end
 
 --模糊比较两个点
@@ -85,8 +85,8 @@ function select_card(a,b,c)
     b_y=card_y[b]
     c_x=card_x[c]
     c_y=card_y[c]
-    
-    
+
+
     mSleep(600);
     touchDown(5, a_x, a_y)
     mSleep(33);
@@ -301,7 +301,7 @@ function info_init()
     a_num=0
     b_num=0
     count=0
-    
+
     is_ata={}
     color={}
 end
@@ -321,7 +321,7 @@ function choose_first()
     if index[1]~=0 then
         return
     end
-    
+
     local x=1
     for i=1,5 do
         if not used[i] and color[i]=="red" and not is_ata[i] then
@@ -373,7 +373,7 @@ function choose_card(x)
             end
         end
     end
-    
+
 end
 
 --判断三面该出什么卡
@@ -382,13 +382,13 @@ function select_3t()
         return 1
     end
     index={0,0,0}
-    
+
     if count>=2 then
         if b_num==1 then--有红
             index[1]=b_index[b_num]
             b_num=b_num-1
             used[index[1]]=true
-            
+
             index[2]=6
         else
             index[1]=6
@@ -400,13 +400,15 @@ function select_3t()
                 b_num=b_num-1
                 used[index[1]]=true
             end
-            
+
         end
         index[2]=6
     else
         return true
     end
-    choose_first()
+    if count==1 then
+        choose_first()
+    end
     for i=3,1,-1 do
         if index[i]==0 then
             choose_card(i)
@@ -415,7 +417,7 @@ function select_3t()
     --notifyMessage(string.format("%d %d %d",index[1],index[2],index[3]))
     select_card(index[1],index[2],index[3])
     return false
-    
+
 end
 
 --判断卡
@@ -429,7 +431,7 @@ function get_card_info()
         end
         color[i]=get_color(i)
     end
-    
+
 end
 
 --判断阿塔卡和颜色
@@ -450,6 +452,12 @@ function get_ata_info()
         end
     end
 end
+function get_info()
+    info_init()
+    get_card_info()
+    get_ata_info()
+end
+
 
 --洗牌
 function shuffle()
@@ -458,7 +466,7 @@ function shuffle()
     touchDown(4, 35, 1253)
     mSleep(83);
     touchUp(4)
-    
+
     mSleep(1184);
     touchDown(4, 426, 1254)
     mSleep(83);
@@ -468,14 +476,31 @@ function shuffle()
     touchDown(1, 426, 1132)
     mSleep(66);
     touchUp(1)
-    
+
     --选卡
     mSleep(685);
     touchDown(3, 88, 1164)
     mSleep(64);
     touchUp(3)
-    
+
     mSleep(2000)
+end
+
+function quit_battle()
+    mSleep(1184);
+    touchDown(4, 42, 1143)
+    mSleep(83);
+    touchUp(4)
+    
+    mSleep(1184);
+    touchDown(4, 42, 1143)
+    mSleep(83);
+    touchUp(4)
+    
+    mSleep(1184);
+    touchDown(4, 42, 1143)
+    mSleep(83);
+    touchUp(4)
 end
 
 --4t选卡
@@ -498,12 +523,13 @@ function select_4t()
                 used[index[1]]=true
             end
         end
-    
+
     else
         return true
     end
-    
-    choose_first()
+    if count<=2 then
+        choose_first()
+    end
     for i=3,1,-1 do
         if index[i]==0 then
             choose_card(i)
@@ -512,30 +538,52 @@ function select_4t()
     --notifyMessage(string.format("%d %d %d",index[1],index[2],index[3]))
     select_card(index[1],index[2],index[3])
     return false
-    
+
+end
+function select_cba(x)
+    index={x,0,0}
+    for i=3,1,-1 do
+        if index[i]==0 then
+            choose_card(i)
+        end
+    end
+    select_card(index[1],index[2],index[3])
+end
+
+function battle_ended()
+    x, y = findMultiColorInRegionFuzzy({ 0x121014, 2, 9, 0xE9BA24, 1, 16, 0xE3B51E, -12, 16, 0x131215, 13, 16, 0x131115 }, 90, 541, 79, 566, 95);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        return true
+    end
+    return false
+end
+
+function click_attack()
+    mSleep(1000);
+    touchDown(3, 88, 1164)
+    mSleep(64);
+    touchUp(3)
 end
 
 -- 主入口
 function main()
     init()
     rotateScreen(0);
-    
-    
+
+
     buff()--一二面
-    
+
     shuffled=false
-    
+
     -------------------------------------3t
     --获取卡信息
-    info_init()
-    get_card_info()
-    get_ata_info()
-    
-    
+    get_info()
+
+
     --notifyMessage(string.format("%s %s, %s %s, %s %s, %s %s, %s %s, %d",is_ata[1],color[1],is_ata[2],color[2],is_ata[3],color[3],is_ata[4],color[4],is_ata[5],color[5],count),3000);
     --notifyMessage(string.format("%d %d %d",b_num,a_num,q_num),3000);
-    
-    
+
+
     ----[[
     --3t选卡
     local need_shuffle=select_3t()
@@ -543,55 +591,53 @@ function main()
     if need_shuffle then
         shuffle()
         shuffled=true
-        info_init()
-        get_card_info()
-        get_ata_info()
+        get_info()
         need_shuffle=select_3t()
     end
     if need_shuffle then
-        select_card(6,1,2)
+        select_cba(6)
     end
-    
-    
+
+
     ----------------------4t
     mSleep(10000)
     --
-    touchDown(3, 455, 834)
-    mSleep(64);
-    touchUp(3)
-    
-    mSleep(1184);
-    touchDown(4, 455, 834)
-    mSleep(83);
-    touchUp(4)
+
     --4t选卡
-    battle_ended=compare_color_point(end_x,end_y,end_r,end_g,end_b)
-    if not battle_ended then
+
+    if not battle_ended() then
         --选卡
-        mSleep(1000);
-        touchDown(3, 88, 1164)
-        mSleep(64);
-        touchUp(3)
-        
-        info_init()
-        get_card_info()
-        get_ata_info()
+        click_attack()
+
+        get_info()
 
         need_shuffle=select_4t()
         if need_shuffle then
             if not shuffled then
                 shuffle()
-                info_init()
-                get_card_info()
-                get_ata_info()
+                get_info()
                 need_shuffle=select_4t()
                 if need_shuffle then
-                    return
+                    select_cba(0)
                 end
+            else
+                select_cba(0)
             end
         end
-                
+    else
+        quit_battle()
     end
+    ------------------------
+    mSleep(10000)
+    if not battle_ended() then
+        --选卡
+        click_attack()
+        get_info()
+        select_4t()
+    else
+        quit_battle()
+    end
+    
     --]]--
 end
 
