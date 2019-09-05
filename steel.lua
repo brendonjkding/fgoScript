@@ -2,9 +2,12 @@
     制作：面包
     本脚本假定你启用了游戏蜂窝的七倍加速
     适用iphone8屏幕大小
-    适用于：阿塔、cba、cba。充能衣服。我本人用于刷勋章。
+    适用于：狂兰、cba、cba。充能衣服。我本人用于刷勋章。
     
-    
+    角色取色信息
+    buff()
+    get_card_info()
+    msleep
 ]]--
 function init()
 -- 适用屏幕参数
@@ -17,11 +20,12 @@ function init()
 
 
 
---阿塔取色 眼睛
-    feature_start_x=229
-    feature_start_y={82}
-    feature_end_x=300
-    feature_end_y={143}
+--狂兰取色坐标 英灵上不被三种字挡住的点
+    feature_x=202
+    feature_y={235,501,767,1033,1299}
+    ber_r=0x44
+    ber_g=0x44
+    ber_b=0x77
 
 --卡色取色坐标 卡上不被英灵挡住的点
     color_x=252
@@ -34,17 +38,8 @@ function init()
     red_g=0x18
     red_b=0x18
 
---战斗结束取色
-end_x=643
-end_y=125
-end_r=0xcf
-end_g=0x93
-end_b=0x10
 
-for i=2,5 do
-    feature_start_y[i]=feature_start_y[i-1]+268
-    feature_end_y[i]=feature_end_y[i-1]+268
-end
+    
 end
 
 --模糊比较两个点
@@ -109,179 +104,182 @@ end
 
 --一二面的死操作
 function buff()
-    mSleep(890);
-    touchDown(4, 278, 842)
-    mSleep(82);
-    touchUp(4)
-
-    mSleep(568);
-    touchDown(5, 400, 104)
-    mSleep(64);
-    touchUp(5)
-
-    mSleep(919);
-    touchDown(2, 140, 284)
-    mSleep(33);
-    touchMove(2, 140, 284)
-    mSleep(48);
-    touchUp(2)
-
-    mSleep(1135);
-    touchDown(1, 148, 394)
-    mSleep(50);
-    touchMove(1, 148, 394)
-    mSleep(48);
-    touchUp(1)
-
-    mSleep(369);
-    touchDown(6, 284, 314)
-    mSleep(17);
-    touchMove(6, 284, 314)
-    mSleep(16);
-    touchMove(6, 284, 314)
-    mSleep(17);
-    touchMove(6, 284, 314)
-    mSleep(48);
-    touchUp(6)
-
-    mSleep(1336);
-    touchDown(3, 138, 728)
-    mSleep(64);
-    touchUp(3)
-
-    mSleep(536);
-    touchDown(6, 304, 334)
-    mSleep(64);
-    touchUp(6)
-
-    mSleep(3585);
-    touchDown(4, 64, 1138)
+     mSleep(607);
+    touchDown(5, 290, 844)
     mSleep(67);
-    touchUp(4)
-
-    mSleep(1033);
-    touchDown(5, 258, 426)
-    mSleep(84);
     touchUp(5)
 
-    mSleep(150);
-    touchDown(2, 464, 456)
-    mSleep(16);
-    touchMove(2, 464, 456)
+    mSleep(684);
+    touchDown(2, 474, 124)
     mSleep(17);
-    touchMove(2, 464, 456)
-    mSleep(17);
-    touchMove(2, 464, 456)
+    touchMove(2, 474, 124)
     mSleep(32);
     touchUp(2)
 
-    mSleep(135);
-    touchDown(1, 228, 668)
-    mSleep(33);
-    touchMove(1, 228, 668)
-    mSleep(17);
-    touchMove(1, 228, 668)
-    mSleep(16);
-    touchUp(1)
-
-    mSleep(10584);
-    touchDown(3, 410, 1246)
+    --一面buff
+    mSleep(934);
+    touchDown(4, 140, 80)
     mSleep(34);
-    touchMove(3, 410, 1246)
-    mSleep(32);
-    touchUp(3)
-
-    mSleep(535);
-    touchDown(6, 418, 1034)
+    touchMove(4, 140, 80)
     mSleep(33);
-    touchMove(6, 418, 1034)
-    mSleep(33);
-    touchUp(6)
-
-    mSleep(401);
-    touchDown(4, 290, 340)
-    mSleep(33);
-    touchMove(4, 290, 340)
-    mSleep(32);
     touchUp(4)
 
-    mSleep(1450);
-    touchDown(5, 150, 608)
-    mSleep(34);
-    touchMove(5, 150, 608)
-    mSleep(17);
-    touchMove(5, 150, 608)
-    mSleep(32);
-    touchUp(5)
-
-    mSleep(568);
-    touchDown(4, 260, 324)
-    mSleep(65);
-    touchUp(4)
-
-    mSleep(1451);
-    touchDown(2, 154, 500)
+    mSleep(1098);
+    touchDown(1, 154, 182)
     mSleep(83);
-    touchUp(2)
-
-    mSleep(1617);
-    touchDown(1, 144, 70)
-    mSleep(52);
-    touchMove(1, 144, 70)
-    mSleep(14);
     touchUp(1)
 
-    mSleep(1602);
-    touchDown(3, 96, 1180)
-    mSleep(50);
-    touchMove(3, 96, 1180)
+    mSleep(1051);
+    touchDown(6, 146, 414)
+    mSleep(82);
+    touchUp(6)
+
+    mSleep(419);
+    touchDown(3, 290, 306)
     mSleep(16);
-    touchMove(3, 96, 1180)
+    touchMove(3, 290, 306)
     mSleep(17);
+    touchMove(3, 290, 306)
+    mSleep(32);
     touchUp(3)
 
-    mSleep(1783);
-    touchDown(6, 492, 420)
-    mSleep(50);
-    touchMove(6, 492, 420)
-    mSleep(49);
-    touchUp(6)
+    mSleep(1167);
+    touchDown(5, 146, 732)
+    mSleep(68);
+    touchUp(5)
+
+    mSleep(567);
+    touchDown(3, 298, 316)
+    mSleep(16);
+    touchMove(3, 298, 316)
+    mSleep(16);
+    touchMove(3, 298, 316)
+    mSleep(32);
+    touchUp(3)
+    --一面选卡
+    mSleep(1117);
+    touchDown(2, 90, 1166)
+    mSleep(19);
+    touchMove(2, 90, 1166)
+    mSleep(16);
+    touchMove(2, 90, 1166)
+    mSleep(33);
+    touchUp(2)
+
+    mSleep(618);
+    touchDown(4, 514, 440)
+    mSleep(16);
+    touchMove(4, 514, 440)
+    mSleep(16);
+    touchMove(4, 514, 440)
+    mSleep(32);
+    touchUp(4)
 
     mSleep(152);
-    touchDown(5, 266, 410)
-    mSleep(16);
-    touchMove(5, 266, 410)
-    mSleep(16);
-    touchMove(5, 266, 410)
+    touchDown(1, 218, 402)
     mSleep(17);
-    touchMove(5, 266, 410)
+    touchMove(1, 218, 402)
+    mSleep(16);
+    touchMove(1, 218, 402)
+    mSleep(33);
+    touchUp(1)
+
+    mSleep(151);
+    touchDown(6, 272, 610)
+    mSleep(16);
+    touchMove(6, 272, 610)
+    mSleep(17);
+    touchMove(6, 272, 610)
+    mSleep(32);
+    touchUp(6)
+    --二面buff
+    mSleep(8587);
+    touchDown(5, 154, 264)
+    mSleep(31);
+    touchMove(5, 154, 264)
+    mSleep(17);
+    touchMove(5, 154, 264)
     mSleep(32);
     touchUp(5)
 
-    mSleep(136);
-    touchDown(4, 226, 652)
-    mSleep(15);
-    touchMove(4, 226, 652)
-    mSleep(35);
-    touchUp(4)
-
-    mSleep(8082);
-    touchDown(2, 122, 934)
-    mSleep(51);
-    touchUp(2)
-
-    mSleep(817);
-    touchDown(1, 296, 322)
-    mSleep(33);
-    touchMove(1, 296, 322)
-    mSleep(49);
-    touchUp(1)
-
-    mSleep(2001);
-    touchDown(3, 134, 826)
-    mSleep(82);
+    mSleep(1233);
+    touchDown(3, 170, 614)
+    mSleep(70);
     touchUp(3)
 
+    mSleep(482);
+    touchDown(2, 270, 342)
+    mSleep(16);
+    touchMove(2, 270, 342)
+    mSleep(17);
+    touchMove(2, 270, 342)
+    mSleep(49);
+    touchUp(2)
+
+    mSleep(1184);
+    touchDown(4, 426, 1254)
+    mSleep(83);
+    touchUp(4)
+
+    mSleep(685);
+    touchDown(1, 422, 1040)
+    mSleep(66);
+    touchUp(1)
+
+    mSleep(617);
+    touchDown(2, 302, 320)
+    mSleep(16);
+    touchMove(2, 302, 320)
+    mSleep(34);
+    touchUp(2)
+    --二面选卡
+    mSleep(1232);
+    touchDown(6, 116, 1200)
+    mSleep(68);
+    touchUp(6)
+
+    mSleep(600);
+    touchDown(5, 542, 454)
+    mSleep(33);
+    touchMove(5, 542, 454)
+    mSleep(34);
+    touchUp(5)
+
+    mSleep(551);
+    touchDown(3, 240, 430)
+    mSleep(33);
+    touchMove(3, 240, 430)
+    mSleep(33);
+    touchUp(3)
+
+    mSleep(217);
+    touchDown(4, 266, 650)
+    mSleep(49);
+    touchUp(4)
+    --三面buff
+    mSleep(9050);
+    touchDown(1, 156, 490)
+    mSleep(17);
+    touchMove(1, 156, 490)
+    mSleep(17);
+    touchMove(1, 156, 490)
+    mSleep(18);
+    touchUp(1)
+
+    mSleep(1298);
+    touchDown(2, 136, 840)
+    mSleep(67);
+    touchUp(2)
+
+    mSleep(1216);
+    touchDown(6, 150, 960)
+    mSleep(66);
+    touchUp(6)
+
+    mSleep(636);
+    touchDown(5, 306, 316)
+    mSleep(64);
+    touchUp(5)
     --三面选卡
     mSleep(1469);
     touchDown(3, 88, 1164)
@@ -302,14 +300,14 @@ function info_init()
     b_num=0
     count=0
 
-    is_ata={}
+    is_dashou={}
     color={}
 end
 --有非打手红卡
 function has_cba_b()
     local temp=false
     for i=1,5 do
-        if is_ata[i]==false and color=="red" then
+        if is_dashou[i]==false and color=="red" then
             temp=true
             break
         end
@@ -324,7 +322,7 @@ function choose_first()
 
     local x=1
     for i=1,5 do
-        if not used[i] and color[i]=="red" and not is_ata[i] then
+        if not used[i] and color[i]=="red" and not is_dashou[i] then
             index[x]=i
             used[i]=true
             return
@@ -384,7 +382,7 @@ function select_3t()
     index={0,0,0}
 
     if count>=2 then
-        if b_num==1 then--有红
+        if b_num>=1 then--有红
             index[1]=b_index[b_num]
             b_num=b_num-1
             used[index[1]]=true
@@ -423,21 +421,19 @@ end
 --判断卡
 function get_card_info()
     for i=1,5 do
-        x, y = findMultiColorInRegionFuzzy({ 0xFEEDCB, -2, 10, 0xFEECD5, 8, 4, 0x339D00, 19, -1, 0xE3D9B7, 20, 17, 0x1F7A5D }, 80, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            is_ata[i]=true   -- 点击那个点
+        if compare_color_point(feature_x,feature_y[i],ber_r,ber_g,ber_b,30) then
+            is_dashou[i]=true
         else
-            is_ata[i]=false
+            is_dashou[i]=false
         end
         color[i]=get_color(i)
     end
-
 end
 
---判断阿塔卡和颜色
+--判断打手卡和颜色
 function get_ata_info()
     for i=1,5 do
-        if is_ata[i]==true then
+        if is_dashou[i]==true then
             if color[i]=="green" then
                 q_num=q_num+1
                 q_index[q_num]=i
@@ -580,7 +576,7 @@ function main()
     get_info()
 
 
-    --notifyMessage(string.format("%s %s, %s %s, %s %s, %s %s, %s %s, %d",is_ata[1],color[1],is_ata[2],color[2],is_ata[3],color[3],is_ata[4],color[4],is_ata[5],color[5],count),3000);
+    --notifyMessage(string.format("%s %s, %s %s, %s %s, %s %s, %s %s, %d",is_dashou[1],color[1],is_dashou[2],color[2],is_dashou[3],color[3],is_dashou[4],color[4],is_dashou[5],color[5],count),3000);
     --notifyMessage(string.format("%d %d %d",b_num,a_num,q_num),3000);
 
 
@@ -593,28 +589,26 @@ function main()
         shuffled=true
         get_info()
         need_shuffle=select_3t()
+        if need_shuffle then
+            select_cba(6)
+        end
     end
-    if need_shuffle then
-        select_cba(6)
-    end
-
 
     ----------------------4t
-    mSleep(10000)
+    mSleep(14000)
     --
 
     --4t选卡
 
-    if not battle_ended() then
+    while not battle_ended() do
         --选卡
         click_attack()
-
         get_info()
-
         need_shuffle=select_4t()
         if need_shuffle then
             if not shuffled then
                 shuffle()
+                shuffled=true
                 get_info()
                 need_shuffle=select_4t()
                 if need_shuffle then
@@ -624,20 +618,10 @@ function main()
                 select_cba(0)
             end
         end
-    else
-        quit_battle()
+        mSleep(8000)
     end
-    ------------------------
-    mSleep(10000)
-    if not battle_ended() then
-        --选卡
-        click_attack()
-        get_info()
-        select_4t()
-    else
-        quit_battle()
-    end
-    
+    quit_battle()
     --]]--
 end
+
 
