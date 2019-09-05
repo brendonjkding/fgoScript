@@ -34,17 +34,11 @@ function init()
     red_g=0x18
     red_b=0x18
 
---战斗结束取色
-end_x=643
-end_y=125
-end_r=0xcf
-end_g=0x93
-end_b=0x10
 
-for i=2,5 do
-    feature_start_y[i]=feature_start_y[i-1]+268
-    feature_end_y[i]=feature_end_y[i-1]+268
-end
+    for i=2,5 do
+        feature_start_y[i]=feature_start_y[i-1]+268
+        feature_end_y[i]=feature_end_y[i-1]+268
+    end
 end
 
 --模糊比较两个点
@@ -265,7 +259,7 @@ function buff()
     mSleep(35);
     touchUp(4)
 
-    mSleep(8082);
+    mSleep(10082);
     touchDown(2, 122, 934)
     mSleep(51);
     touchUp(2)
@@ -593,28 +587,26 @@ function main()
         shuffled=true
         get_info()
         need_shuffle=select_3t()
+        if need_shuffle then
+            select_cba(6)
+        end
     end
-    if need_shuffle then
-        select_cba(6)
-    end
-
 
     ----------------------4t
-    mSleep(10000)
+    mSleep(8000)
     --
 
     --4t选卡
 
-    if not battle_ended() then
+    while not battle_ended() do
         --选卡
         click_attack()
-
         get_info()
-
         need_shuffle=select_4t()
         if need_shuffle then
             if not shuffled then
                 shuffle()
+                shuffled=true
                 get_info()
                 need_shuffle=select_4t()
                 if need_shuffle then
@@ -624,20 +616,9 @@ function main()
                 select_cba(0)
             end
         end
-    else
-        quit_battle()
+        mSleep(8000)
     end
-    ------------------------
-    mSleep(10000)
-    if not battle_ended() then
-        --选卡
-        click_attack()
-        get_info()
-        select_4t()
-    else
-        quit_battle()
-    end
-    
+    quit_battle()
     --]]--
 end
 
