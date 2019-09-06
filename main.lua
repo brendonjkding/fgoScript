@@ -1,5 +1,11 @@
 UI = {
-    { 'DropList{狂兰|阿塔}', 'dashou', '选择打手' }
+    { 'DropList{狂兰|阿塔|手动}', 'dashou', '选择打手' },
+    { 'InputBox{}',             'skill_serial_1',    '1t技能：' },
+    { 'InputBox{}',             'skill_serial_2',    '2t技能：' },
+    { 'InputBox{}',             'skill_serial_3',    '3t技能：' },
+    { 'InputBox{}', 'np_index_1','1t宝具'},
+    { 'InputBox{}', 'np_index_2','2t宝具'},
+    { 'InputBox{}', 'np_index_3','3t宝具'}
 }
 dofile("/var/touchelf/scripts/lib_fgo.lua")
 
@@ -7,16 +13,29 @@ dofile("/var/touchelf/scripts/lib_fgo.lua")
 
 
 function main()
+    skill_serial_1="9 8 7b 1"
+    skill_serial_2="2"
+    skill_serial_3="4 5"
+    np_index_1="1"
+    np_index_2="1"
+    np_index_3="2"
+    
+    init()
+    
     if dashou=="狂兰" then
         dofile("/var/touchelf/scripts/lib_ber.lua")
     elseif dashou=="阿塔" then
         dofile("/var/touchelf/scripts/lib_ata.lua")
+    else
+        init_m()
+        buff_manual()
+        return
     end
     
     is_debug=false
     need_skip=false
 
-    init()
+    
     init2()
 
     shuffled=false
