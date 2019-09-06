@@ -221,7 +221,12 @@ function select_3t(is_debug)
             end
             index[2]=6
         else
-            index[1]=6
+            if has_cba_b then
+                index[2]=6
+            else
+                index[1]=6
+            end
+            
         end
     else
         if is_debug then
