@@ -431,7 +431,7 @@ function get_card_info()
 end
 
 --判断打手卡和颜色
-function get_ata_info()
+function get_dashou_info()
     for i=1,5 do
         if is_dashou[i]==true then
             if color[i]=="green" then
@@ -451,7 +451,7 @@ end
 function get_info()
     info_init()
     get_card_info()
-    get_ata_info()
+    get_dashou_info()
 end
 
 

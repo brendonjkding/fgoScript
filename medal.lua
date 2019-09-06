@@ -429,7 +429,7 @@ function get_card_info()
 end
 
 --判断打手卡和颜色
-function get_ata_info()
+function get_dashou_info()
     for i=1,5 do
         if is_dashou[i]==true then
             if color[i]=="green" then
@@ -449,7 +449,7 @@ end
 function get_info()
     info_init()
     get_card_info()
-    get_ata_info()
+    get_dashou_info()
 end
 
 
@@ -565,7 +565,7 @@ function main()
     rotateScreen(0);
 
 
-    buff()--一二面
+    --buff()--一二面
 
     shuffled=false
 
@@ -574,11 +574,11 @@ function main()
     get_info()
 
 
-    --notifyMessage(string.format("%s %s, %s %s, %s %s, %s %s, %s %s, %d",is_ata[1],color[1],is_ata[2],color[2],is_ata[3],color[3],is_ata[4],color[4],is_ata[5],color[5],count),3000);
-    --notifyMessage(string.format("%d %d %d",b_num,a_num,q_num),3000);
+    notifyMessage(string.format("%s %s, %s %s, %s %s, %s %s, %s %s, %d",is_dashou[1],color[1],is_dashou[2],color[2],is_dashou[3],color[3],is_dashou[4],color[4],is_dashou[5],color[5],count),3000);
+    notifyMessage(string.format("%d %d %d",b_num,a_num,q_num),3000);
 
 
-    ----[[
+    --[[
     --3t选卡
     local need_shuffle=select_3t()
     ----[[
@@ -593,7 +593,7 @@ function main()
     end
 
     ----------------------4t
-    mSleep(8000)
+    mSleep(10000)
     --
 
     --4t选卡
@@ -619,7 +619,7 @@ function main()
         mSleep(8000)
     end
     quit_battle()
-    --]]--
+    ]]--
 end
 
 
