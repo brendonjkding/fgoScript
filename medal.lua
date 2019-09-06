@@ -1,108 +1,61 @@
---[[
-    制作：面包
-    本脚本假定你启用了游戏蜂窝的七倍加速
-    适用iphone8屏幕大小
-    适用于：阿塔、cba、cba。充能衣服。我本人用于刷勋章。
-    
-    
-]]--
-function init()
--- 适用屏幕参数
-    SCREEN_RESOLUTION="750x1334";
-    SCREEN_COLOR_BITS=32;
---指令卡选择坐标
-    card_x={222,222,222,222,222,542}--1,2,3,4,5,np
-    card_y={150,400,680,940,1200,454}--266
-
-
-
-
---阿塔取色 眼睛
+dofile("/var/touchelf/scripts/lib_fgo.lua")
+--打手取色信息
+function init2()
+    --阿塔取色 眼睛
     feature_start_x=229
     feature_start_y={82}
     feature_end_x=300
     feature_end_y={143}
-
---卡色取色坐标 卡上不被英灵挡住的点
-    color_x=252
-    color_y={72,338,604,873,1145}
-
-    blue_r=0x16
-    blue_g=0x45
-    blue_b=0xa0
-    red_r=0x9d
-    red_g=0x18
-    red_b=0x18
-
-
     for i=2,5 do
         feature_start_y[i]=feature_start_y[i-1]+268
         feature_end_y[i]=feature_end_y[i-1]+268
     end
 end
 
---模糊比较两个点
-function compare_color_point(x,y,r,g,b,sim)
-    sim=20
-    local lr,lg,lb;
-    lr,lg,lb = getColorRGB(x,y);
-    ----[[
-    if math.abs(lr-r) > sim then
-        return false;
+
+--色卡判断
+function get_card_info()
+    for i=1,5 do
+        x, y = findMultiColorInRegionFuzzy({ 0xFEEDCB, -2, 10, 0xFEECD5, 8, 4, 0x339D00, 19, -1, 0xE3D9B7, 20, 17, 0x1F7A5D }, 80, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            is_dashou[i]=true   -- 点击那个点
+        else
+            is_dashou[i]=false
+        end
+        color[i]=get_color(i)
     end
-    if math.abs(lg-g) > sim then
-        return false;
-    end
-    if math.abs(lb-b) > sim then
-        return false;
-    end
-    return true;
+
 end
---判断第i张卡的颜色
-function get_color(i)
-    if compare_color_point(color_x,color_y[i],blue_r,blue_g,blue_b) then
-        return "blue"
+function main()
+    is_debug=false
+    need_skip=false
+    
+    init()
+    init2()
+    
+    shuffled=false
+    
+    --1t 2t
+    buff(is_debug,need_skip)
+
+    --3t
+    buff_3t(12000,is_debug)---等待时间
+    
+    --4t...
+    buff_4t(8000,is_debug)
+    
+    if not is_debug then
+        quit_battle()
+        notifyMessage("制作：面包")
     end
-    if compare_color_point(color_x,color_y[i],red_r,red_g,red_b) then
-        return "red"
-    end
-    return "green"
+    
 end
-
-
-
---根据序号选卡
-function select_card(a,b,c)
-    a_x=card_x[a]
-    a_y=card_y[a]
-    b_x=card_x[b]
-    b_y=card_y[b]
-    c_x=card_x[c]
-    c_y=card_y[c]
-
-
-    mSleep(600);
-    touchDown(5, a_x, a_y)
-    mSleep(33);
-    touchMove(5, a_x, a_y)
-    mSleep(34);
-    touchUp(5)
-
-    mSleep(551);
-    touchDown(3, b_x, b_y)
-    mSleep(33);
-    touchMove(3, b_x, b_y)
-    mSleep(33);
-    touchUp(3)
-
-    mSleep(217);
-    touchDown(4, c_x, c_y)
-    mSleep(49);
-    touchUp(4)
-end
-
 --一二面的死操作
-function buff()
+function buff(is_debug,need_skip)
+    if is_debug or need_skip then
+        return
+    end
+    
     mSleep(890);
     touchDown(4, 278, 842)
     mSleep(82);
@@ -284,342 +237,3 @@ function buff()
 
     mSleep(1000);
 end
-
---卡信息初始化
-function info_init()
-    used={false,false,false,false,false}
-    q_index={}
-    a_index={}
-    b_index={}
-    q_num=0
-    a_num=0
-    b_num=0
-    count=0
-
-    is_dashou={}
-    color={}
-end
---有非打手红卡
-function has_cba_b()
-    local temp=false
-    for i=1,5 do
-        if is_dashou[i]==false and color=="red" then
-            temp=true
-            break
-        end
-    end
-    return temp
-end
---
-function choose_first()
-    if index[1]~=0 then
-        return
-    end
-
-    local x=1
-    for i=1,5 do
-        if not used[i] and color[i]=="red" and not is_dashou[i] then
-            index[x]=i
-            used[i]=true
-            return
-        end
-    end
-    for i=1,5 do
-        if not used[i] and color[i]=="red" then
-            index[x]=i
-            used[i]=true
-            return
-        end
-    end
-
-end
-
-
---决定x号卡
-function choose_card(x)
-    if q_num>0 then
-        if not used[q_index[q_num]] then
-            index[x]=q_index[q_num]
-            used[q_index[q_num]]=true
-            q_num=q_num-1
-            return
-        end
-    elseif b_num>0 then
-        if not used[b_index[b_num]] then
-            index[x]=b_index[b_num]
-            used[b_index[b_num]]=true
-            b_num=b_num-1
-            return
-        end
-    elseif a_num>0 then
-        if not used[a_index[a_num]] then
-            index[x]=a_index[a_num]
-            used[a_index[a_num]]=true
-            a_num=a_num-1
-            return
-        end
-    else
-        for i=1,5 do
-            if not used[i] then
-                index[x]=i
-                used[i]=true
-                return
-            end
-        end
-    end
-
-end
-
---判断三面该出什么卡
-function select_3t()
-    if count==0 then
-        return 1
-    end
-    index={0,0,0}
-
-    if count>=2 then
-        if b_num==1 then--有红
-            index[1]=b_index[b_num]
-            b_num=b_num-1
-            used[index[1]]=true
-
-            index[2]=6
-        else
-            index[1]=6
-        end
-    elseif count==1 then
-        if b_num==1 then
-            if has_cba_b==false then--有红没cba红
-                index[1]=b_index[b_num]
-                b_num=b_num-1
-                used[index[1]]=true
-            end
-
-        end
-        index[2]=6
-    else
-        return true
-    end
-    if count==1 then
-        choose_first()
-    end
-    for i=3,1,-1 do
-        if index[i]==0 then
-            choose_card(i)
-        end
-    end
-    --notifyMessage(string.format("%d %d %d",index[1],index[2],index[3]))
-    select_card(index[1],index[2],index[3])
-    return false
-
-end
-
---判断卡
-function get_card_info()
-    for i=1,5 do
-        x, y = findMultiColorInRegionFuzzy({ 0xFEEDCB, -2, 10, 0xFEECD5, 8, 4, 0x339D00, 19, -1, 0xE3D9B7, 20, 17, 0x1F7A5D }, 80, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            is_dashou[i]=true   -- 点击那个点
-        else
-            is_dashou[i]=false
-        end
-        color[i]=get_color(i)
-    end
-
-end
-
---判断打手卡和颜色
-function get_dashou_info()
-    for i=1,5 do
-        if is_dashou[i]==true then
-            if color[i]=="green" then
-                q_num=q_num+1
-                q_index[q_num]=i
-            elseif color[i]=="blue" then
-                a_num=a_num+1
-                a_index[a_num]=i
-            else
-                b_num=b_num+1
-                b_index[b_num]=i
-            end
-            count=count+1
-        end
-    end
-end
-function get_info()
-    info_init()
-    get_card_info()
-    get_dashou_info()
-end
-
-
---洗牌
-function shuffle()
-    --返回
-    mSleep(1184);
-    touchDown(4, 35, 1253)
-    mSleep(83);
-    touchUp(4)
-
-    mSleep(1184);
-    touchDown(4, 426, 1254)
-    mSleep(83);
-    touchUp(4)
-
-    mSleep(685);
-    touchDown(1, 426, 1132)
-    mSleep(66);
-    touchUp(1)
-
-    --选卡
-    mSleep(685);
-    touchDown(3, 88, 1164)
-    mSleep(64);
-    touchUp(3)
-
-    mSleep(2000)
-end
-
-function quit_battle()
-    mSleep(1184);
-    touchDown(4, 42, 1143)
-    mSleep(83);
-    touchUp(4)
-    
-    mSleep(1184);
-    touchDown(4, 42, 1143)
-    mSleep(83);
-    touchUp(4)
-    
-    mSleep(1184);
-    touchDown(4, 42, 1143)
-    mSleep(83);
-    touchUp(4)
-end
-
---4t选卡
-function select_4t()
-    if count==0 then
-        return 1
-    end
-    index={0,0,0}
-    if count>=3 then
-        if b_num>=1 then--有红
-            index[1]=b_index[b_num]
-            b_num=b_num-1
-            used[index[1]]=true
-        end
-    elseif count>=1 then--1 2
-        if b_num==1 then--有红
-            if has_cba_b==false then--有红没cba红
-                index[1]=b_index[b_num]
-                b_num=b_num-1
-                used[index[1]]=true
-            end
-        end
-
-    else
-        return true
-    end
-    if count<=2 then
-        choose_first()
-    end
-    for i=3,1,-1 do
-        if index[i]==0 then
-            choose_card(i)
-        end
-    end
-    --notifyMessage(string.format("%d %d %d",index[1],index[2],index[3]))
-    select_card(index[1],index[2],index[3])
-    return false
-
-end
-function select_cba(x)
-    index={x,0,0}
-    for i=3,1,-1 do
-        if index[i]==0 then
-            choose_card(i)
-        end
-    end
-    select_card(index[1],index[2],index[3])
-end
-
-function battle_ended()
-    x, y = findMultiColorInRegionFuzzy({ 0x121014, 2, 9, 0xE9BA24, 1, 16, 0xE3B51E, -12, 16, 0x131215, 13, 16, 0x131115 }, 90, 541, 79, 566, 95);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        return true
-    end
-    return false
-end
-
-function click_attack()
-    mSleep(1000);
-    touchDown(3, 88, 1164)
-    mSleep(64);
-    touchUp(3)
-end
-
--- 主入口
-function main()
-    init()
-    rotateScreen(0);
-
-
-    --buff()--一二面
-
-    shuffled=false
-
-    -------------------------------------3t
-    --获取卡信息
-    get_info()
-
-
-    notifyMessage(string.format("%s %s, %s %s, %s %s, %s %s, %s %s, %d",is_dashou[1],color[1],is_dashou[2],color[2],is_dashou[3],color[3],is_dashou[4],color[4],is_dashou[5],color[5],count),3000);
-    notifyMessage(string.format("%d %d %d",b_num,a_num,q_num),3000);
-
-
-    --[[
-    --3t选卡
-    local need_shuffle=select_3t()
-    ----[[
-    if need_shuffle then
-        shuffle()
-        shuffled=true
-        get_info()
-        need_shuffle=select_3t()
-        if need_shuffle then
-            select_cba(6)
-        end
-    end
-
-    ----------------------4t
-    mSleep(10000)
-    --
-
-    --4t选卡
-
-    while not battle_ended() do
-        --选卡
-        click_attack()
-        get_info()
-        need_shuffle=select_4t()
-        if need_shuffle then
-            if not shuffled then
-                shuffle()
-                shuffled=true
-                get_info()
-                need_shuffle=select_4t()
-                if need_shuffle then
-                    select_cba(0)
-                end
-            else
-                select_cba(0)
-            end
-        end
-        mSleep(8000)
-    end
-    quit_battle()
-    ]]--
-end
-
-
