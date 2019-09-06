@@ -28,17 +28,17 @@ function init()
     servant_y["c"]=1011
 
 --卡色取色坐标 卡上不被英灵挡住的点
-    color_x=252
-    color_y={72,338,604,873,1145}
-
-    blue_r=0x16
-    blue_g=0x45
-    blue_b=0xa0
-    red_r=0x9d
-    red_g=0x18
-    red_b=0x18
-
-
+    color_start_x=73
+    color_start_y={54}
+    color_end_x=220
+    color_end_y={232}
+    for i=2,5 do
+        color_start_y[i]=color_start_y[i-1]+268
+        color_end_y[i]=color_end_y[i-1]+268
+    end
+--敌人坐标
+    enemy_x=700
+    enemy_y={47,305,548}
 
 end
 function init_m()
@@ -77,10 +77,12 @@ function compare_color_point(x,y,r,g,b,sim)
 end
 --判断第i张卡的颜色
 function get_color(i)
-    if compare_color_point(color_x,color_y[i],blue_r,blue_g,blue_b) then
+    x, y = findMultiColorInRegionFuzzy({ 0x2F7BFF, 6, 50, 0x5FBCFD, 70, -19, 0x1573FE, 83, 41, 0x4BC4FE, 74, 59, 0x59D3FE }, 80, color_start_x, color_start_y[i], color_end_x, color_end_y[i]) 
+    if x ~= -1 and y ~= -1 then
         return "blue"
     end
-    if compare_color_point(color_x,color_y[i],red_r,red_g,red_b) then
+    x, y = findMultiColorInRegionFuzzy({ 0xFE5612, -7, 33, 0xFD6F1A, 2, 71, 0xFF3A1E, 68, 11, 0xFEE13A, 76, 67, 0xFE6B1F }, 80, color_start_x, color_start_y[i], color_end_x, color_end_y[i]) 
+    if x ~= -1 and y ~= -1 then
         return "red"
     end
     return "green"
@@ -107,16 +109,15 @@ function info_init()
     --是否有cba的红卡
     has_cba_b=false
 end
---获取卡色，区分打手与cba 目前逻辑下因打手而异
+--区分打手与cba 目前逻辑下因打手而异
 function get_card_info()
-    for i=1,5 do
-        color[i]=get_color(i)
-    end
+    
 end
 
 --提取打手卡信息
 function get_dashou_info()
     for i=1,5 do
+        color[i]=get_color(i)
         if is_dashou[i]==true then
             if color[i]=="green" then
                 q_num=q_num+1
@@ -307,6 +308,7 @@ function select_3t(is_debug)
 end
 --3t的操作
 function buff_3t(t,is_debug)
+    click_enemy(big_enemy)
     --获取卡信息
     get_info()
     --调试
@@ -589,6 +591,21 @@ end
         
         mSleep(1000);
     end
+function click_enemy(index)
+    index=tonumber(index)
+    mSleep(1000);
+        touchDown(3, enemy_x, enemy_y[index])
+        mSleep(64);
+        touchUp(3)
+        
+        mSleep(1000);
+    end
+    
+--[[
+    -------------------------------------------------------------------
+    输入信息处理相关函数
+    -------------------------------------------------------------------
+]]--
     function Split(szFullString, szSeparator)  
         local nFindStartIndex = 1  
         local nSplitIndex = 1  

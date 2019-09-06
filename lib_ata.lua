@@ -9,9 +9,9 @@ function init2()
         feature_start_y[i]=feature_start_y[i-1]+268
         feature_end_y[i]=feature_end_y[i-1]+268
     end
-    
+    --选完卡后的等待时间 可根据宝具长度调整
     dalay_1=12000
-    delay_2=8000
+    delay_2=10000
     
 end
 
@@ -25,9 +25,7 @@ function get_card_info()
         else
             is_dashou[i]=false
         end
-        color[i]=get_color(i)
     end
-
 end
 
 --一二面的死操作
