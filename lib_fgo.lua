@@ -99,6 +99,10 @@ function get_dashou_info()
                 b_index[b_num]=i
             end
             count=count+1
+        else
+            if color[i]=="red" then
+                has_cba_b=true
+            end
         end
     end
 end
