@@ -15,7 +15,8 @@ UI = {
 
     { 'TextView{}' },
     { 'TextView{(技能格式：从者1-9，御主10-12，}' },
-    { 'TextView{对象为abc。示例：9 8 7b 1)}' },
+    { 'TextView{对象为abc、mnopqr(换人))}' },
+    { 'TextView{示例：9 8 7b 1)}' },
 
     { 'InputBox{}',             'skill_serial_1',    '1t技能：' },
     { 'InputBox{}',             'skill_serial_2',    '2t技能：' },
