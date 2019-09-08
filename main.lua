@@ -11,7 +11,7 @@ UI = {
     { 'DropList{孔明|cba|梅林}', 'sp', '从者：' },
     { 'TextView{ }' },
 
-    { 'DropList{自定义(在下方输入)|满破宝石狂兰wcba充能衣服|满破宝石阿塔wcba充能衣服}', 'skill_mode', '队伍信息：' },
+    { 'DropList{自定义(在下方输入)|满破宝石狂兰wcba充能衣服|满破宝石阿塔wcba充能衣服|(模板)满破宝石尼托+二号打手+孔明|(模板队(仅)需填写二号打手技能)}', 'skill_mode', '队伍信息：' },
 
     { 'TextView{}' },
     { 'TextView{(技能格式：从者1-9，御主10-12，}' },
@@ -44,78 +44,38 @@ dofile("/var/touchelf/scripts/lib_fgo.lua")
 function main()
     --[[
     times=1
+    apple="不吃"
     is_speed_up="是"
+    
     sp_mode="手动"
-    dashou="通用"
+    mc="午餐"
+    sp="梅林"
+    
     skill_mode="手动"
-    skill_serial_1="7a"--9 8 7b 1
-    skill_serial_2="8 9"--2
-    skill_serial_3=""--4 5
+    skill_serial_1="7a"
+    skill_serial_2="8 9"
+    skill_serial_3=""
     np_index_1="1"
     np_index_2="1"
     np_index_3="2"
+    
     big_enemy="2"
     mode_="红卡"
     shuffled_="否"
+    dashou="通用"
     ]]--
 
     init()
-
     
-
-    if skill_mode=="满破宝石狂兰wcba充能衣服" then
-        init_ber()
-    elseif skill_mode=="满破宝石阿塔wcba充能衣服" then
-        init_ata()
-    else
-        --[[
-        
-        skill_serial_1="1 7"--9 8 7b 1
-        skill_serial_2="2 8"--2
-        skill_serial_3="4 5 6 9b 11b"--4 5
-        np_index_1="1"
-        np_index_2="1"
-        np_index_3="2"
-        big_enemy="2"
-        mode_="红卡"
-        shuffled_="否"
-        ]]--
-
-    end
-    init_m()
-
-
-
-    is_debug=false
-    need_skip=false
-
-
-    --init2()
-
-    --
-    times=tonumber(times)
     for ii=1,times do
         enter_mission()
-
-        current_turn=get_current_turn()
-        --notifyMessage(current_turn)
-        --1t 2t
-
-        turn_1(is_debug,need_skip)
-
-
-        --3t
-
+        
+        turn_1_2(is_debug,need_skip)
         turn_3(is_debug)
+        turn_4()
 
-        --4t...
-        turn_4(is_debug)
-
-
-        if not is_debug then
-            quit_battle()
-            notifyMessage("制作：面包")
-        end  
+        quit_battle()
         wait_exit_mission()
     end
+    notifyMessage("感谢使用")
 end
