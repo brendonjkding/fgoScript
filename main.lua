@@ -1,30 +1,40 @@
 UI = {
     { 'TextView{记得换好队伍哦！}' },
-    { 'DropList{通用|狂兰|阿塔}', 'dashou', '选择打手以识别：' },
-    { 'DropList{擦汗|午餐}', 'mc', '礼装选择：' },
-    { 'DropList{孔明|cba|梅林}', 'sp', '助战选择：' },
-    { 'InputBox{2}',             'times',    '打本次数：' },
-    { 'DropList{手动|狂兰|阿塔}', 'skill_mode', '选择技能模式：' },
+    { 'InputBox{1}',             'times',    '打本次数：' },
+    { 'DropList{不吃|金|银|彩}',             'apple',    '吃苹果：' },
+    { 'DropList{否(有待测试)|是}', 'is_speed_up', '是否开启了蜂窝6倍加速：' },
+
     { 'TextView{ }' },
-    { 'TextView{手动模式请填写以下信息}' },
-    { 'TextView{释放的技能：从者1-9，御主10-}' },
-    { 'TextView{12，对象为abc，空格隔开。}' },
-    { 'TextView{示例：9 8 7b 1}' },
+    { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
+    { 'TextView{如手动，则不用管接下来两项}' },
+    { 'DropList{擦汗|午餐|qp(任意从者)}', 'mc', '礼装：' },
+    { 'DropList{孔明|cba|梅林}', 'sp', '从者：' },
+    { 'TextView{ }' },
+
+    { 'DropList{自定义(在下方输入)|满破宝石狂兰wcba充能衣服|满破宝石阿塔wcba充能衣服}', 'skill_mode', '队伍信息：' },
+
+    { 'TextView{}' },
+    { 'TextView{(技能格式：从者1-9，御主10-12，}' },
+    { 'TextView{对象为abc。示例：9 8 7b 1)}' },
+
     { 'InputBox{}',             'skill_serial_1',    '1t技能：' },
     { 'InputBox{}',             'skill_serial_2',    '2t技能：' },
     { 'InputBox{}',             'skill_serial_3',    '3t技能：' },
-    { 'TextView{选择释放的宝具}' },
+    { 'TextView{}' },
+    { 'TextView{每t释放的宝具：}' },
     { 'DropList{1|2|3}', 'np_index_1','1t宝具：'},
     { 'DropList{1|2|3}', 'np_index_2','2t宝具：'},
     { 'DropList{1|2|3}', 'np_index_3','3t宝具：'},
+    { 'TextView{}' },
     { 'DropList{1|2|3}', 'big_enemy', '三面高血量敌人序号(1-3)：' },
-    { 'DropList{绿卡|红卡}', 'mode_', '队伍性质：' },
+    { 'DropList{绿卡|红卡|蓝卡}', 'mode_', '队伍性质：' },
     { 'DropList{否|是|}', 'shuffle_cloth', '是否洗牌衣服：' },
-    { 'TextView{记得换好队伍哦！}' }
-    
-    
-    
-    
+    { 'TextView{记得换好队伍哦！}' },
+    { 'TextView{}' },
+    { 'TextView{下面的不用管}' },
+    { 'DropList{通用|狂兰|阿塔}', 'dashou', '选择打手以识别：' }
+
+
 }
 dofile("/var/touchelf/scripts/lib_fgo.lua")
 
@@ -33,23 +43,29 @@ dofile("/var/touchelf/scripts/lib_fgo.lua")
 
 function main()
     --[[
+    times=1
+    is_speed_up="是"
+    sp_mode="手动"
     dashou="通用"
     skill_mode="手动"
-
+    skill_serial_1="7a"--9 8 7b 1
+    skill_serial_2="8 9"--2
+    skill_serial_3=""--4 5
+    np_index_1="1"
+    np_index_2="1"
+    np_index_3="2"
+    big_enemy="2"
+    mode_="红卡"
+    shuffled_="否"
     ]]--
 
     init()
 
-    if dashou=="狂兰" then
-        color_points={ 0x181830, 6, -5, 0x504477, 13, -11, 0xFD0051, 25, -13, 0x444477, 20, -22, 0xF9004C }
-    elseif dashou=="阿塔" then
-        color_points={ 0xFEEDCB, -2, 10, 0xFEECD5, 8, 4, 0x339D00, 19, -1, 0xE3D9B7, 20, 17, 0x1F7A5D }
+    
 
-    end
-
-    if skill_mode=="狂兰" then
+    if skill_mode=="满破宝石狂兰wcba充能衣服" then
         init_ber()
-    elseif skill_mode=="阿塔" then
+    elseif skill_mode=="满破宝石阿塔wcba充能衣服" then
         init_ata()
     else
         --[[
@@ -81,14 +97,19 @@ function main()
     for ii=1,times do
         enter_mission()
 
+        current_turn=get_current_turn()
+        --notifyMessage(current_turn)
         --1t 2t
-        buff(is_debug,need_skip)
+
+        turn_1(is_debug,need_skip)
+
 
         --3t
-        buff_3t(is_debug)
+
+        turn_3(is_debug)
 
         --4t...
-        buff_4t(is_debug)
+        turn_4(is_debug)
 
 
         if not is_debug then
