@@ -48,15 +48,15 @@ function init()
 --打手取色
     feature_start_x=171
     feature_start_y={24}
-    feature_end_x=357
-    feature_end_y={256}
+    feature_end_x=459
+    feature_end_y={280}
     for i=2,5 do
         feature_start_y[i]=feature_start_y[i-1]+268
         feature_end_y[i]=feature_end_y[i-1]+268
     end
     --技能释放延迟
     if is_speed_up=="是" then
-        delay_=850
+        delay_=1300
     else
         delay_=3500
     end
@@ -130,7 +130,7 @@ function init()
     end
     times=tonumber(times)
 
-
+    init_ob()
 
 
     --Debug
@@ -138,6 +138,7 @@ function init()
     logDebug("------------------------------------------------------------")
     is_debug=false
     need_skip=false
+
 end
 
 function init_ata()
@@ -166,15 +167,10 @@ function init_ber()
 
 end
 function init_nituo()
-    if skill_serial_1==nil then
-        skill_serial_1=""
-    end
-    if skill_serial_2==nil then
-        skill_serial_2=""
-    end
-    if skill_serial_3==nil then
-        skill_serial_3=""
-    end
+    skill_serial_1=skill_serial_1 or ""
+    skill_serial_2=skill_serial_2 or ""
+    skill_serial_3=skill_serial_3 or ""
+
     skill_serial_1="9 8 7b 1 "..skill_serial_1
     skill_serial_2="2 "..skill_serial_2
 
@@ -187,6 +183,21 @@ function init_nituo()
     shuffle_cloth="否"
 end
 
+function init_ob()
+    Card={index=0,priority=0}
+    Card.__index=Card 
+    Card.__lt=function(a,b)return a.priority>b.priority end
+    function Card:new(i,p)
+        local self={}
+        setmetatable(self, Card)
+        self.index=i
+        self.priority=p
+        return self
+    end
+
+
+
+end
 --[[
     -------------------------------------------------------------------
     获取卡信息相关函数
@@ -195,7 +206,6 @@ end
 
 --判断第i张卡的颜色
 function get_color(i)
-
     x, y = findMultiColorInRegionFuzzy({ 0x357FFE, -2, 48, 0x56AFFE, 23, 20, 0xB0834A, 52, 13, 0xFEF9CA, 75, -31, 0x075CFE, 61, 69, 0x55C7FE }, 80, color_start_x, color_start_y[i], color_end_x, color_end_y[i]) 
     if x ~= -1 and y ~= -1 then
         return "blue"
@@ -223,8 +233,11 @@ function info_init()
 
     --是否为打手卡
     is_dashou={true,true,true,true,true}
+    restrain={false,false,false,false,false}
+    weak={false,false,false,false,false}
     --卡色
     color={}
+    cards={Card:new(1,10),Card:new(2,10),Card:new(3,10),Card:new(4,10),Card:new(5,10)}
     --是否有cba的红卡
     has_sup_b=false
 end
@@ -254,6 +267,14 @@ function get_card_info()
                 end
                 --]]--
             until true
+            x, y = findMultiColorInRegionFuzzy({ 0xC32823, 1, 13, 0xDD3B35, 0, 8, 0xC11816, 11, 11, 0xF2B16F, 10, 0, 0xF0AF6C, 16, 5, 0xF9E991, 13, 5, 0xF0C567 }, 90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+            if x ~= -1 and y ~= -1 then  -- 如果找到了
+                restrain[i]=true
+            end
+            x, y = findMultiColorInRegionFuzzy({ 0x49DAFB, 2, 0, 0x94F5FE, 11, -6, 0x4993FB, 18, -6, 0x61CEFD, 25, -6, 0x77F3FC, 23, -3, 0x43B2D5, 12, -3, 0x2C64BA }, 90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+            if x ~= -1 and y ~= -1 then  -- 如果找到了
+                weak[i]=true
+            end
         end
     else
 
@@ -270,26 +291,68 @@ end
 
 --提取打手卡信息
 function get_dashou_info()
+    --色卡权重
+    if mode=="green" and current_turn<=3 then
+        q_p=3
+        b_p=2
+        a_p=1
+    elseif mode=="blue" then
+        a_p=3
+        b_p=2
+        q_p=1
+    else
+        b_p=3
+        a_p=2
+        q_p=1
+    end
+
+
+
     for i=1,5 do
         color[i]=get_color(i)
-        if is_dashou[i]==true then
-            if color[i]=="green" then
+
+        if is_dashou[i] then
+            if not weak[i] then
+                cards[i].priority=100
+            else
+                cards[i].priority=1
+            end
+
+        end
+
+        if restrain[i] then
+            cards[i].priority=cards[i].priority*2
+        end
+        if color[i]=="green" then
+            if is_dashou[i] then
                 q_num=q_num+1
                 q_index[q_num]=i
-            elseif color[i]=="blue" then
+                count=count+1
+            end
+            cards[i].priority=cards[i].priority+q_p
+
+        elseif color[i]=="blue" then
+            if is_dashou[i] then
                 a_num=a_num+1
                 a_index[a_num]=i
-            else
+                count=count+1
+            end
+            cards[i].priority=cards[i].priority+a_p
+
+        else
+            if is_dashou[i] then
+
                 b_num=b_num+1
                 b_index[b_num]=i
+                count=count+1
             end
-            count=count+1
-        else
-            if color[i]=="red" then
-                has_sup_b=true
-            end
+            cards[i].priority=cards[i].priority+b_p
+
+
         end
+
     end
+
 end
 function get_info()
     keepScreen(true)
@@ -297,8 +360,8 @@ function get_info()
     get_card_info()
     get_dashou_info()
     keepScreen(false)
-    logDebug(string.format("打手:%s %s %s %s %s, 颜色:%s %s %s %s %s, b:%d a:%d q:%d count:%d      ",is_dashou[1],is_dashou[2],is_dashou[3],is_dashou[4],is_dashou[5],color[1],color[2],color[3],color[4],color[5],b_num,a_num,q_num,count))
-
+    logDebug(string.format("\n打手:%s %s %s %s %s, \n颜色:%s %s %s %s %s, \n克制:%s %s %s %s %s,\n被克制:%s %s %s %s %s,\n优先:%d %d %d %d %d     \nb:%d a:%d q:%d count:%d      ",is_dashou[1],is_dashou[2],is_dashou[3],is_dashou[4],is_dashou[5],color[1],color[2],color[3],color[4],color[5],restrain[1],restrain[2],restrain[3],restrain[4],restrain[5],weak[1],weak[2],weak[3],weak[4],weak[5],cards[1].priority,cards[2].priority,cards[3].priority,cards[4].priority,cards[5].priority,b_num,a_num,q_num,count))
+    table.sort(cards)
 end
 
 
@@ -335,150 +398,13 @@ function choose_first()
     end
 
 end
---蓝卡队优先级
-function choose_card_blue(x)
-    if a_num>0 then
-        if not used[a_index[a_num]] then
-            index[x]=a_index[a_num]
-            used[a_index[a_num]]=true
-            a_num=a_num-1
-            return
-        end
-
-    elseif q_num>0 then
-        if not used[q_index[q_num]] then
-            index[x]=q_index[q_num]
-            used[q_index[q_num]]=true
-            q_num=q_num-1
-            return
-        end
-    elseif b_num>0 then
-        if not used[b_index[b_num]] then
-            index[x]=b_index[b_num]
-            used[b_index[b_num]]=true
-            b_num=b_num-1
-            return
-        end
-    end
+--
+function choose_card_priority(x)
     for i=1,5 do
-        if not used[i] and color[i]=="blue" then
-            index[x]=i
-            used[i]=true
+        if not used[cards[i].index] then
+            index[x]=cards[i].index
+            used[cards[i].index]=true
             return
-        end
-    end
-    for i=1,5 do
-        if not used[i] and color[i]=="red" then
-            index[x]=i
-            used[i]=true
-            return
-        end
-    end
-    for i=1,5 do
-        if not used[i] and color[i]=="green" then
-            index[x]=i
-            used[i]=true
-            return
-        end
-    end
-end
-
-
-----绿卡队优先级
-function choose_card_green(x)
-    if q_num>0 then
-        if not used[q_index[q_num]] then
-            index[x]=q_index[q_num]
-            used[q_index[q_num]]=true
-            q_num=q_num-1
-            return
-        end
-    elseif b_num>0 then
-        if not used[b_index[b_num]] then
-            index[x]=b_index[b_num]
-            used[b_index[b_num]]=true
-            b_num=b_num-1
-            return
-        end
-    elseif a_num>0 then
-        if not used[a_index[a_num]] then
-            index[x]=a_index[a_num]
-            used[a_index[a_num]]=true
-            a_num=a_num-1
-            return
-        end
-    else
-        for i=1,5 do
-            if not used[i] and color[i]=="green" then
-                index[x]=i
-                used[i]=true
-                return
-            end
-        end
-        for i=1,5 do
-            if not used[i] and color[i]=="red" then
-                index[x]=i
-                used[i]=true
-                return
-            end
-        end
-        for i=1,5 do
-            if not used[i] and color[i]=="blue" then
-                index[x]=i
-                used[i]=true
-                return
-            end
-        end
-    end
-
-end
---红卡队优先级
-function choose_card_red(x)
-
-
-    if b_num>0 then
-        if not used[b_index[b_num]] then
-            index[x]=b_index[b_num]
-            used[b_index[b_num]]=true
-            b_num=b_num-1
-            return
-        end
-    elseif a_num>0 then
-        if not used[a_index[a_num]] then
-            index[x]=a_index[a_num]
-            used[a_index[a_num]]=true
-            a_num=a_num-1
-            return
-        end
-    elseif q_num>0 then
-        if not used[q_index[q_num]] then
-            index[x]=q_index[q_num]
-            used[q_index[q_num]]=true
-            q_num=q_num-1
-            return
-        end
-    else
-
-        for i=1,5 do
-            if not used[i] and color[i]=="red" then
-                index[x]=i
-                used[i]=true
-                return
-            end
-        end
-        for i=1,5 do
-            if not used[i] and color[i]=="blue" then
-                index[x]=i
-                used[i]=true
-                return
-            end
-        end
-        for i=1,5 do
-            if not used[i] and color[i]=="green" then
-                index[x]=i
-                used[i]=true
-                return
-            end
         end
     end
 end
@@ -540,7 +466,8 @@ function select_np(t,is_debug)
 
     for i=3,1,-1 do
         if index[i]==0 then
-
+            choose_card_priority(i)
+            --[[
             if mode=="green" then
                 choose_card_green(i)
             elseif mode=="red" then
@@ -548,14 +475,14 @@ function select_np(t,is_debug)
             else
                 choose_card_blue(i)
             end
-
+            ]]--
         end
     end
 
 
     logDebug(string.format("select_np: %d %d %d\n",index[1],index[2],index[3]))
     if is_debug then
-        os.exit()
+        return
     end
     select_card(index[1],index[2],index[3])
 
@@ -565,7 +492,7 @@ function select_np(t,is_debug)
 
 end
 --不带宝具选卡
-function select_normal(t)
+function select_normal(t,is_debug)
     index={0,0,0}
     if count>=3 then
         if b_num>=1 then--有红
@@ -591,10 +518,14 @@ function select_normal(t)
 
     for i=3,1,-1 do
         if index[i]==0 then
-            choose_card_red(i)
+            choose_card_priority(i)
+            --choose_card_red(i)
         end
     end
     logDebug(string.format("select_normal: %d %d %d\n",index[1],index[2],index[3]))
+    if is_debug then
+        return
+    end
     select_card(index[1],index[2],index[3])
     return false
 
@@ -609,13 +540,18 @@ function turn_1_2(is_debug,need_skip)
         click_attack()
         get_info()
         select_np(i)
-        wait_attack_end()
+        if battle_ended() then
+            return
+        end
 
         while get_current_turn() ==i do
             click_attack()
             get_info()
             select_normal(i)
-            wait_attack_end()
+            if battle_ended() then
+                return
+            end
+
         end
         current_turn=current_turn+1
 
@@ -627,7 +563,7 @@ function turn_3(is_debug)
     if not is_debug then
         click_enemy(big_enemy)
     end
-    logDebug(string.format("current_turn:%d\n",current_turn))
+    logDebug(string.format("current_turn:%d",current_turn))
     click_skills(3)
     check_np()
     click_attack()
@@ -659,7 +595,7 @@ function turn_4(is_debug)
     end
 
     while not battle_ended() do
-        logDebug(string.format("current_turn:%d\n",current_turn))
+        logDebug(string.format("current_turn:%d",current_turn))
         --attack
         click_attack()
         get_info()
@@ -689,7 +625,7 @@ end
 function select_skill(index,target,target_2)
 
     --选目标间隔
-    local delay_t=300
+    local delay_t=400
     --按御主技能
     if index>=10 then
         touchDown(5, master_skill_x, master_skill_y)
@@ -721,7 +657,7 @@ function select_skill(index,target,target_2)
     if not target_2 then
         b_x=servant_x
         b_y=servant_y[target]
-        click(b_x,b_y)
+        click(b_x,b_y,0)
         mSleep(delay_)
         return
     end
@@ -745,33 +681,11 @@ end
 --素质三连
 function select_card(a,b,c)
     local d=400
-    a_x=card_x[a]
-    a_y=card_y[a]
-    b_x=card_x[b]
-    b_y=card_y[b]
-    c_x=card_x[c]
-    c_y=card_y[c]
 
-
-
-    touchDown(5, a_x, a_y)
-    mSleep(33);
-    touchMove(5, a_x, a_y)
-    mSleep(34);
-    touchUp(5)
-
-    mSleep(d);
-    touchDown(3, b_x, b_y)
-    mSleep(33);
-    touchMove(3, b_x, b_y)
-    mSleep(33);
-    touchUp(3)
-
-    mSleep(d);
-    touchDown(4, c_x, c_y)
-    mSleep(49);
-    touchUp(4)
-
+    click(card_x[a],card_y[a],d)
+    click(card_x[b],card_y[b],d)
+    click(card_x[c],card_y[c],d)
+    
     mSleep(d)
 end
 --点某一回合的技能
@@ -821,33 +735,18 @@ function quit_battle()
         return
     end
     --连点三下右下角
-    mSleep(1184);
-    touchDown(4, 42, 1143)
-    mSleep(83);
-    touchUp(4)
-
-    mSleep(1184);
-    touchDown(4, 42, 1143)
-    mSleep(83);
-    touchUp(4)
-
-    mSleep(1184);
-    touchDown(4, 42, 1143)
-    mSleep(83);
-    touchUp(4)
+    click(42,1143)
+    click(42,1143)
+    click(42,1143)
+    --下一步
+    click(43,1660)
     --不申请
-    mSleep(1184);
-    touchDown(4, 106, 340)
-    mSleep(83);
-    touchUp(4)
+    click(106,340)
+    wait_exit_mission()
 end
 --点击attack进入选卡界面
 function click_attack()
-    mSleep(1000);
-    touchDown(3, 88, 1164)
-    mSleep(64);
-    touchUp(3)
-
+    click(88,1164)
     mSleep(2000);
 end
 
@@ -861,9 +760,7 @@ function click(x,y,t)
     touchDown(3, x, y)
     mSleep(64);
     touchUp(3)
-    if not t then
-        t=2000
-    end
+    t=t or 1500
 
     mSleep(t);
 end
@@ -907,23 +804,42 @@ end
 --当前回合(面)
 function get_current_turn()
     keepScreen(true)
-    x, y = findMultiColorInRegionFuzzy({ 0xE1E1E1, 2, 3, 0xF9F9F8, 3, 5, 0xFEFFFE, -1, 5, 0xEFEFEF, -6, 5, 0xEFEFEF, -11, 5, 0xEFEFEF }, 90, 716, 908, 730, 913);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        keepScreen(false)
-        return 1
-    end
-    x, y = findMultiColorInRegionFuzzy({ 0xE9E9E9, 1, 5, 0xF5F5F5, 1, 8, 0xF3F3F3, -3, 10, 0xF8F8F7, -8, 6, 0xFDFEFD, -15, 0, 0xF7F7F7, -16, 7, 0xE6E6E6 }, 90, 714, 905, 731, 915);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        keepScreen(false)
-        return 2
-    end
-    x, y = findMultiColorInRegionFuzzy({ 0xEFEFEF, 1, 5, 0xF4F4F4, -1, 9, 0xF8F8F7, -7, 4, 0xE8E8E8, -12, 10, 0xF9FAF9, -16, 4, 0xE9E9E9, -14, 0, 0xD7D7D7 }, 90, 714, 905, 731, 915);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        keepScreen(false)
-        return 3
+    if server=="国服" then
+        x, y = findMultiColorInRegionFuzzy({ 0xE1E1E1, 2, 3, 0xF9F9F8, 3, 5, 0xFEFFFE, -1, 5, 0xEFEFEF, -6, 5, 0xEFEFEF, -11, 5, 0xEFEFEF }, 90, 716, 908, 730, 913);
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            keepScreen(false)
+            return 1
+        end
+        x, y = findMultiColorInRegionFuzzy({ 0xE9E9E9, 1, 5, 0xF5F5F5, 1, 8, 0xF3F3F3, -3, 10, 0xF8F8F7, -8, 6, 0xFDFEFD, -15, 0, 0xF7F7F7, -16, 7, 0xE6E6E6 }, 90, 714, 905, 731, 915);
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            keepScreen(false)
+            return 2
+        end
+        x, y = findMultiColorInRegionFuzzy({ 0xEFEFEF, 1, 5, 0xF4F4F4, -1, 9, 0xF8F8F7, -7, 4, 0xE8E8E8, -12, 10, 0xF9FAF9, -16, 4, 0xE9E9E9, -14, 0, 0xD7D7D7 }, 90, 714, 905, 731, 915);
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            keepScreen(false)
+            return 3
+        end
+        --台服
+    else
+        x, y = findMultiColorInRegionFuzzy({ 0xDDDDDD, 4, 0, 0xDDDDDD, 11, 0, 0xDDDDDD, 13, 0, 0xDBDBDB, 13, -3, 0x818181 }, 90, 717, 907, 730, 910);
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            keepScreen(false)
+            return 1
+        end
+        x, y = findMultiColorInRegionFuzzy({ 0xCCCCCC, 0, -7, 0xCDCDCD, 5, -4, 0x888888, 13, 2, 0xEAEAEA, 16, 0, 0xE5E5E5, 12, -6, 0xEFEFEF, 16, -6, 0x878787 }, 90, 715, 905, 731, 914);
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            keepScreen(false)
+            return 2
+        end
+        x, y = findMultiColorInRegionFuzzy({ 0xE2E2E2, -4, 3, 0x959595, 1, 8, 0xF2F2F2, 6, 3, 0x636363, 6, 6, 0xEAEAEA, 10, 7, 0xD5D5D5, 11, -1, 0xCECECE }, 90, 714, 905, 729, 914);
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            keepScreen(false)
+            return 3
+        end
     end
     keepScreen(false)
-    return 4
+    logDebug("error get_current_turn")
 end
 --等待选好礼装进入一面
 function wait_battle_start()
@@ -959,16 +875,6 @@ function battle_ended()
         mSleep(5000)
     end
 end
---等待攻击完毕
-function wait_attack_end()
-    while true do
-        x, y = findMultiColorInRegionFuzzy({ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213);
-        if x ~= -1 and y ~= -1 then  -- attack
-            return false
-        end
-        mSleep(5000)
-    end
-end
 
 --进本
 function enter_mission()
@@ -993,7 +899,7 @@ end
 --等待出本
 function wait_exit_mission()
     while true do
-        x, y = findMultiColorInRegionFuzzy({ 0xCECED6, -6, 10, 0x0D0D0E, -4, 14, 0xC2CAD6, -4, 18, 0x13182D, -3, 23, 0xCAD0DB, -4, 28, 0x27335A, -4, 34, 0xCDD1D9 }, 90, 35, 1200, 41, 1234);
+        x, y = findMultiColorInRegionFuzzy({ 0xE8C17B, 18, 0, 0xFBF8F4, 17, -6, 0xF5E9DC, 17, 8, 0xF7E7D3, 26, 8, 0xF0EDA0, 27, 1005, 0xD6D6D8, 29, 1129, 0xD0D2D3 }, 90, 9, 166, 38, 1301);
         if x ~= -1 and y ~= -1 then  -- 如果找到了
             return
         end
@@ -1093,6 +999,13 @@ end
 --刷新助战
 function refresh_support()
     click(612,881)
+    x, y = findMultiColorInRegionFuzzy({ 0x000000, -7, 13, 0xD9DAD9, 5, 18, 0xDADBDA, -3, 26, 0x000000, 1, 33, 0xD7D7D7 }, 90, 157, 646, 169, 679);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        mSleep(8000)
+        click(169,672)
+        refresh_support()
+        return
+    end
     click(162,870)
 end
 --无效
@@ -1107,6 +1020,7 @@ function need_apple()
     end
     return false
 end
+--select_np失败时点返回
 function check_select()
     mSleep(800)
     x, y = findMultiColorInRegionFuzzy({ 0x00AFE0, 0, 23, 0xE0F2F8, 0, 29, 0x329AC8, 0, 36, 0xEDFAFF, 0, 41, 0xFEFFFE, 1, 54, 0x1C5495, 1, 57, 0xFDFEFF }, 90, 37, 1205, 38, 1262);

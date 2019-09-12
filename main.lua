@@ -1,8 +1,9 @@
 UI = {
-    { 'TextView{记得换好队伍哦！}' },
+    { 'TextView{记得先换好默认队伍哦！}' },
     { 'InputBox{1}',             'times',    '打本次数：' },
     { 'DropList{不吃|金|银|彩}',             'apple',    '吃苹果：' },
     { 'DropList{否(有待测试)|是}', 'is_speed_up', '是否开启了蜂窝6倍加速：' },
+    { 'DropList{国服|台服}', 'server', '服务器：' },
 
     { 'TextView{ }' },
     { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
@@ -15,7 +16,7 @@ UI = {
 
     { 'TextView{}' },
     { 'TextView{(技能格式：从者1-9，御主10-12，}' },
-    { 'TextView{对象为abc、mnopqr(换人))}' },
+    { 'TextView{对象为abc、mnopqr(换人)}' },
     { 'TextView{示例：9 8 7b 1)}' },
 
     { 'InputBox{}',             'skill_serial_1',    '1t技能：' },
@@ -30,10 +31,11 @@ UI = {
     { 'DropList{1|2|3}', 'big_enemy', '三面高血量敌人序号(1-3)：' },
     { 'DropList{绿卡|红卡|蓝卡}', 'mode_', '队伍性质：' },
     { 'DropList{否|是|}', 'shuffle_cloth', '是否洗牌衣服：' },
-    { 'TextView{记得换好队伍哦！}' },
+    { 'TextView{记得换好默认队伍哦！}' },
     { 'TextView{}' },
-    { 'TextView{下面的不用管}' },
+    { 'TextView{下面的可不用管}' },
     { 'DropList{通用|狂兰|阿塔}', 'dashou', '选择打手以识别：' }
+
 
 
 }
@@ -64,19 +66,22 @@ function main()
     mode_="红卡"
     shuffled_="否"
     dashou="通用"
+    
+    server="国服"
     ]]--
 
     init()
-    
+
     for ii=1,times do
         enter_mission()
-        
+
         turn_1_2(is_debug,need_skip)
-        turn_3(is_debug)
-        turn_4()
+        if not battle_ended() then
+            turn_3(is_debug)
+            turn_4()
+        end
 
         quit_battle()
-        wait_exit_mission()
     end
     notifyMessage("感谢使用")
 end
