@@ -8,7 +8,7 @@ UI = {
     { 'TextView{ }' },
     { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
     { 'TextView{如手动，则不用管接下来两项}' },
-    { 'DropList{所长|新所长|擦汗|午餐|qp(任意从者)}', 'mc', '礼装：' },
+    { 'DropList{无限池|所长|新所长|擦汗|午餐|qp(任意从者)}', 'mc', '礼装：' },
     { 'DropList{孔明|cba|梅林|狐狸}', 'sp', '从者：' },
     { 'TextView{ }' },
 
@@ -24,9 +24,9 @@ UI = {
     { 'InputBox{}',             'skill_serial_3',    '3t技能：' },
     { 'TextView{}' },
     { 'TextView{每t释放的宝具：}' },
-    { 'DropList{1|2|3}', 'np_index_1','1t宝具：'},
-    { 'DropList{1|2|3}', 'np_index_2','2t宝具：'},
-    { 'DropList{1|2|3}', 'np_index_3','3t宝具：'},
+    { 'DropList{1|2|3|0}', 'np_index_1','1t宝具：'},
+    { 'DropList{1|2|3|0}', 'np_index_2','2t宝具：'},
+    { 'DropList{1|2|3|0}', 'np_index_3','3t宝具：'},
     { 'TextView{}' },
     { 'DropList{1|2|3}', 'big_enemy', '三面高血量敌人序号(1-3)：' },
     { 'DropList{绿卡|红卡|蓝卡}', 'mode_', '队伍性质：' },
@@ -71,7 +71,8 @@ function main()
     ]]--
 
     init()
-
+    
+    check()
     for ii=1,times do
         enter_mission()
 

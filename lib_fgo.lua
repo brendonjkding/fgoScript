@@ -4,16 +4,16 @@
     -------------------------------------------------------------------
 ]]--
 function init()
--- 适用屏幕参数
+    -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
     rotateScreen(0);
 
---指令卡选择坐标
+    --指令卡选择坐标
     card_x={222,222,222,222,222,542,542,542}--1,2,3,4,5,np
     card_y={150,400,680,940,1200,454,689,951}--266
 
---技能坐标
+    --技能坐标
     skill_x={ 150,150,150,
         150,150,150,
         150,150,150,
@@ -25,14 +25,14 @@ function init()
     master_skill_x=418
     master_skill_y=1251
 
---从者坐标
+    --从者坐标
     servant_x=281
     servant_y={}
     servant_y["a"]=344
     servant_y["b"]=671
     servant_y["c"]=1011
 
---卡色取色坐标 卡上不被英灵挡住的点
+    --卡色判断区域
     color_start_x=54
     color_start_y={7}
     color_end_x=265
@@ -41,11 +41,11 @@ function init()
         color_start_y[i]=color_start_y[i-1]+268
         color_end_y[i]=color_end_y[i-1]+268
     end
---敌人坐标
+    --切换敌人坐标
     enemy_x=700
     enemy_y={47,305,548}
 
---打手取色
+    --卡信息区域
     feature_start_x=171
     feature_start_y={24}
     feature_end_x=459
@@ -69,14 +69,15 @@ function init()
     change_y["p"]=799
     change_y["q"]=1019
     change_y["r"]=1239
-    --助战取色信息
+    --助战礼装特征
     mc_points={}
     mc_points["午餐"]={ 0x67B180, -27, 4, 0xEFEBE2, -7, 64, 0xF3C8BC, -23, 98, 0x493438, 3, 138, 0x67AF82, -6, 131, 0xA0D898, -24, 138, 0xFBFC84, -32, 137, 0xB1F3D5, -26, 141, 0xF5F9BB }
     mc_points["擦汗"]={ 0x7EA75B, 20, -7, 0xF2ECCF, 29, 24, 0xF5D9D8, 22, 61, 0x9A6ACB, 27, 77, 0xCDA49A, 30, 109, 0x597027, 2, 120, 0xA2C24F, 3, 124, 0xEBF1B2, 7, 120, 0xF9FA44 }
     mc_points["qp(任意从者)"]={ 0xBF8E69, 21, 10, 0x435DCB, 2, 44, 0x283B56, 10, 69, 0xF9D9A1, 9, 94, 0x1A1F2B, 3, 131, 0xFDFB5C, -1, 132, 0xB8D55E, 22, 115, 0xD3EEFA }
     mc_points["所长"]={ 0x5F362F, 5, 18, 0xD9A879, 7, 32, 0x63132D, 11, 43, 0x906F5F, 11, 69, 0xF9DEB7, -3, 97, 0xFBCCC5, 18, 125, 0x4E110E, 18, 142, 0xEBAD59, 7, 138, 0xF9F824 }
     mc_points["新所长"]={ 0x372F2F, -19, 12, 0xF1ECE2, -26, 51, 0x89381B, -11, 50, 0x92C37E, -5, 77, 0xFEEEE3, 9, 105, 0x2A2B58, 9, 142, 0x1D3B29, -13, 137, 0xFAFA54, -18, 137, 0xA2C262 }
-    
+    mc_points["无限池"]={}
+    --助战从者特征
     support_points={}
     support_points["孔明"]={ 0xFAF4D6, -6, 4, 0x716256, -3, 15, 0xFBF5D5, -31, 11, 0xDEC4A2, -33, -59, 0xBFEFD6, 36, -15, 0x4C5D59 }
     support_points["梅林"]={ 0x739EE3, 43, 47, 0x6D4B7C, 46, 66, 0xF3D6D9, 54, 81, 0x1D1B68, 41, 104, 0xAEAAE2, 47, 141, 0xFFF0EF }
@@ -224,11 +225,11 @@ end
 function info_init()
     --是否已选
     used={false,false,false,false,false}
-    --本轮各色色卡的序号
+    --本轮打手各色色卡的序号
     q_index={}
     a_index={}
     b_index={}
-    --本轮各色色卡的数量
+    --本轮打手各色色卡的数量
     q_num=0
     a_num=0
     b_num=0
@@ -241,11 +242,12 @@ function info_init()
     weak={false,false,false,false,false}
     --卡色
     color={}
+    --序号与优先级
     cards={Card:new(1,10),Card:new(2,10),Card:new(3,10),Card:new(4,10),Card:new(5,10)}
-    --是否有cba的红卡
+    --是否有拐红卡
     has_sup_b=false
 end
---区分打手与拐
+--提取卡信息
 function get_card_info()
     if dashou=="通用" then
 
@@ -275,7 +277,7 @@ function get_card_info()
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 restrain[i]=true
             end
-            x, y = findMultiColorInRegionFuzzy({ 0x49DAFB, 2, 0, 0x94F5FE, 11, -6, 0x4993FB, 18, -6, 0x61CEFD, 25, -6, 0x77F3FC, 23, -3, 0x43B2D5, 12, -3, 0x2C64BA }, 90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+            x, y = findMultiColorInRegionFuzzy({ 0x0433AE, 2, 0, 0x013FBF, 5, 0, 0x0159DB, 8, 0, 0x0C7DEB, 11, 0, 0x27A8F4, 13, 0, 0x3AC5F9, 13, -11, 0x48DAFD, 13, 11, 0x29ABF5 }, 90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 weak[i]=true
             end
@@ -293,8 +295,8 @@ function get_card_info()
     end
 end
 
---提取打手卡信息
-function get_dashou_info()
+--计算卡优先级
+function calculate_priority()
     --色卡权重
     if mode=="green" and current_turn<=3 then
         q_p=3
@@ -315,18 +317,25 @@ function get_dashou_info()
     for i=1,5 do
         color[i]=get_color(i)
 
+        --克制打手200 打手100 克制拐20 拐10 被克打手5 被克拐1
         if is_dashou[i] then
             if not weak[i] then
                 cards[i].priority=100
             else
+                cards[i].priority=5
+            end
+        else
+            if weak[i] then
                 cards[i].priority=1
             end
 
         end
-
+        --克制 为两倍
         if restrain[i] then
             cards[i].priority=cards[i].priority*2
         end
+
+        --颜色权重
         if color[i]=="green" then
             if is_dashou[i] then
                 q_num=q_num+1
@@ -343,7 +352,7 @@ function get_dashou_info()
             end
             cards[i].priority=cards[i].priority+a_p
 
-        else
+        elseif color[i]=="red" then
             if is_dashou[i] then
 
                 b_num=b_num+1
@@ -351,7 +360,8 @@ function get_dashou_info()
                 count=count+1
             end
             cards[i].priority=cards[i].priority+b_p
-
+        else
+            logDebug("error calculate")
 
         end
 
@@ -362,7 +372,7 @@ function get_info()
     keepScreen(true)
     info_init()
     get_card_info()
-    get_dashou_info()
+    calculate_priority()
     keepScreen(false)
     logDebug(string.format("\n打手:%s %s %s %s %s, \n颜色:%s %s %s %s %s, \n克制:%s %s %s %s %s,\n被克制:%s %s %s %s %s,\n优先:%d %d %d %d %d     \nb:%d a:%d q:%d count:%d      ",is_dashou[1],is_dashou[2],is_dashou[3],is_dashou[4],is_dashou[5],color[1],color[2],color[3],color[4],color[5],restrain[1],restrain[2],restrain[3],restrain[4],restrain[5],weak[1],weak[2],weak[3],weak[4],weak[5],cards[1].priority,cards[2].priority,cards[3].priority,cards[4].priority,cards[5].priority,b_num,a_num,q_num,count))
     table.sort(cards)
@@ -418,6 +428,11 @@ end
 --带宝具选卡
 function select_np(t,is_debug)
     np_index_=np_index[t]
+    if np_index_==5 then
+        select_normal()
+        return
+    end
+    
 
 
     index={0,0,0}
@@ -490,7 +505,11 @@ function select_np(t,is_debug)
     end
     select_card(index[1],index[2],index[3])
 
-    check_select()
+    if select_fail() then
+        select_card(index[1],index[2],index[3])
+        select_normal()
+    end
+    
 
     return false
 
@@ -719,6 +738,7 @@ end
 
 --(返回) 洗牌 (attack)
 function shuffle()
+    logDebug("shuffled")
     --返回
     click(35,1253)
 
@@ -749,6 +769,10 @@ function quit_battle()
     if times>=2 and sp_mode=="自动" then
         wait_exit_mission()
     end
+    if times==1 then
+        notifyMessage("感谢使用")
+    end
+
 end
 --点击attack进入选卡界面
 function click_attack()
@@ -826,7 +850,7 @@ function get_current_turn()
             keepScreen(false)
             return 3
         end
-        --台服
+    --台服
     else
         x, y = findMultiColorInRegionFuzzy({ 0xDDDDDD, 4, 0, 0xDDDDDD, 11, 0, 0xDDDDDD, 13, 0, 0xDBDBDB, 13, -3, 0x818181 }, 90, 717, 907, 730, 910);
         if x ~= -1 and y ~= -1 then  -- 如果找到了
@@ -847,7 +871,7 @@ function get_current_turn()
     keepScreen(false)
     logDebug("error get_current_turn")
 end
---等待选好礼装进入一面
+--等待进入一面
 function wait_battle_start()
     while true do
         x, y = findMultiColorInRegionFuzzy({ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213);
@@ -857,13 +881,19 @@ function wait_battle_start()
         if sp_mode=="手动" then
             toast("请选择礼装并进本",3000)
         end
-        
+
         mSleep(5000)
     end
 end
 --战斗是否结束
 function battle_ended()
+    local count=0
     while true do
+        count=count+1
+        if count>=10 then
+            notifyVibrate(1500)
+        end
+
         keepScreen(true)
         x, y = findMultiColorInRegionFuzzy({ 0xB7A48B, -13, -80, 0xBFAF94, 18, -136, 0x9D8E77, -7, -246, 0xFBD865, -9, 5, 0xBFAB91 }, 90, 29, 1014, 60, 1265);
         if x ~= -1 and y ~= -1 then  -- 出现attack没结束
@@ -885,6 +915,21 @@ function battle_ended()
         mSleep(4000)
     end
 end
+
+--防止误启动
+function check()
+    if sp_mode=="手动" then
+        return
+    end
+
+    x, y = findMultiColorInRegionFuzzy({ 0xE8C17B, 18, 0, 0xFBF8F4, 17, -6, 0xF5E9DC, 17, 8, 0xF7E7D3, 26, 8, 0xF0EDA0, 27, 1005, 0xD6D6D8, 29, 1129, 0xD0D2D3 }, 90, 9, 166, 38, 1301);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        return
+    end
+    toast("请把关卡放在第一个")
+    os.exit()
+end
+
 
 --进本
 function enter_mission()
@@ -962,7 +1007,7 @@ function select_support()
                 mSleep(1000)
                 return
             end
-            
+
             x, y = findMultiColorInRegionFuzzy(support_points[sp], 80, x, y-60 , x+174, x+155);
             if x ~= -1 and y ~= -1 then  -- 如果找到了英灵
                 if sp=="cba" then --cba技能是否满了
@@ -997,8 +1042,6 @@ function select_support()
 end
 --助战列表小幅上移
 function move_support()
-
-
     touchDown(5, 100, 770)
     mSleep(34);
 
@@ -1010,7 +1053,6 @@ function move_support()
     end
 
     touchUp(5)
-
 
     mSleep(1000);
 end
@@ -1038,14 +1080,14 @@ function need_apple()
     end
     return false
 end
---select_np失败时点返回
-function check_select()
+--select_np失败
+function select_fail()
     mSleep(800)
     x, y = findMultiColorInRegionFuzzy({ 0x00AFE0, 0, 23, 0xE0F2F8, 0, 29, 0x329AC8, 0, 36, 0xEDFAFF, 0, 41, 0xFEFFFE, 1, 54, 0x1C5495, 1, 57, 0xFDFEFF }, 90, 37, 1205, 38, 1262);
     if x ~= -1 and y ~= -1 then  -- 如果找到了
-        click(35,1253)
         logDebug("select_np fail")
+        return true
     end
-    mSleep(800)
+    return false
 end
 
