@@ -74,10 +74,14 @@ function init()
     mc_points["午餐"]={ 0x67B180, -27, 4, 0xEFEBE2, -7, 64, 0xF3C8BC, -23, 98, 0x493438, 3, 138, 0x67AF82, -6, 131, 0xA0D898, -24, 138, 0xFBFC84, -32, 137, 0xB1F3D5, -26, 141, 0xF5F9BB }
     mc_points["擦汗"]={ 0x7EA75B, 20, -7, 0xF2ECCF, 29, 24, 0xF5D9D8, 22, 61, 0x9A6ACB, 27, 77, 0xCDA49A, 30, 109, 0x597027, 2, 120, 0xA2C24F, 3, 124, 0xEBF1B2, 7, 120, 0xF9FA44 }
     mc_points["qp(任意从者)"]={ 0xBF8E69, 21, 10, 0x435DCB, 2, 44, 0x283B56, 10, 69, 0xF9D9A1, 9, 94, 0x1A1F2B, 3, 131, 0xFDFB5C, -1, 132, 0xB8D55E, 22, 115, 0xD3EEFA }
+    mc_points["所长"]={ 0x5F362F, 5, 18, 0xD9A879, 7, 32, 0x63132D, 11, 43, 0x906F5F, 11, 69, 0xF9DEB7, -3, 97, 0xFBCCC5, 18, 125, 0x4E110E, 18, 142, 0xEBAD59, 7, 138, 0xF9F824 }
+    mc_points["新所长"]={ 0x372F2F, -19, 12, 0xF1ECE2, -26, 51, 0x89381B, -11, 50, 0x92C37E, -5, 77, 0xFEEEE3, 9, 105, 0x2A2B58, 9, 142, 0x1D3B29, -13, 137, 0xFAFA54, -18, 137, 0xA2C262 }
+    
     support_points={}
     support_points["孔明"]={ 0xFAF4D6, -6, 4, 0x716256, -3, 15, 0xFBF5D5, -31, 11, 0xDEC4A2, -33, -59, 0xBFEFD6, 36, -15, 0x4C5D59 }
     support_points["梅林"]={ 0x739EE3, 43, 47, 0x6D4B7C, 46, 66, 0xF3D6D9, 54, 81, 0x1D1B68, 41, 104, 0xAEAAE2, 47, 141, 0xFFF0EF }
     support_points["cba"]={ 0xD099F5, 44, -4, 0xDEC9F4, 45, 26, 0x793561, 45, 41, 0xAF0E19, 28, 51, 0xFEFFE1, 45, 86, 0xB10B12 }
+    support_points["狐狸"]={ 0xB18B34, 2, 26, 0xE28875, 8, 49, 0xF7C268, 8, 70, 0xF6E4C4, 13, 98, 0xF9CD76, 13, 111, 0xD07765, 13, 152, 0xFEFFF2 }
 
 
     --np_full={false,false,false}
@@ -685,7 +689,7 @@ function select_card(a,b,c)
     click(card_x[a],card_y[a],d)
     click(card_x[b],card_y[b],d)
     click(card_x[c],card_y[c],d)
-    
+
     mSleep(d)
 end
 --点某一回合的技能
@@ -742,7 +746,9 @@ function quit_battle()
     click(43,1660)
     --不申请
     click(106,340)
-    wait_exit_mission()
+    if times>=2 and sp_mode=="自动" then
+        wait_exit_mission()
+    end
 end
 --点击attack进入选卡界面
 function click_attack()
@@ -848,6 +854,10 @@ function wait_battle_start()
         if x ~= -1 and y ~= -1 then  -- attack
             return 
         end
+        if sp_mode=="手动" then
+            toast("请选择礼装并进本",3000)
+        end
+        
         mSleep(5000)
     end
 end
@@ -872,7 +882,7 @@ function battle_ended()
             return true
         end
         keepScreen(false)
-        mSleep(5000)
+        mSleep(4000)
     end
 end
 
@@ -891,7 +901,7 @@ function enter_mission()
 
         select_support()
         keepScreen(false)
-        mSleep(3000)
+        mSleep(2000)
         click(39,1240)
     end
     wait_battle_start()
@@ -903,6 +913,7 @@ function wait_exit_mission()
         if x ~= -1 and y ~= -1 then  -- 如果找到了
             return
         end
+        click(300,150)
         mSleep(5000)
     end
 end
@@ -921,7 +932,7 @@ function select_support()
                 return
             end
 
-            x, y = findMultiColorInRegionFuzzy(support_points[sp], 80, 288, 23, 588, 232);
+            x, y = findMultiColorInRegionFuzzy(support_points[sp], 80, x, y-60 , x+174, x+155);
             if x ~= -1 and y ~= -1 then  -- 如果找到了英灵
                 if sp=="cba" then --cba技能是否满了
                     --notifyMessage(string.format("%d %d",x,y))
@@ -945,7 +956,14 @@ function select_support()
         --pos-2
         x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, 4, 32, 292, 236);
         if x ~= -1 and y ~= -1 then  -- 如果找到了礼装
-            x, y = findMultiColorInRegionFuzzy(support_points[sp], 80, 4, 32, 292, 236);
+            if mc=="qp(任意从者)" then
+                touchDown(0, x, y);   -- 点击那个点
+                touchUp(0);
+                mSleep(1000)
+                return
+            end
+            
+            x, y = findMultiColorInRegionFuzzy(support_points[sp], 80, x, y-60 , x+174, x+155);
             if x ~= -1 and y ~= -1 then  -- 如果找到了英灵
                 if sp=="cba" then --cba技能是否满了
                     --notifyMessage(string.format("%d %d",x,y))
@@ -1026,6 +1044,7 @@ function check_select()
     x, y = findMultiColorInRegionFuzzy({ 0x00AFE0, 0, 23, 0xE0F2F8, 0, 29, 0x329AC8, 0, 36, 0xEDFAFF, 0, 41, 0xFEFFFE, 1, 54, 0x1C5495, 1, 57, 0xFDFEFF }, 90, 37, 1205, 38, 1262);
     if x ~= -1 and y ~= -1 then  -- 如果找到了
         click(35,1253)
+        logDebug("select_np fail")
     end
     mSleep(800)
 end

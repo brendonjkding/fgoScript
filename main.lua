@@ -2,14 +2,14 @@ UI = {
     { 'TextView{记得先换好默认队伍哦！}' },
     { 'InputBox{1}',             'times',    '打本次数：' },
     { 'DropList{不吃|金|银|彩}',             'apple',    '吃苹果：' },
-    { 'DropList{否(有待测试)|是}', 'is_speed_up', '是否开启了蜂窝6倍加速：' },
+    { 'DropList{否(有待测试)|是}', 'is_speed_up', '是否开启了蜂窝6倍(≈叉叉30倍)加速：' },
     { 'DropList{国服|台服}', 'server', '服务器：' },
 
     { 'TextView{ }' },
     { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
     { 'TextView{如手动，则不用管接下来两项}' },
-    { 'DropList{擦汗|午餐|qp(任意从者)}', 'mc', '礼装：' },
-    { 'DropList{孔明|cba|梅林}', 'sp', '从者：' },
+    { 'DropList{所长|新所长|擦汗|午餐|qp(任意从者)}', 'mc', '礼装：' },
+    { 'DropList{孔明|cba|梅林|狐狸}', 'sp', '从者：' },
     { 'TextView{ }' },
 
     { 'DropList{自定义(在下方输入)|满破宝石狂兰wcba充能衣服|满破宝石阿塔wcba充能衣服|(模板)满破宝石尼托+二号打手+孔明|(模板队(仅)需填写二号打手技能)}', 'skill_mode', '队伍信息：' },
@@ -83,5 +83,8 @@ function main()
 
         quit_battle()
     end
-    notifyMessage("感谢使用")
+    if times>1 then
+        notifyMessage("感谢使用")
+    end
+
 end
