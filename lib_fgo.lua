@@ -542,7 +542,7 @@ function turn_1_2(is_debug,need_skip)
             if get_current_round()>current_turn then
                 break
             end
-            
+
             logDebug(string.format("current_turn:%d",current_turn))
             --点技能
             select_skill(i)
@@ -834,6 +834,10 @@ function check(is_debug)
     if x ~= -1 and y ~= -1 then  -- 如果找到了
         return
     end
+    x, y = findMultiColorInRegionFuzzy({ 0xD0D0D0, 0, -30, 0x07070B, -3, -35, 0xA6B1C2, -3, -39, 0x1A2138, -2, -49, 0xA0ACC0, -2, -54, 0x2A336C, -2, -57, 0xAAB5C5, -2, -66, 0x252B5F }, 90, 53, 327, 56, 393);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        return
+    end
     toast("请把关卡放在第一个再启动",3000)
     os.exit()
 end
@@ -920,7 +924,7 @@ function quit_mission()
     click(42,1143)
     click(42,1143)
     --下一步
-    click(43,1660)
+    click(43,1143)
     --不申请
     click(106,340)
     if times>=2 and sp_mode=="自动" then
