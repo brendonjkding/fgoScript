@@ -31,10 +31,8 @@ UI = {
     { 'DropList{1|2|3}', 'big_enemy', '三面高血量敌人序号(1-3)：' },
     { 'DropList{绿卡|红卡|蓝卡}', 'mode_', '队伍性质：' },
     { 'DropList{否|是|}', 'shuffle_cloth', '是否洗牌衣服：' },
-    { 'TextView{记得换好默认队伍哦！}' },
-    { 'TextView{}' },
-    { 'TextView{下面的可不用管}' },
-    { 'DropList{通用|狂兰|阿塔}', 'dashou', '选择打手以识别：' }
+    { 'TextView{记得换好默认队伍哦！}' }
+
 
 
 
@@ -71,21 +69,12 @@ function main()
     ]]--
 
     init()
-    
-    check()
+
     for ii=1,times do
-        enter_mission()
-
-        turn_1_2(is_debug,need_skip)
-        if not battle_ended() then
-            turn_3(is_debug)
-            turn_4()
-        end
-
-        quit_battle()
+        start_one_mission()
     end
-    if times>1 then
-        notifyMessage("感谢使用")
-    end
+
+    notifyMessage("感谢使用")
+    notifyVibrate(1000)
 
 end

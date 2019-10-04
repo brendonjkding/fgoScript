@@ -3,7 +3,7 @@
     初始化数据类函数
     -------------------------------------------------------------------
 ]]--
-function init()
+function init(is_debug_)
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -99,6 +99,8 @@ function init()
         color_points={ 0x181830, 6, -5, 0x504477, 13, -11, 0xFD0051, 25, -13, 0x444477, 20, -22, 0xF9004C }
     elseif dashou=="阿塔" then
         color_points={ 0xFEEDCB, -2, 10, 0xFEECD5, 8, 4, 0x339D00, 19, -1, 0xE3D9B7, 20, 17, 0x1F7A5D }
+    else
+        dashou="通用"
     end
 
     --初始化队伍信息
@@ -111,7 +113,7 @@ function init()
     end
 
 
-    --init_m
+    --输入信息处理
     skills={}
     skills[1]=Split(skill_serial_1," ")
     skills[2]=Split(skill_serial_2," ")
@@ -135,19 +137,20 @@ function init()
     end
     times=tonumber(times)
 
+    --卡对象
     init_ob()
 
 
     --Debug
     current_turn=1
     logDebug("------------------------------------------------------------")
-    is_debug=false
+    is_debug=is_debug_
     need_skip=false
 
+    check(is_debug)
 end
-
+--内置队伍信息
 function init_ata()
-
     skill_serial_1="7a 4a 3"
     skill_serial_2="11a 6a 5 1"
     skill_serial_3="9a 8"
@@ -187,7 +190,7 @@ function init_nituo()
     mode_="红卡"
     shuffle_cloth="否"
 end
-
+--卡对象
 function init_ob()
     Card={index=0,priority=0}
     Card.__index=Card 
@@ -199,9 +202,6 @@ function init_ob()
         self.priority=p
         return self
     end
-
-
-
 end
 --[[
     -------------------------------------------------------------------
@@ -250,8 +250,8 @@ end
 --提取卡信息
 function get_card_info()
     if dashou=="通用" then
-
         for i=1,5 do
+            color[i]=get_color(i)
             repeat
                 x, y = findMultiColorInRegionFuzzy({ 0xFEFEE6, -1, -16, 0x985598, -6, -28, 0xFEFEED, -5, -35, 0xDE1616, -10, -42, 0xFEFEED }, 90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
                 if x ~= -1 and y ~= -1 then  
@@ -283,11 +283,11 @@ function get_card_info()
             end
         end
     else
-
         for i=1,5 do
+            color[i]=get_color(i)
             x, y = findMultiColorInRegionFuzzy(color_points, 80, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
             if x ~= -1 and y ~= -1 then  -- 如果找到了
-                is_dashou[i]=true   -- 点击那个点
+                is_dashou[i]=true   
             else
                 is_dashou[i]=false
             end
@@ -312,11 +312,7 @@ function calculate_priority()
         q_p=1
     end
 
-
-
     for i=1,5 do
-        color[i]=get_color(i)
-
         --克制打手200 打手100 克制拐20 拐10 被克打手5 被克拐1
         if is_dashou[i] then
             if not weak[i] then
@@ -335,7 +331,7 @@ function calculate_priority()
             cards[i].priority=cards[i].priority*2
         end
 
-        --颜色权重
+        --颜色权重，顺便统计打手卡信息
         if color[i]=="green" then
             if is_dashou[i] then
                 q_num=q_num+1
@@ -412,7 +408,7 @@ function choose_first()
     end
 
 end
---
+--按优先级选第x张卡
 function choose_card_priority(x)
     for i=1,5 do
         if not used[cards[i].index] then
@@ -425,31 +421,24 @@ end
 
 
 
---带宝具选卡
+--带宝具选第t面卡
 function select_np(t,is_debug)
     np_index_=np_index[t]
     if np_index_==5 then
         select_normal()
         return
     end
-    
-
 
     index={0,0,0}
-
     if count>=2 then
         --绿卡模式考虑首红
         if b_num>=1 and mode=="green" and t>=3 then--有红
             index[1]=b_index[b_num]
             b_num=b_num-1
-
             used[index[1]]=true
-
             index[2]=np_index_
         else
-
             index[1]=np_index_
-
         end
     elseif count==1 then
         if b_num==1 then
@@ -461,15 +450,12 @@ function select_np(t,is_debug)
             else
                 index[1]=np_index_
             end
-
-
         else
             if has_sup_b and mode=="green" and t>=3 then
                 index[2]=np_index_
             else
                 index[1]=np_index_
             end
-
         end
     else
         index[1]=np_index_
@@ -486,35 +472,23 @@ function select_np(t,is_debug)
     for i=3,1,-1 do
         if index[i]==0 then
             choose_card_priority(i)
-            --[[
-            if mode=="green" then
-                choose_card_green(i)
-            elseif mode=="red" then
-                choose_card_red(i)
-            else
-                choose_card_blue(i)
-            end
-            ]]--
         end
     end
-
 
     logDebug(string.format("select_np: %d %d %d\n",index[1],index[2],index[3]))
     if is_debug then
         return
     end
-    select_card(index[1],index[2],index[3])
+    click_card(index[1],index[2],index[3])
 
-    if select_fail() then
-        select_card(index[1],index[2],index[3])
+    if is_select_fail() then
+        click_card(index[1],index[2],index[3])
         select_normal()
     end
-    
 
     return false
-
 end
---不带宝具选卡
+--不带宝具选第t面卡
 function select_normal(t,is_debug)
     index={0,0,0}
     if count>=3 then
@@ -542,53 +516,61 @@ function select_normal(t,is_debug)
     for i=3,1,-1 do
         if index[i]==0 then
             choose_card_priority(i)
-            --choose_card_red(i)
         end
     end
     logDebug(string.format("select_normal: %d %d %d\n",index[1],index[2],index[3]))
     if is_debug then
         return
     end
-    select_card(index[1],index[2],index[3])
+    click_card(index[1],index[2],index[3])
     return false
-
+end
+--select_np失败
+function is_select_fail()
+    mSleep(800)
+    x, y = findMultiColorInRegionFuzzy({ 0x00AFE0, 0, 23, 0xE0F2F8, 0, 29, 0x329AC8, 0, 36, 0xEDFAFF, 0, 41, 0xFEFFFE, 1, 54, 0x1C5495, 1, 57, 0xFDFEFF }, 90, 37, 1205, 38, 1262);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        logDebug("select_np fail")
+        return true
+    end
+    return false
 end
 --1t 2t
 function turn_1_2(is_debug,need_skip)
     for i=1,2 do
-        logDebug(string.format("current_turn:%d",current_turn))
-        --点技能
-        click_skills(i)
-        check_np()
-        click_attack()
-        get_info()
-        select_np(i)
-        if battle_ended() then
-            return
-        end
+        repeat
+            if get_current_round()>current_turn then
+                break
+            end
 
-        while get_current_turn() ==i do
+            logDebug(string.format("current_turn:%d",current_turn))
+            --点技能
+            select_skill(i)
             click_attack()
             get_info()
-            select_normal(i)
-            if battle_ended() then
+            select_np(i)
+            if is_battle_ended() then
                 return
             end
 
-        end
+            while get_current_round() ==i do
+                click_attack()
+                get_info()
+                select_normal(i)
+                if is_battle_ended() then
+                    return
+                end
+            end
+        until true
         current_turn=current_turn+1
-
     end
 
 end
 --3t的操作
 function turn_3(is_debug)
-    if not is_debug then
-        click_enemy(big_enemy)
-    end
     logDebug(string.format("current_turn:%d",current_turn))
-    click_skills(3)
-    check_np()
+    click_enemy(big_enemy)    
+    select_skill(3)
     click_attack()
     --获取卡信息
     get_info()
@@ -617,7 +599,7 @@ function turn_4(is_debug)
         return
     end
 
-    while not battle_ended() do
+    while not is_battle_ended() do
         logDebug(string.format("current_turn:%d",current_turn))
         --attack
         click_attack()
@@ -631,21 +613,36 @@ function turn_4(is_debug)
         end
         current_turn=current_turn+1
     end
-
 end
+--提取某一回合的技能
+function select_skill(t)
+    for j,v in pairs(skills[t]) do
+        local index=get_skill_index(v)
+        local target=get_skill_target(v)
+        if index==nil then
+            break
+        end
+        --logDebug(index)
+        if target~="" then
+            --logDebug(target[1])
+            if string.len(target)==1 then
+                click_skill(index,target)
+            else
+                click_skill(index,string.sub(target,1,1),string.sub(target,2,2))
+            end
 
-
-
-
-
-
+        else
+            click_skill(index)
+        end
+    end
+end
 --[[
     -------------------------------------------------------------------
     点击类函数
     -------------------------------------------------------------------
 ]]--
---点技能
-function select_skill(index,target,target_2)
+--点index号技能
+function click_skill(index,target,target_2)
 
     --选目标间隔
     local delay_t=400
@@ -699,10 +696,8 @@ function select_skill(index,target,target_2)
     mSleep(delay_)
 end
 
-
-
 --素质三连
-function select_card(a,b,c)
+function click_card(a,b,c)
     local d=400
 
     click(card_x[a],card_y[a],d)
@@ -711,73 +706,22 @@ function select_card(a,b,c)
 
     mSleep(d)
 end
---点某一回合的技能
-function click_skills(t)
-    for j,v in pairs(skills[t]) do
-        local index=get_skill_index(v)
-        local target=get_skill_target(v)
-        if index==nil then
-            break
-        end
-        --logDebug(index)
-        if target~="" then
-            --logDebug(target[1])
-            if string.len(target)==1 then
-                select_skill(index,target)
-            else
-                select_skill(index,string.sub(target,1,1),string.sub(target,2,2))
-            end
-
-        else
-            select_skill(index)
-        end
-    end
-end
-
-
 
 --(返回) 洗牌 (attack)
 function shuffle()
     logDebug("shuffled")
-    --返回
+    --返回、点、attack
     click(35,1253)
-
-    select_skill(12)
-
+    click_skill(12)
     click_attack()
 
     shuffled=true
-
 end
---退出战斗
-function quit_battle()
-    x, y = findMultiColorInRegionFuzzy({ 0x7632D8, 19, 9, 0x77E890, 26, 3, 0xF9EAC0, 15, -7, 0xE171A0, 13, 3, 0xF1F9F9 }, 90, 602, 963, 628, 979);
-    if x ~= -1 and y ~= -1 then  -- 撤退
-        click(416,338)
-        click(378,914)
-        click(165,667)
-        return
-    end
-    --连点三下右下角
-    click(42,1143)
-    click(42,1143)
-    click(42,1143)
-    --下一步
-    click(43,1660)
-    --不申请
-    click(106,340)
-    if times>=2 and sp_mode=="自动" then
-        wait_exit_mission()
-    end
-    if times==1 then
-        notifyMessage("感谢使用")
-    end
 
-end
 --点击attack进入选卡界面
 function click_attack()
     click(88,1164)
-    mSleep(2000);
+    mSleep(1000);
 end
 
 --选择敌人
@@ -831,8 +775,8 @@ end
     流程控制
     -------------------------------------------------------------------
 ]]--
---当前回合(面)
-function get_current_turn()
+--当前回合(面) 1-3
+function get_current_round()
     keepScreen(true)
     if server=="国服" then
         x, y = findMultiColorInRegionFuzzy({ 0xE1E1E1, 2, 3, 0xF9F9F8, 3, 5, 0xFEFFFE, -1, 5, 0xEFEFEF, -6, 5, 0xEFEFEF, -11, 5, 0xEFEFEF }, 90, 716, 908, 730, 913);
@@ -850,7 +794,7 @@ function get_current_turn()
             keepScreen(false)
             return 3
         end
-    --台服
+        --台服
     else
         x, y = findMultiColorInRegionFuzzy({ 0xDDDDDD, 4, 0, 0xDDDDDD, 11, 0, 0xDDDDDD, 13, 0, 0xDBDBDB, 13, -3, 0x818181 }, 90, 717, 907, 730, 910);
         if x ~= -1 and y ~= -1 then  -- 如果找到了
@@ -871,6 +815,56 @@ function get_current_turn()
     keepScreen(false)
     logDebug("error get_current_turn")
 end
+--启动前检查防止误启动
+function check(is_debug)
+    if is_debug then
+        return
+    end
+
+    if sp_mode=="手动" then
+        x, y = findMultiColorInRegionFuzzy({ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213);
+        if x ~= -1 and y ~= -1 then  -- attack
+            return 
+        end
+        toast("请进入副本再启动",3000)
+        os.exit()
+    end
+
+    x, y = findMultiColorInRegionFuzzy({ 0xE8C17B, 18, 0, 0xFBF8F4, 17, -6, 0xF5E9DC, 17, 8, 0xF7E7D3, 26, 8, 0xF0EDA0, 27, 1005, 0xD6D6D8, 29, 1129, 0xD0D2D3 }, 90, 9, 166, 38, 1301);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        return
+    end
+    x, y = findMultiColorInRegionFuzzy({ 0xD0D0D0, 0, -30, 0x07070B, -3, -35, 0xA6B1C2, -3, -39, 0x1A2138, -2, -49, 0xA0ACC0, -2, -54, 0x2A336C, -2, -57, 0xAAB5C5, -2, -66, 0x252B5F }, 90, 53, 327, 56, 393);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        return
+    end
+    toast("请把关卡放在第一个再启动",3000)
+    os.exit()
+end
+
+
+
+--进本
+function enter_mission()
+    if sp_mode=="自动" then
+        click(563,999)
+        if need_apple() then
+            if apple=="不吃" then
+                click(100,678)
+                notifyVibrate(1500)
+                os.exit()
+            end
+            click(apple_x[apple],apple_y)
+            click(165,863)
+        end
+
+        select_support()
+        keepScreen(false)
+        mSleep(2000)
+        click(39,1240)
+    end
+    wait_battle_start()
+end
 --等待进入一面
 function wait_battle_start()
     while true do
@@ -878,15 +872,11 @@ function wait_battle_start()
         if x ~= -1 and y ~= -1 then  -- attack
             return 
         end
-        if sp_mode=="手动" then
-            toast("请选择礼装并进本",3000)
-        end
-
         mSleep(5000)
     end
 end
 --战斗是否结束
-function battle_ended()
+function is_battle_ended()
     local count=0
     while true do
         count=count+1
@@ -911,48 +901,41 @@ function battle_ended()
             keepScreen(false)
             return true
         end
+        x, y = findMultiColorInRegionFuzzy({ 0xD4D5D7, 0, -37, 0x000000, 0, -43, 0xD8D8D4, 0, -47, 0x000000, 0, -53, 0xD0D0D0, 0, -58, 0x000000, 0, -66, 0xDCDBDC, 3, -73, 0x000000 }, 90, 158, 866, 161, 939);
+        if x ~= -1 and y ~= -1 then  -- 掉线
+            touchDown(0, 165, 859);   
+            touchUp(0);
+        end
         keepScreen(false)
         mSleep(4000)
     end
 end
-
---防止误启动
-function check()
-    if sp_mode=="手动" then
+--退出战斗
+function quit_mission()
+    x, y = findMultiColorInRegionFuzzy({ 0x7632D8, 19, 9, 0x77E890, 26, 3, 0xF9EAC0, 15, -7, 0xE171A0, 13, 3, 0xF1F9F9 }, 90, 602, 963, 628, 979);
+    if x ~= -1 and y ~= -1 then  -- 撤退
+        click(416,338)
+        click(378,914)
+        click(165,667)
         return
     end
-
-    x, y = findMultiColorInRegionFuzzy({ 0xE8C17B, 18, 0, 0xFBF8F4, 17, -6, 0xF5E9DC, 17, 8, 0xF7E7D3, 26, 8, 0xF0EDA0, 27, 1005, 0xD6D6D8, 29, 1129, 0xD0D2D3 }, 90, 9, 166, 38, 1301);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        return
+    --连点三下右下角
+    click(42,1143)
+    click(42,1143)
+    click(42,1143)
+    --下一步
+    click(43,1143)
+    --不申请
+    click(106,340)
+    if times>=2 and sp_mode=="自动" then
+        wait_quit_mission()
     end
-    toast("请把关卡放在第一个")
-    os.exit()
 end
 
 
---进本
-function enter_mission()
-    if sp_mode=="自动" then
-        click(563,999)
-        if need_apple() then
-            if apple=="不吃" then
-                click(100,678)
-                os.exit()
-            end
-            click(apple_x[apple],apple_y)
-            click(165,863)
-        end
 
-        select_support()
-        keepScreen(false)
-        mSleep(2000)
-        click(39,1240)
-    end
-    wait_battle_start()
-end
 --等待出本
-function wait_exit_mission()
+function wait_quit_mission()
     while true do
         x, y = findMultiColorInRegionFuzzy({ 0xE8C17B, 18, 0, 0xFBF8F4, 17, -6, 0xF5E9DC, 17, 8, 0xF7E7D3, 26, 8, 0xF0EDA0, 27, 1005, 0xD6D6D8, 29, 1129, 0xD0D2D3 }, 90, 9, 166, 38, 1301);
         if x ~= -1 and y ~= -1 then  -- 如果找到了
@@ -962,72 +945,73 @@ function wait_exit_mission()
         mSleep(5000)
     end
 end
+--
+function start_one_mission()
+    enter_mission()
+
+    turn_1_2(is_debug,need_skip)
+    if not is_battle_ended() then
+        turn_3(is_debug)
+        turn_4()
+    end
+
+    quit_mission()
+end
+
+--
+--检查pos位置的助战是否为指定助战
+function find_support(pos)
+    if pos==1 then
+        x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, 288, 23, 588, 232);
+    else
+        x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, 4, 32, 292, 236);
+    end
+    if x ~= -1 and y ~= -1 then  -- 如果找到了礼装
+        if mc=="qp(任意从者)" then --qp直接选
+            touchDown(0, x, y);   
+            touchUp(0);
+            mSleep(1000)
+            return true
+        end
+        x, y = findMultiColorInRegionFuzzy(support_points[sp], 80, x, y-60 , x+174, x+155);
+        if x ~= -1 and y ~= -1 then  -- 如果找到了英灵
+            if sp=="cba" then --cba技能是否满了
+                xx, yy = findMultiColorInRegionFuzzy({ 0xFEFFFE, -1, 2, 0xFEFFFE, -9, 3, 0xFEFFFE, -11, 15, 0xFEFFFE, -5, 11, 0xFEFFFE, -3, 19, 0xFEFFFE, 3, 15, 0xFEFFFE }, 80, x-87, 1021, x-13, 1082);
+                if xx~=-1 and yy~=-1 then  -- 如果找到了
+                    touchDown(0, x, y);   -- 点击那个点
+                    touchUp(0);
+                    mSleep(1000)
+                    return true
+                end
+            else--其它直接选
+                touchDown(0, x, y);   -- 点击那个点
+                touchUp(0);
+                mSleep(1000)
+                return true
+            end
+        end
+    end
+    return false
+end
+
 --自动选助战
 function select_support()
-    mSleep(1500)
+    mSleep(1000)
     while true do
         keepScreen(true)
         --pos-1
-        x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, 288, 23, 588, 232);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了礼装
-            if mc=="qp(任意从者)" then
-                touchDown(0, x, y);   -- 点击那个点
-                touchUp(0);
-                mSleep(1000)
-                return
-            end
-
-            x, y = findMultiColorInRegionFuzzy(support_points[sp], 80, x, y-60 , x+174, x+155);
-            if x ~= -1 and y ~= -1 then  -- 如果找到了英灵
-                if sp=="cba" then --cba技能是否满了
-                    --notifyMessage(string.format("%d %d",x,y))
-
-
-                    xx, yy = findMultiColorInRegionFuzzy({ 0xFEFFFE, -1, 2, 0xFEFFFE, -9, 3, 0xFEFFFE, -11, 15, 0xFEFFFE, -5, 11, 0xFEFFFE, -3, 19, 0xFEFFFE, 3, 15, 0xFEFFFE }, 80, x-87, 1021, x-13, 1082);
-                    if xx~=-1 and yy~=-1 then  -- 如果找到了
-                        touchDown(0, x, y);   -- 点击那个点
-                        touchUp(0);
-                        mSleep(1000)
-                        return
-                    end
-                else--其它直接选
-                    touchDown(0, x, y);   -- 点击那个点
-                    touchUp(0);
-                    mSleep(1000)
-                    return
-                end
-            end
+        if find_support(1) then
+            return
         end
         --pos-2
-        x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, 4, 32, 292, 236);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了礼装
-            if mc=="qp(任意从者)" then
-                touchDown(0, x, y);   -- 点击那个点
-                touchUp(0);
-                mSleep(1000)
-                return
-            end
-
-            x, y = findMultiColorInRegionFuzzy(support_points[sp], 80, x, y-60 , x+174, x+155);
-            if x ~= -1 and y ~= -1 then  -- 如果找到了英灵
-                if sp=="cba" then --cba技能是否满了
-                    --notifyMessage(string.format("%d %d",x,y))
-
-
-                    xx, yy = findMultiColorInRegionFuzzy({ 0xFEFFFE, -1, 2, 0xFEFFFE, -9, 3, 0xFEFFFE, -11, 15, 0xFEFFFE, -5, 11, 0xFEFFFE, -3, 19, 0xFEFFFE, 3, 15, 0xFEFFFE }, 80, x-87, 1021, x-13, 1082);
-                    if xx~=-1 and yy~=-1 then  -- 如果找到了
-                        touchDown(0, x, y);   -- 点击那个点
-                        touchUp(0);
-                        mSleep(1000)
-                        return
-                    end
-                else--其它直接选
-                    touchDown(0, x, y);   -- 点击那个点
-                    touchUp(0);
-                    mSleep(1000)
-                    return
-                end
-            end
+        if find_support(2) then
+            return
+        end
+        --解决奇怪的bug
+        x, y = findMultiColorInRegionFuzzy({ 0x08BBE8, -23, -9, 0x007AD5, -20, -52, 0x05387C, -2, -188, 0x0F99C0, -9, -111, 0xD2D9DE }, 90, 2, 1139, 25, 1327);
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            touchDown(0, 716, 100);   -- 点击那个点
+            touchUp(0);
         end
         keepScreen(false)
 
@@ -1044,14 +1028,12 @@ end
 function move_support()
     touchDown(5, 100, 770)
     mSleep(34);
-
     local dx=15
     for i=1,5 do
         touchMove(5, 100+dx, 770)
         mSleep(20);
         dx=dx+15
     end
-
     touchUp(5)
 
     mSleep(1000);
@@ -1068,10 +1050,7 @@ function refresh_support()
     end
     click(162,870)
 end
---无效
-function check_np()
 
-end
 --需要吃苹果
 function need_apple()
     x, y = findMultiColorInRegionFuzzy({ 0xDA6888, -31, 24, 0x6E46E3, -9, 28, 0xF9F8F5, -1, 49, 0x5DD7B5, -168, 36, 0xFEFF9B, -344, 30, 0x414E57 }, 90, 231, 361, 575, 410);
@@ -1080,14 +1059,5 @@ function need_apple()
     end
     return false
 end
---select_np失败
-function select_fail()
-    mSleep(800)
-    x, y = findMultiColorInRegionFuzzy({ 0x00AFE0, 0, 23, 0xE0F2F8, 0, 29, 0x329AC8, 0, 36, 0xEDFAFF, 0, 41, 0xFEFFFE, 1, 54, 0x1C5495, 1, 57, 0xFDFEFF }, 90, 37, 1205, 38, 1262);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        logDebug("select_np fail")
-        return true
-    end
-    return false
-end
+
 
