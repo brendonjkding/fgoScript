@@ -4,6 +4,7 @@
     -------------------------------------------------------------------
 ]]--
 function init(is_debug_)
+    VERSION="## v1.1"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -146,7 +147,8 @@ function init(is_debug_)
     logDebug("------------------------------------------------------------")
     is_debug=is_debug_
     need_skip=false
-
+    
+    check_version()
     check(is_debug)
 end
 --内置队伍信息
@@ -157,7 +159,7 @@ function init_ata()
     np_index_1="1"
     np_index_2="1"
     np_index_3="1"
-    big_enemy="1"
+    big_enemy_3="1"
     mode_="绿卡"
     shuffle_cloth="是"
 
@@ -169,7 +171,7 @@ function init_ber()
     np_index_1="1"
     np_index_2="1"
     np_index_3="1"
-    big_enemy="1"
+    big_enemy_3="1"
     mode_="绿卡"
     shuffle_cloth="是"
 
@@ -186,7 +188,7 @@ function init_nituo()
     np_index_1="1"
     np_index_2="1"
     np_index_3="2"
-    big_enemy="1"
+    big_enemy_3="1"
     mode_="红卡"
     shuffle_cloth="否"
 end
@@ -423,6 +425,7 @@ end
 
 --带宝具选第t面卡
 function select_np(t,is_debug)
+    get_info()
     np_index_=np_index[t]
     if np_index_==5 then
         select_normal()
@@ -430,19 +433,12 @@ function select_np(t,is_debug)
     end
 
     index={0,0,0}
-    if count>=2 then
-        --绿卡模式考虑首红
-        if b_num>=1 and mode=="green" and t>=3 then--有红
-            index[1]=b_index[b_num]
-            b_num=b_num-1
-            used[index[1]]=true
-            index[2]=np_index_
-        else
-            index[1]=np_index_
-        end
-    elseif count==1 then
-        if b_num==1 then
-            if not has_sup_b and mode=="green" and t>=3 then--有红没拐红
+    if t==2 and big_enemy_mode=="先垫刀" then
+        index[3]=np_index_
+    else
+        if count>=2 then
+            --绿卡模式考虑首红
+            if b_num>=1 and mode=="green" and t>=3 then--有红
                 index[1]=b_index[b_num]
                 b_num=b_num-1
                 used[index[1]]=true
@@ -450,21 +446,32 @@ function select_np(t,is_debug)
             else
                 index[1]=np_index_
             end
-        else
-            if has_sup_b and mode=="green" and t>=3 then
-                index[2]=np_index_
+        elseif count==1 then
+            if b_num==1 then
+                if not has_sup_b and mode=="green" and t>=3 then--有红没拐红
+                    index[1]=b_index[b_num]
+                    b_num=b_num-1
+                    used[index[1]]=true
+                    index[2]=np_index_
+                else
+                    index[1]=np_index_
+                end
             else
-                index[1]=np_index_
+                if has_sup_b and mode=="green" and t>=3 then
+                    index[2]=np_index_
+                else
+                    index[1]=np_index_
+                end
             end
-        end
-    else
-        index[1]=np_index_
-        --绿卡队3t需洗牌
-        if sp=="cba" and t==3 and not shuffled then
-            if is_debug then
-                return false
+        else
+            index[1]=np_index_
+            --绿卡队3t需洗牌
+            if sp=="cba" and t==3 and not shuffled then
+                if is_debug then
+                    return false
+                end
+                return true
             end
-            return true
         end
     end
     choose_first()
@@ -490,7 +497,9 @@ function select_np(t,is_debug)
 end
 --不带宝具选第t面卡
 function select_normal(t,is_debug)
+    get_info()
     index={0,0,0}
+
     if count>=3 then
         if b_num>=1 then--有红
             index[1]=b_index[b_num]
@@ -545,9 +554,9 @@ function turn_1_2(is_debug,need_skip)
 
             logDebug(string.format("current_turn:%d",current_turn))
             --点技能
+            click_enemy(big_enemy_2)  
             select_skill(i)
             click_attack()
-            get_info()
             select_np(i)
             if is_battle_ended() then
                 return
@@ -555,7 +564,6 @@ function turn_1_2(is_debug,need_skip)
 
             while get_current_round() ==i do
                 click_attack()
-                get_info()
                 select_normal(i)
                 if is_battle_ended() then
                     return
@@ -569,18 +577,16 @@ end
 --3t的操作
 function turn_3(is_debug)
     logDebug(string.format("current_turn:%d",current_turn))
-    click_enemy(big_enemy)    
+    click_enemy(big_enemy_3)    
     select_skill(3)
     click_attack()
-    --获取卡信息
-    get_info()
+
 
     --3t选卡
     local need_shuffle=select_np(3,is_debug)
     ----[[
     if need_shuffle then
         shuffle()
-        get_info()
         select_np(3,is_debug)
 
 
@@ -603,12 +609,10 @@ function turn_4(is_debug)
         logDebug(string.format("current_turn:%d",current_turn))
         --attack
         click_attack()
-        get_info()
         need_shuffle=select_normal(4)
         if need_shuffle then
             shuffle()
             shuffled=true
-            get_info()
             need_shuffle=select_normal(4)
         end
         current_turn=current_turn+1
@@ -734,7 +738,7 @@ function click(x,y,t)
     touchDown(3, x, y)
     mSleep(64);
     touchUp(3)
-    t=t or 1500
+    t=t or 2000
 
     mSleep(t);
 end
@@ -778,42 +782,39 @@ end
 --当前回合(面) 1-3
 function get_current_round()
     keepScreen(true)
-    if server=="国服" then
-        x, y = findMultiColorInRegionFuzzy({ 0xE1E1E1, 2, 3, 0xF9F9F8, 3, 5, 0xFEFFFE, -1, 5, 0xEFEFEF, -6, 5, 0xEFEFEF, -11, 5, 0xEFEFEF }, 90, 716, 908, 730, 913);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            keepScreen(false)
-            return 1
-        end
-        x, y = findMultiColorInRegionFuzzy({ 0xE9E9E9, 1, 5, 0xF5F5F5, 1, 8, 0xF3F3F3, -3, 10, 0xF8F8F7, -8, 6, 0xFDFEFD, -15, 0, 0xF7F7F7, -16, 7, 0xE6E6E6 }, 90, 714, 905, 731, 915);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            keepScreen(false)
-            return 2
-        end
-        x, y = findMultiColorInRegionFuzzy({ 0xEFEFEF, 1, 5, 0xF4F4F4, -1, 9, 0xF8F8F7, -7, 4, 0xE8E8E8, -12, 10, 0xF9FAF9, -16, 4, 0xE9E9E9, -14, 0, 0xD7D7D7 }, 90, 714, 905, 731, 915);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            keepScreen(false)
-            return 3
-        end
-        --台服
-    else
-        x, y = findMultiColorInRegionFuzzy({ 0xDDDDDD, 4, 0, 0xDDDDDD, 11, 0, 0xDDDDDD, 13, 0, 0xDBDBDB, 13, -3, 0x818181 }, 90, 717, 907, 730, 910);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            keepScreen(false)
-            return 1
-        end
-        x, y = findMultiColorInRegionFuzzy({ 0xCCCCCC, 0, -7, 0xCDCDCD, 5, -4, 0x888888, 13, 2, 0xEAEAEA, 16, 0, 0xE5E5E5, 12, -6, 0xEFEFEF, 16, -6, 0x878787 }, 90, 715, 905, 731, 914);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            keepScreen(false)
-            return 2
-        end
-        x, y = findMultiColorInRegionFuzzy({ 0xE2E2E2, -4, 3, 0x959595, 1, 8, 0xF2F2F2, 6, 3, 0x636363, 6, 6, 0xEAEAEA, 10, 7, 0xD5D5D5, 11, -1, 0xCECECE }, 90, 714, 905, 729, 914);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            keepScreen(false)
-            return 3
-        end
+    x, y = findMultiColorInRegionFuzzy({ 0xE1E1E1, 2, 3, 0xF9F9F8, 3, 5, 0xFEFFFE, -1, 5, 0xEFEFEF, -6, 5, 0xEFEFEF, -11, 5, 0xEFEFEF }, 90, 716, 908, 730, 913);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        keepScreen(false)
+        return 1
+    end
+    x, y = findMultiColorInRegionFuzzy({ 0xE9E9E9, 1, 5, 0xF5F5F5, 1, 8, 0xF3F3F3, -3, 10, 0xF8F8F7, -8, 6, 0xFDFEFD, -15, 0, 0xF7F7F7, -16, 7, 0xE6E6E6 }, 90, 714, 905, 731, 915);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        keepScreen(false)
+        return 2
+    end
+    x, y = findMultiColorInRegionFuzzy({ 0xEFEFEF, 1, 5, 0xF4F4F4, -1, 9, 0xF8F8F7, -7, 4, 0xE8E8E8, -12, 10, 0xF9FAF9, -16, 4, 0xE9E9E9, -14, 0, 0xD7D7D7 }, 90, 714, 905, 731, 915);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        keepScreen(false)
+        return 3
+    end
+    --台服
+    x, y = findMultiColorInRegionFuzzy({ 0xDDDDDD, 4, 0, 0xDDDDDD, 11, 0, 0xDDDDDD, 13, 0, 0xDBDBDB, 13, -3, 0x818181 }, 90, 717, 907, 730, 910);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        keepScreen(false)
+        return 1
+    end
+    x, y = findMultiColorInRegionFuzzy({ 0xCCCCCC, 0, -7, 0xCDCDCD, 5, -4, 0x888888, 13, 2, 0xEAEAEA, 16, 0, 0xE5E5E5, 12, -6, 0xEFEFEF, 16, -6, 0x878787 }, 90, 715, 905, 731, 914);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        keepScreen(false)
+        return 2
+    end
+    x, y = findMultiColorInRegionFuzzy({ 0xE2E2E2, -4, 3, 0x959595, 1, 8, 0xF2F2F2, 6, 3, 0x636363, 6, 6, 0xEAEAEA, 10, 7, 0xD5D5D5, 11, -1, 0xCECECE }, 90, 714, 905, 729, 914);
+    if x ~= -1 and y ~= -1 then  -- 如果找到了
+        keepScreen(false)
+        return 3
     end
     keepScreen(false)
-    logDebug("error get_current_turn")
+    logDebug("error get_current_round")
 end
 --启动前检查防止误启动
 function check(is_debug)
@@ -866,13 +867,14 @@ function enter_mission()
     wait_battle_start()
 end
 --等待进入一面
-function wait_battle_start()
+function wait_battle_start(t)
+    t=t or 5000
     while true do
         x, y = findMultiColorInRegionFuzzy({ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213);
         if x ~= -1 and y ~= -1 then  -- attack
             return 
         end
-        mSleep(5000)
+        mSleep(t)
     end
 end
 --战斗是否结束
@@ -1060,4 +1062,31 @@ function need_apple()
     return false
 end
 
+function wait_skill()
+    mSleep(1300)
+    wait_battle_start(2500)
+end
+
+function check_version()
+    data = httpGet('https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/UPDATE.md')
+    text=Split(data,'\n')[2]
+    if text==VERSION then
+        return
+    end
+    notifyMessage("存在新版本，准备更新")
+    update()
+    notifyMessage("更新完毕，请重新设置再运行",3000)
+    os.exit(0)
+end
+
+function update()
+    data = httpGet("https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/autoupdate.lua")
+    file=io.open("/var/touchelf/scripts/autoupdate.lua","w")
+    io.output(file)
+    io.write(data)
+    io.close(file)
+    
+    dofile("/var/touchelf/scripts/autoupdate.lua")
+    autoupdate()
+end
 
