@@ -6,16 +6,16 @@ UI = {
     { 'TextView{ }' },
     { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
     { 'TextView{如手动，则不用管接下来两项}' },
-    { 'DropList{无限池(待更新)|所长|新所长|擦汗|午餐|qp(任意从者)}', 'mc', '礼装：' },
+    { 'DropList{无限池(满破)|无限池|所长|新所长|擦汗|午餐|qp(任意从者)}', 'mc', '礼装：' },
     { 'DropList{孔明|cba|梅林|狐狸}', 'sp', '从者：' },
     { 'TextView{ }' },
 
     { 'DropList{自定义(在下方输入)|满破宝石狂兰wcba充能衣服|满破宝石阿塔wcba充能衣服|(模板)满破宝石尼托+二号打手+孔明|(模板队(仅)需填写二号打手技能)}', 'skill_mode', '队伍信息：' },
 
     { 'TextView{}' },
-    { 'TextView{(技能格式：从者1-9，御主10-12，}' },
+    { 'TextView{技能格式：从者1-9，御主10-12，}' },
     { 'TextView{对象为abc、mnopqr(换人)}' },
-    { 'TextView{示例：9 8 7b 1)}' },
+    { 'TextView{示例：9 8 7b 1}' },
 
     { 'InputBox{}',             'skill_serial_1',    '1t技能：' },
     { 'InputBox{}',             'skill_serial_2',    '2t技能：' },
@@ -29,7 +29,7 @@ UI = {
     { 'DropList{1|2|3}', 'big_enemy_2', '二面大怪序号：' },
     { 'DropList{后补刀|先垫刀}', 'big_enemy_mode', '二面大怪打法：' },
     { 'DropList{1|2|3}', 'big_enemy_3', '三面大怪序号：' },
-    { 'DropList{绿卡|红卡|蓝卡}', 'mode_', '队伍性质：' },
+    { 'DropList{红卡|绿卡|蓝卡}', 'mode_', '队伍性质：' },
     { 'DropList{否|是|}', 'shuffle_cloth', '是否洗牌衣服：' },
     { 'TextView{记得换好默认队伍哦！}' }
 

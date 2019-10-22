@@ -4,7 +4,7 @@
     -------------------------------------------------------------------
 ]]--
 function init(is_debug_)
-    VERSION="## v1.1"
+    VERSION="## v1.1.1"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -28,10 +28,7 @@ function init(is_debug_)
 
     --从者坐标
     servant_x=281
-    servant_y={}
-    servant_y["a"]=344
-    servant_y["b"]=671
-    servant_y["c"]=1011
+    servant_y={a=344,b=671,c=1011}
 
     --卡色判断区域
     color_start_x=54
@@ -63,13 +60,7 @@ function init(is_debug_)
     end
     --换人礼装目标坐标
     change_x=388
-    change_y={}
-    change_y["m"]=139
-    change_y["n"]=359
-    change_y["o"]=579
-    change_y["p"]=799
-    change_y["q"]=1019
-    change_y["r"]=1239
+    change_y={m=139,n=359,o=579,p=799,q=1019,r=1239}
     --助战礼装特征
     mc_points={}
     mc_points["午餐"]={ 0x67B180, -27, 4, 0xEFEBE2, -7, 64, 0xF3C8BC, -23, 98, 0x493438, 3, 138, 0x67AF82, -6, 131, 0xA0D898, -24, 138, 0xFBFC84, -32, 137, 0xB1F3D5, -26, 141, 0xF5F9BB }
@@ -77,7 +68,8 @@ function init(is_debug_)
     mc_points["qp(任意从者)"]={ 0xBF8E69, 21, 10, 0x435DCB, 2, 44, 0x283B56, 10, 69, 0xF9D9A1, 9, 94, 0x1A1F2B, 3, 131, 0xFDFB5C, -1, 132, 0xB8D55E, 22, 115, 0xD3EEFA }
     mc_points["所长"]={ 0x5F362F, 5, 18, 0xD9A879, 7, 32, 0x63132D, 11, 43, 0x906F5F, 11, 69, 0xF9DEB7, -3, 97, 0xFBCCC5, 18, 125, 0x4E110E, 18, 142, 0xEBAD59, 7, 138, 0xF9F824 }
     mc_points["新所长"]={ 0x372F2F, -19, 12, 0xF1ECE2, -26, 51, 0x89381B, -11, 50, 0x92C37E, -5, 77, 0xFEEEE3, 9, 105, 0x2A2B58, 9, 142, 0x1D3B29, -13, 137, 0xFAFA54, -18, 137, 0xA2C262 }
-    mc_points["无限池"]={}
+    mc_points["无限池"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F }
+    mc_points["无限池(满破)"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F, -5, 120, 0xFBFC77, -8, 120, 0xC7DA7E, -12, 120, 0xA6E2BA }
     --助战从者特征
     support_points={}
     support_points["孔明"]={ 0xFAF4D6, -6, 4, 0x716256, -3, 15, 0xFBF5D5, -31, 11, 0xDEC4A2, -33, -59, 0xBFEFD6, 36, -15, 0x4C5D59 }
@@ -89,10 +81,7 @@ function init(is_debug_)
     --np_full={false,false,false}
 
     --苹果坐标
-    apple_x={}
-    apple_x["彩"]=574
-    apple_x["金"]=418
-    apple_x["银"]=290
+    apple_x={["彩"]=574,["金"]=418,["银"]=290}
     apple_y=700
 
 
@@ -112,8 +101,9 @@ function init(is_debug_)
     elseif skill_mode=="(模板)满破宝石尼托+二号打手+孔明" then
         init_nituo()
     end
-
-
+    
+    init_points()
+    
     --输入信息处理
     skills={}
     skills[1]=Split(skill_serial_1," ")
@@ -140,14 +130,14 @@ function init(is_debug_)
 
     --卡对象
     init_ob()
-
+    
 
     --Debug
     current_turn=1
     logDebug("------------------------------------------------------------")
     is_debug=is_debug_
     need_skip=false
-    
+
     check_version()
     check(is_debug)
 end
@@ -205,6 +195,76 @@ function init_ob()
         return self
     end
 end
+function init_points()
+    --一、开始战斗
+    menu_points={}
+    menu_points[1]={{ 0xE8C17B, 18, 0, 0xFBF8F4, 17, -6, 0xF5E9DC, 17, 8, 0xF7E7D3, 26, 8, 0xF0EDA0, 27, 1005, 0xD6D6D8, 29, 1129, 0xD0D2D3 }, 90, 9, 166, 38, 1301}
+    menu_points[2]={{ 0xD6D6D6, 0, -18, 0x10172D, -1, -25, 0xAEB6C3, -1, -29, 0x192245, -1, -34, 0xAEB6C7, -1, -47, 0xCFD2D6, 19, -1029, 0xD4D5D5 }, 90, 36, 257, 56, 1286}
+
+    mission_entry={563,999}
+    apple_window_points={{ 0xDA6888, -31, 24, 0x6E46E3, -9, 28, 0xF9F8F5, -1, 49, 0x5DD7B5, -168, 36, 0xFEFF9B, -344, 30, 0x414E57 }, 90, 231, 361, 575, 410}
+    close_apple_button={100,678}
+    affirm_apple_button={165,863}
+
+    start_mission_button={39,1240}
+    start_mission_points={ 0x08BBE8, -23, -9, 0x007AD5, -20, -52, 0x05387C, -2, -188, 0x0F99C0, -9, -111, 0xD2D9DE }, 90, 2, 1139, 25, 1327
+    
+    --助战
+    refresh_button={612,881}
+    refresh_confirm_button={162,870}
+    scroll_bar={{ 0xF7F8FB, 21, 0, 0xEAEBF0 }, 90, 24, 1292, 45, 1292}
+    refresh_too_fast_warning={{ 0x000000, -7, 13, 0xD9DAD9, 5, 18, 0xDADBDA, -3, 26, 0x000000, 1, 33, 0xD7D7D7 }, 90, 157, 646, 169, 679}
+    refresh_button={612,881}
+    refresh_confirm_button={162,870}
+    --find/move_support需在内部改
+    
+    --二、战斗中
+    --卡信息
+    blue_color_points={ 0x357FFE, -2, 48, 0x56AFFE, 23, 20, 0xB0834A, 52, 13, 0xFEF9CA, 75, -31, 0x075CFE, 61, 69, 0x55C7FE }
+    red_color_points={ 0xFE5612, -7, 33, 0xFD6F1A, 2, 71, 0xFF3A1E, 68, 11, 0xFEE13A, 76, 67, 0xFE6B1F }
+    guai1_points={0xFEFEE6, -1, -16, 0x985598, -6, -28, 0xFEFEED, -5, -35, 0xDE1616, -10, -42, 0xFEFEED } 
+    guai2_points={ 0xFFCC77, 24, -3, 0x445555, 18, -17, 0xFFEEDD, 15, -26, 0xD5CCBB, 11, -29, 0xFFEEDD }
+    guai3_points={ 0xFEFEFE, -12, 11, 0xFEEDDC, -20, 8, 0xE09CA9, -26, 17, 0x32339D, -31, 17, 0xA955CB, -36, 17, 0xFEEDDC, -51, 17, 0xC7B2B2 }
+    restrain_points={ 0xC32823, 1, 13, 0xDD3B35, 0, 8, 0xC11816, 11, 11, 0xF2B16F, 10, 0, 0xF0AF6C, 16, 5, 0xF9E991, 13, 5, 0xF0C567 }
+    weak_points={ 0x91F0FD, -1, 0, 0x46D4FC, -2, 0, 0x3CC7FA, -3, 0, 0x33B9F8, -4, 0, 0x29AAF5, -5, 0, 0x1F9BF2, -6, 0, 0x168CEF, -7, 0, 0x0D7FEC }
+    
+    --按钮
+    back_points={{ 0x00AFE0, 0, 23, 0xE0F2F8, 0, 29, 0x329AC8, 0, 36, 0xEDFAFF, 0, 41, 0xFEFFFE, 1, 54, 0x1C5495, 1, 57, 0xFDFEFF }, 90, 37, 1205, 38, 1262}
+    back_button={35,1253}
+    attack_points={{ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213}
+    attack_button={88,1164}
+    replace_confirm_button={100,664}
+    
+    --面
+    round_cn_points={}
+    round_cn_points[1]={{ 0xE1E1E1, 2, 3, 0xF9F9F8, 3, 5, 0xFEFFFE, -1, 5, 0xEFEFEF, -6, 5, 0xEFEFEF, -11, 5, 0xEFEFEF }, 90, 716, 908, 730, 913}
+    round_cn_points[2]={{ 0xE9E9E9, 1, 5, 0xF5F5F5, 1, 8, 0xF3F3F3, -3, 10, 0xF8F8F7, -8, 6, 0xFDFEFD, -15, 0, 0xF7F7F7, -16, 7, 0xE6E6E6 }, 90, 714, 905, 731, 915}
+    round_cn_points[3]={{ 0xEFEFEF, 1, 5, 0xF4F4F4, -1, 9, 0xF8F8F7, -7, 4, 0xE8E8E8, -12, 10, 0xF9FAF9, -16, 4, 0xE9E9E9, -14, 0, 0xD7D7D7 }, 90, 714, 905, 731, 915}
+    round_tw_points={}
+    round_tw_points[1]={{ 0xDDDDDD, 4, 0, 0xDDDDDD, 11, 0, 0xDDDDDD, 13, 0, 0xDBDBDB, 13, -3, 0x818181 }, 90, 717, 907, 730, 910}
+    round_tw_points[2]={{ 0xCCCCCC, 0, -7, 0xCDCDCD, 5, -4, 0x888888, 13, 2, 0xEAEAEA, 16, 0, 0xE5E5E5, 12, -6, 0xEFEFEF, 16, -6, 0x878787 }, 90, 715, 905, 731, 914}
+    round_tw_points[3]={{ 0xE2E2E2, -4, 3, 0x959595, 1, 8, 0xF2F2F2, 6, 3, 0x636363, 6, 6, 0xEAEAEA, 10, 7, 0xD5D5D5, 11, -1, 0xCECECE }, 90, 714, 905, 729, 914}
+    
+    
+    
+    --三、结束战斗
+    kituna_points={{ 0x48A9C3, -16, 0, 0x0209AF, -15, 35, 0x006402, -2, 33, 0x50E35B, -2, 39, 0x6BE670 }, 90, 291, 595, 307, 634}
+    failed_points={{ 0x7632D8, 19, 9, 0x77E890, 26, 3, 0xF9EAC0, 15, -7, 0xE171A0, 13, 3, 0xF1F9F9 }, 90, 602, 963, 628, 979}
+    disconnect_points={{ 0xD4D5D7, 0, -37, 0x000000, 0, -43, 0xD8D8D4, 0, -47, 0x000000, 0, -53, 0xD0D0D0, 0, -58, 0x000000, 0, -66, 0xDCDBDC, 3, -73, 0x000000 }, 90, 158, 866, 161, 939}
+    reconnect_button={165, 859}
+
+    retreat_button={}
+    retreat_button[1]={416,338}
+    retreat_button[2]={378,914}
+    retreat_button[3]={165,667}
+    lr_corner={42,1143}
+    not_apply_button={106,340}
+    
+    blank_region={680,900}
+    
+end
+
+
 --[[
     -------------------------------------------------------------------
     获取卡信息相关函数
@@ -213,11 +273,11 @@ end
 
 --判断第i张卡的颜色
 function get_color(i)
-    x, y = findMultiColorInRegionFuzzy({ 0x357FFE, -2, 48, 0x56AFFE, 23, 20, 0xB0834A, 52, 13, 0xFEF9CA, 75, -31, 0x075CFE, 61, 69, 0x55C7FE }, 80, color_start_x, color_start_y[i], color_end_x, color_end_y[i]) 
+    x, y = findMultiColorInRegionFuzzy(blue_color_points,80, color_start_x, color_start_y[i], color_end_x, color_end_y[i]) 
     if x ~= -1 and y ~= -1 then
         return "blue"
     end
-    x, y = findMultiColorInRegionFuzzy({ 0xFE5612, -7, 33, 0xFD6F1A, 2, 71, 0xFF3A1E, 68, 11, 0xFEE13A, 76, 67, 0xFE6B1F }, 80, color_start_x, color_start_y[i], color_end_x, color_end_y[i]) 
+    x, y = findMultiColorInRegionFuzzy(red_color_points,80, color_start_x, color_start_y[i], color_end_x, color_end_y[i])
     if x ~= -1 and y ~= -1 then
         return "red"
     end
@@ -255,31 +315,31 @@ function get_card_info()
         for i=1,5 do
             color[i]=get_color(i)
             repeat
-                x, y = findMultiColorInRegionFuzzy({ 0xFEFEE6, -1, -16, 0x985598, -6, -28, 0xFEFEED, -5, -35, 0xDE1616, -10, -42, 0xFEFEED }, 90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+                x, y = findMultiColorInRegionFuzzy(guai1_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
                 if x ~= -1 and y ~= -1 then  
                     is_dashou[i]=false
                     break
                 end
                 ----[[
-                x, y = findMultiColorInRegionFuzzy({ 0xFFCC77, 24, -3, 0x445555, 18, -17, 0xFFEEDD, 15, -26, 0xD5CCBB, 11, -29, 0xFFEEDD }, 90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+                x, y = findMultiColorInRegionFuzzy(guai2_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
                 if x ~= -1 and y ~= -1 then  
                     is_dashou[i]=false
                     break
                 end
                 --]]--
                 ----[[
-                x, y = findMultiColorInRegionFuzzy({ 0xFEFEFE, -12, 11, 0xFEEDDC, -20, 8, 0xE09CA9, -26, 17, 0x32339D, -31, 17, 0xA955CB, -36, 17, 0xFEEDDC, -51, 17, 0xC7B2B2 }, 90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+                x, y = findMultiColorInRegionFuzzy(guai3_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
                 if x ~= -1 and y ~= -1 then  
                     is_dashou[i]=false
                     break
                 end
                 --]]--
             until true
-            x, y = findMultiColorInRegionFuzzy({ 0xC32823, 1, 13, 0xDD3B35, 0, 8, 0xC11816, 11, 11, 0xF2B16F, 10, 0, 0xF0AF6C, 16, 5, 0xF9E991, 13, 5, 0xF0C567 }, 90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+            x, y = findMultiColorInRegionFuzzy(restrain_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 restrain[i]=true
             end
-            x, y = findMultiColorInRegionFuzzy({ 0x0433AE, 2, 0, 0x013FBF, 5, 0, 0x0159DB, 8, 0, 0x0C7DEB, 11, 0, 0x27A8F4, 13, 0, 0x3AC5F9, 13, -11, 0x48DAFD, 13, 11, 0x29ABF5 }, 90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+            x, y = findMultiColorInRegionFuzzy(weak_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 weak[i]=true
             end
@@ -537,7 +597,7 @@ end
 --select_np失败
 function is_select_fail()
     mSleep(800)
-    x, y = findMultiColorInRegionFuzzy({ 0x00AFE0, 0, 23, 0xE0F2F8, 0, 29, 0x329AC8, 0, 36, 0xEDFAFF, 0, 41, 0xFEFFFE, 1, 54, 0x1C5495, 1, 57, 0xFDFEFF }, 90, 37, 1205, 38, 1262);
+    x, y = findMultiColorInRegionFuzzy(table.unpack(back_points));
     if x ~= -1 and y ~= -1 then  -- 如果找到了
         logDebug("select_np fail")
         return true
@@ -638,7 +698,12 @@ function select_skill(t)
         else
             click_skill(index)
         end
+        wait_skill()
     end
+end
+function wait_skill()
+    mSleep(1500)
+    wait_battle_start(2000)
 end
 --[[
     -------------------------------------------------------------------
@@ -652,26 +717,14 @@ function click_skill(index,target,target_2)
     local delay_t=400
     --按御主技能
     if index>=10 then
-        touchDown(5, master_skill_x, master_skill_y)
-        mSleep(33);
-        touchMove(5, master_skill_x, master_skill_y)
-        mSleep(34);
-        touchUp(5)
+        click(master_skill_x,master_skill_y)
         mSleep(delay_t)
     end
 
-    a_x=skill_x[index]
-    a_y=skill_y[index]
-
     --按技能
-    touchDown(5, a_x, a_y)
-    mSleep(33);
-    touchMove(5, a_x, a_y)
-    mSleep(34);
-    touchUp(5)
+    click(skill_x[index],skill_y[index])
 
     if not target then
-        mSleep(delay_)
         return
     end
 
@@ -682,7 +735,6 @@ function click_skill(index,target,target_2)
         b_x=servant_x
         b_y=servant_y[target]
         click(b_x,b_y,0)
-        mSleep(delay_)
         return
     end
 
@@ -695,9 +747,9 @@ function click_skill(index,target,target_2)
     b_y=change_y[target_2]
     click(b_x,b_y,delay_t)
 
-    click(100,664)
+    click(table.unpack(replace_confirm_button))
 
-    mSleep(delay_)
+
 end
 
 --素质三连
@@ -715,7 +767,7 @@ end
 function shuffle()
     logDebug("shuffled")
     --返回、点、attack
-    click(35,1253)
+    click(table.unpack(back_button))
     click_skill(12)
     click_attack()
 
@@ -724,7 +776,7 @@ end
 
 --点击attack进入选卡界面
 function click_attack()
-    click(88,1164)
+    click(table.unpack(attack_button))
     mSleep(1000);
 end
 
@@ -738,7 +790,7 @@ function click(x,y,t)
     touchDown(3, x, y)
     mSleep(64);
     touchUp(3)
-    t=t or 2000
+    t=t or 1700
 
     mSleep(t);
 end
@@ -782,36 +834,20 @@ end
 --当前回合(面) 1-3
 function get_current_round()
     keepScreen(true)
-    x, y = findMultiColorInRegionFuzzy({ 0xE1E1E1, 2, 3, 0xF9F9F8, 3, 5, 0xFEFFFE, -1, 5, 0xEFEFEF, -6, 5, 0xEFEFEF, -11, 5, 0xEFEFEF }, 90, 716, 908, 730, 913);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        keepScreen(false)
-        return 1
+    for i=1,3 do
+        x, y = findMultiColorInRegionFuzzy(table.unpack(round_cn_points[i]));
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            keepScreen(false)
+            return i
+        end
     end
-    x, y = findMultiColorInRegionFuzzy({ 0xE9E9E9, 1, 5, 0xF5F5F5, 1, 8, 0xF3F3F3, -3, 10, 0xF8F8F7, -8, 6, 0xFDFEFD, -15, 0, 0xF7F7F7, -16, 7, 0xE6E6E6 }, 90, 714, 905, 731, 915);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        keepScreen(false)
-        return 2
-    end
-    x, y = findMultiColorInRegionFuzzy({ 0xEFEFEF, 1, 5, 0xF4F4F4, -1, 9, 0xF8F8F7, -7, 4, 0xE8E8E8, -12, 10, 0xF9FAF9, -16, 4, 0xE9E9E9, -14, 0, 0xD7D7D7 }, 90, 714, 905, 731, 915);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        keepScreen(false)
-        return 3
-    end
-    --台服
-    x, y = findMultiColorInRegionFuzzy({ 0xDDDDDD, 4, 0, 0xDDDDDD, 11, 0, 0xDDDDDD, 13, 0, 0xDBDBDB, 13, -3, 0x818181 }, 90, 717, 907, 730, 910);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        keepScreen(false)
-        return 1
-    end
-    x, y = findMultiColorInRegionFuzzy({ 0xCCCCCC, 0, -7, 0xCDCDCD, 5, -4, 0x888888, 13, 2, 0xEAEAEA, 16, 0, 0xE5E5E5, 12, -6, 0xEFEFEF, 16, -6, 0x878787 }, 90, 715, 905, 731, 914);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        keepScreen(false)
-        return 2
-    end
-    x, y = findMultiColorInRegionFuzzy({ 0xE2E2E2, -4, 3, 0x959595, 1, 8, 0xF2F2F2, 6, 3, 0x636363, 6, 6, 0xEAEAEA, 10, 7, 0xD5D5D5, 11, -1, 0xCECECE }, 90, 714, 905, 729, 914);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        keepScreen(false)
-        return 3
+
+    for i=1,3 do
+        x, y = findMultiColorInRegionFuzzy(table.unpack(round_tw_points[i]));
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            keepScreen(false)
+            return i
+        end
     end
     keepScreen(false)
     logDebug("error get_current_round")
@@ -823,22 +859,20 @@ function check(is_debug)
     end
 
     if sp_mode=="手动" then
-        x, y = findMultiColorInRegionFuzzy({ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213);
+        x, y = findMultiColorInRegionFuzzy(table.unpack(attack_points));
         if x ~= -1 and y ~= -1 then  -- attack
             return 
         end
         toast("请进入副本再启动",3000)
         os.exit()
     end
+    for i=1,2 do
+        x, y = findMultiColorInRegionFuzzy(table.unpack(menu_points[i]));
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            return
+        end
+    end
 
-    x, y = findMultiColorInRegionFuzzy({ 0xE8C17B, 18, 0, 0xFBF8F4, 17, -6, 0xF5E9DC, 17, 8, 0xF7E7D3, 26, 8, 0xF0EDA0, 27, 1005, 0xD6D6D8, 29, 1129, 0xD0D2D3 }, 90, 9, 166, 38, 1301);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        return
-    end
-    x, y = findMultiColorInRegionFuzzy({ 0xD0D0D0, 0, -30, 0x07070B, -3, -35, 0xA6B1C2, -3, -39, 0x1A2138, -2, -49, 0xA0ACC0, -2, -54, 0x2A336C, -2, -57, 0xAAB5C5, -2, -66, 0x252B5F }, 90, 53, 327, 56, 393);
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
-        return
-    end
     toast("请把关卡放在第一个再启动",3000)
     os.exit()
 end
@@ -848,21 +882,21 @@ end
 --进本
 function enter_mission()
     if sp_mode=="自动" then
-        click(563,999)
+        click(table.unpack(mission_entry))
         if need_apple() then
             if apple=="不吃" then
-                click(100,678)
+                click(table.unpack(close_apple_button))
                 notifyVibrate(1500)
                 os.exit()
             end
             click(apple_x[apple],apple_y)
-            click(165,863)
+            click(table.unpack(affirm_apple_button))
         end
 
         select_support()
         keepScreen(false)
         mSleep(2000)
-        click(39,1240)
+        click(table.unpack(start_mission_button))
     end
     wait_battle_start()
 end
@@ -870,7 +904,7 @@ end
 function wait_battle_start(t)
     t=t or 5000
     while true do
-        x, y = findMultiColorInRegionFuzzy({ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213);
+        x, y = findMultiColorInRegionFuzzy(table.unpack(attack_points));
         if x ~= -1 and y ~= -1 then  -- attack
             return 
         end
@@ -887,26 +921,25 @@ function is_battle_ended()
         end
 
         keepScreen(true)
-        x, y = findMultiColorInRegionFuzzy({ 0xB7A48B, -13, -80, 0xBFAF94, 18, -136, 0x9D8E77, -7, -246, 0xFBD865, -9, 5, 0xBFAB91 }, 90, 29, 1014, 60, 1265);
+        x, y = findMultiColorInRegionFuzzy(table.unpack(attack_points));
         if x ~= -1 and y ~= -1 then  -- 出现attack没结束
             keepScreen(false)
             return false
         end
 
-        x, y = findMultiColorInRegionFuzzy({ 0x48A9C3, -16, 0, 0x0209AF, -15, 35, 0x006402, -2, 33, 0x50E35B, -2, 39, 0x6BE670 }, 90, 291, 595, 307, 634);
+        x, y = findMultiColorInRegionFuzzy(table.unpack(kituna_points));
         if x ~= -1 and y ~= -1 then  -- 出现羁绊则结束
             keepScreen(false)
             return true
         end
-        x, y = findMultiColorInRegionFuzzy({ 0x7632D8, 19, 9, 0x77E890, 26, 3, 0xF9EAC0, 15, -7, 0xE171A0, 13, 3, 0xF1F9F9 }, 90, 602, 963, 628, 979);
+        x, y = findMultiColorInRegionFuzzy(table.unpack(failed_points));
         if x ~= -1 and y ~= -1 then  -- 战斗失败
             keepScreen(false)
             return true
         end
-        x, y = findMultiColorInRegionFuzzy({ 0xD4D5D7, 0, -37, 0x000000, 0, -43, 0xD8D8D4, 0, -47, 0x000000, 0, -53, 0xD0D0D0, 0, -58, 0x000000, 0, -66, 0xDCDBDC, 3, -73, 0x000000 }, 90, 158, 866, 161, 939);
+        x, y = findMultiColorInRegionFuzzy(table.unpack(disconnect_points));
         if x ~= -1 and y ~= -1 then  -- 掉线
-            touchDown(0, 165, 859);   
-            touchUp(0);
+            click(table.unpack(reconnect_button))
         end
         keepScreen(false)
         mSleep(4000)
@@ -914,21 +947,22 @@ function is_battle_ended()
 end
 --退出战斗
 function quit_mission()
-    x, y = findMultiColorInRegionFuzzy({ 0x7632D8, 19, 9, 0x77E890, 26, 3, 0xF9EAC0, 15, -7, 0xE171A0, 13, 3, 0xF1F9F9 }, 90, 602, 963, 628, 979);
+    x, y = findMultiColorInRegionFuzzy(table.unpack(failed_points));
     if x ~= -1 and y ~= -1 then  -- 撤退
-        click(416,338)
-        click(378,914)
-        click(165,667)
+        for i=1,3 do
+            click(table.unpack(retreat_button[i]))
+        end
+
         return
     end
-    --连点三下右下角
-    click(42,1143)
-    click(42,1143)
-    click(42,1143)
-    --下一步
-    click(43,1143)
+    mSleep(2000)
+    --连点三下右下角、下一步
+    for i=1,4 do
+        click(table.unpack(lr_corner))
+    end
+
     --不申请
-    click(106,340)
+    click(table.unpack(not_apply_button))
     if times>=2 and sp_mode=="自动" then
         wait_quit_mission()
     end
@@ -939,16 +973,19 @@ end
 --等待出本
 function wait_quit_mission()
     while true do
-        x, y = findMultiColorInRegionFuzzy({ 0xE8C17B, 18, 0, 0xFBF8F4, 17, -6, 0xF5E9DC, 17, 8, 0xF7E7D3, 26, 8, 0xF0EDA0, 27, 1005, 0xD6D6D8, 29, 1129, 0xD0D2D3 }, 90, 9, 166, 38, 1301);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            return
+        for i=1,2 do
+            x, y = findMultiColorInRegionFuzzy(table.unpack(menu_points[i]));
+            if x ~= -1 and y ~= -1 then  -- 如果找到了
+                return
+            end
         end
-        click(300,150)
+        click(table.unpack(blank_region))
         mSleep(5000)
     end
 end
 --
 function start_one_mission()
+    current_turn=1
     enter_mission()
 
     turn_1_2(is_debug,need_skip)
@@ -1010,7 +1047,7 @@ function select_support()
             return
         end
         --解决奇怪的bug
-        x, y = findMultiColorInRegionFuzzy({ 0x08BBE8, -23, -9, 0x007AD5, -20, -52, 0x05387C, -2, -188, 0x0F99C0, -9, -111, 0xD2D9DE }, 90, 2, 1139, 25, 1327);
+        x, y = findMultiColorInRegionFuzzy(table.unpack(start_mission_points));
         if x ~= -1 and y ~= -1 then  -- 如果找到了
             touchDown(0, 716, 100);   -- 点击那个点
             touchUp(0);
@@ -1018,7 +1055,7 @@ function select_support()
         keepScreen(false)
 
         move_support()
-        x, y = findMultiColorInRegionFuzzy({ 0xF7F8FB, 21, 0, 0xEAEBF0 }, 90, 24, 1292, 45, 1292);
+        x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar));
         if x ~= -1 and y ~= -1 then  -- 如果到底了
             refresh_support()
         end
@@ -1042,30 +1079,31 @@ function move_support()
 end
 --刷新助战
 function refresh_support()
-    click(612,881)
-    x, y = findMultiColorInRegionFuzzy({ 0x000000, -7, 13, 0xD9DAD9, 5, 18, 0xDADBDA, -3, 26, 0x000000, 1, 33, 0xD7D7D7 }, 90, 157, 646, 169, 679);
+    click(table.unpack(refresh_button))
+    x, y = findMultiColorInRegionFuzzy(table.unpack(refresh_too_fast_warning));
     if x ~= -1 and y ~= -1 then  -- 如果找到了
         mSleep(8000)
-        click(169,672)
+        click(table.unpack(refresh_warning_close_button))
         refresh_support()
         return
     end
-    click(162,870)
+    click(table.unpack(refresh_confirm_button))
 end
 
 --需要吃苹果
 function need_apple()
-    x, y = findMultiColorInRegionFuzzy({ 0xDA6888, -31, 24, 0x6E46E3, -9, 28, 0xF9F8F5, -1, 49, 0x5DD7B5, -168, 36, 0xFEFF9B, -344, 30, 0x414E57 }, 90, 231, 361, 575, 410);
+    x, y = findMultiColorInRegionFuzzy(table.unpack(apple_window_points));
     if x ~= -1 and y ~= -1 then  -- 如果找到了
         return true
     end
     return false
 end
 
-function wait_skill()
-    mSleep(1300)
-    wait_battle_start(2500)
-end
+--[[
+    -------------------------------------------------------------------
+    自动更新
+    -------------------------------------------------------------------
+]]--
 
 function check_version()
     data = httpGet('https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/UPDATE.md')
@@ -1085,7 +1123,7 @@ function update()
     io.output(file)
     io.write(data)
     io.close(file)
-    
+
     dofile("/var/touchelf/scripts/autoupdate.lua")
     autoupdate()
 end

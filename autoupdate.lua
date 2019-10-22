@@ -12,7 +12,7 @@ function autoupdate()
     io.close(file)
     
     data = httpGet("https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/UPDATE.md")
-    file=io.open("/var/touchelf/scripts/本次更新内容.lua","w")
+    file=io.open("/var/touchelf/scripts/更新内容.lua","w")
     io.output(file)
     io.write(data)
     io.close(file)
