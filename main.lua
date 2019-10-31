@@ -1,5 +1,4 @@
 UI = {
-    { 'TextView{记得先换好默认队伍哦！}' },
     { 'InputBox{1}',             'times',    '打本次数：' },
     { 'DropList{不吃|金|银|彩}',             'apple',    '吃苹果：' },
 
@@ -9,6 +8,7 @@ UI = {
     { 'TextView{后的信息不用再设置}' },
     { 'DropList{1|2|3|4|5|6|7|8|9}', 'conf_index','文件序号：'},
     
+    { 'DropList{否|是}', 'is_check_update','检查更新：'},
 
     { 'TextView{ }' },
     { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
@@ -40,12 +40,7 @@ UI = {
     { 'DropList{后补刀|先垫刀}', 'big_enemy_mode_2', '二面大怪打法：' },
     { 'DropList{1|2|3}', 'big_enemy_3', '三面大怪序号：' },
     { 'DropList{红卡|绿卡|蓝卡}', 'mode_', '队伍性质：' },
-    { 'DropList{否|是|}', 'shuffle_cloth', '是否洗牌衣服：' },
-    { 'TextView{记得换好默认队伍哦！}' }
-
-
-
-
+    { 'DropList{否|是|}', 'shuffle_cloth', '是否洗牌衣服：' }
 }
 dofile("/var/touchelf/scripts/lib_fgo.lua")
 
@@ -81,7 +76,7 @@ function main()
     init()
 
     for ii=1,times do
-        start_one_mission()
+        start_one_mission(ii)
     end
 
     notifyMessage("感谢使用")

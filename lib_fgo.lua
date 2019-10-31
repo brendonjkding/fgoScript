@@ -4,7 +4,7 @@
     -------------------------------------------------------------------
 ]]--
 function init(is_debug_)
-    VERSION="## v1.2"
+    VERSION="## v1.2.1"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -65,7 +65,7 @@ function init(is_debug_)
     mc_points={}
     mc_points["午餐"]={ 0x67B180, -27, 4, 0xEFEBE2, -7, 64, 0xF3C8BC, -23, 98, 0x493438, 3, 138, 0x67AF82, -6, 131, 0xA0D898, -24, 138, 0xFBFC84, -32, 137, 0xB1F3D5, -26, 141, 0xF5F9BB }
     mc_points["擦汗"]={ 0x7EA75B, 20, -7, 0xF2ECCF, 29, 24, 0xF5D9D8, 22, 61, 0x9A6ACB, 27, 77, 0xCDA49A, 30, 109, 0x597027, 2, 120, 0xA2C24F, 3, 124, 0xEBF1B2, 7, 120, 0xF9FA44 }
-    mc_points["qp(任意从者)"]={ 0xBF8E69, 21, 10, 0x435DCB, 2, 44, 0x283B56, 10, 69, 0xF9D9A1, 9, 94, 0x1A1F2B, 3, 131, 0xFDFB5C, -1, 132, 0xB8D55E, 22, 115, 0xD3EEFA }
+    mc_points["qp"]={ 0xBF8E69, 21, 10, 0x435DCB, 2, 44, 0x283B56, 10, 69, 0xF9D9A1, 9, 94, 0x1A1F2B, 3, 131, 0xFDFB5C, -1, 132, 0xB8D55E, 22, 115, 0xD3EEFA }
     mc_points["所长"]={ 0x5F362F, 5, 18, 0xD9A879, 7, 32, 0x63132D, 11, 43, 0x906F5F, 11, 69, 0xF9DEB7, -3, 97, 0xFBCCC5, 18, 125, 0x4E110E, 18, 142, 0xEBAD59, 7, 138, 0xF9F824 }
     mc_points["新所长"]={ 0x372F2F, -19, 12, 0xF1ECE2, -26, 51, 0x89381B, -11, 50, 0x92C37E, -5, 77, 0xFEEEE3, 9, 105, 0x2A2B58, 9, 142, 0x1D3B29, -13, 137, 0xFAFA54, -18, 137, 0xA2C262 }
     mc_points["无限池"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F }
@@ -104,7 +104,7 @@ function init(is_debug_)
         init_conf()
     end
 
-    save_conf()
+
 
     init_points()
 
@@ -146,7 +146,10 @@ function init(is_debug_)
 
 
     check(is_debug)
-    check_version(is_debug)
+    if is_check_update=="是" then
+        check_version(is_debug)
+    end
+    save_conf()
 end
 --内置队伍信息
 function init_ata()
@@ -257,13 +260,13 @@ function init_points()
     affirm_apple_button={165,863}
 
     start_mission_button={39,1240}
-    start_mission_points={ 0x08BBE8, -23, -9, 0x007AD5, -20, -52, 0x05387C, -2, -188, 0x0F99C0, -9, -111, 0xD2D9DE }, 90, 2, 1139, 25, 1327
+    start_mission_points={{ 0x08BBE8, -23, -9, 0x007AD5, -20, -52, 0x05387C, -2, -188, 0x0F99C0, -9, -111, 0xD2D9DE }, 90, 2, 1139, 25, 1327}
 
     --助战
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     scroll_bar={{ 0xF7F8FB, 21, 0, 0xEAEBF0 }, 90, 24, 1292, 45, 1292}
-    refresh_too_fast_warning={{ 0x000000, -7, 13, 0xD9DAD9, 5, 18, 0xDADBDA, -3, 26, 0x000000, 1, 33, 0xD7D7D7 }, 90, 157, 646, 169, 679}
+    refresh_too_fast_warning={{ 0xE3E4E5, 0, -52, 0xE1E2E2, 0, -156, 0xEAEBEC, 0, -203, 0xE0E1E1 }, 90, 140, 562, 140, 765}
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     support_1={452,137}
@@ -273,14 +276,15 @@ function init_points()
     --卡信息
     blue_color_points={ 0x357FFE, -2, 48, 0x56AFFE, 23, 20, 0xB0834A, 52, 13, 0xFEF9CA, 75, -31, 0x075CFE, 61, 69, 0x55C7FE }
     red_color_points={ 0xFE5612, -7, 33, 0xFD6F1A, 2, 71, 0xFF3A1E, 68, 11, 0xFEE13A, 76, 67, 0xFE6B1F }
-    guai1_points={0xFEFEE6, -1, -16, 0x985598, -6, -28, 0xFEFEED, -5, -35, 0xDE1616, -10, -42, 0xFEFEED } 
-    guai2_points={ 0xFFCC77, 24, -3, 0x445555, 18, -17, 0xFFEEDD, 15, -26, 0xD5CCBB, 11, -29, 0xFFEEDD }
-    guai3_points={ 0xFEFEFE, -12, 11, 0xFEEDDC, -20, 8, 0xE09CA9, -26, 17, 0x32339D, -31, 17, 0xA955CB, -36, 17, 0xFEEDDC, -51, 17, 0xC7B2B2 }
-    restrain_points={ 0xC32823, 1, 13, 0xDD3B35, 0, 8, 0xC11816, 11, 11, 0xF2B16F, 10, 0, 0xF0AF6C, 16, 5, 0xF9E991, 13, 5, 0xF0C567 }
+    guai_points={}
+    guai_points[1]={0xFEFEE6, -1, -16, 0x985598, -6, -28, 0xFEFEED, -5, -35, 0xDE1616, -10, -42, 0xFEFEED } 
+    guai_points[2]={ 0xFFCC77, 24, -3, 0x445555, 18, -17, 0xFFEEDD, 15, -26, 0xD5CCBB, 11, -29, 0xFFEEDD }
+    guai_points[3]={ 0xFEFEFE, -12, 11, 0xFEEDDC, -20, 8, 0xE09CA9, -26, 17, 0x32339D, -31, 17, 0xA955CB, -36, 17, 0xFEEDDC, -51, 17, 0xC7B2B2 }
+    counter_points={ 0xC32823, 1, 13, 0xDD3B35, 0, 8, 0xC11816, 11, 11, 0xF2B16F, 10, 0, 0xF0AF6C, 16, 5, 0xF9E991, 13, 5, 0xF0C567 }
     weak_points={ 0x91F0FD, -1, 0, 0x46D4FC, -2, 0, 0x3CC7FA, -3, 0, 0x33B9F8, -4, 0, 0x29AAF5, -5, 0, 0x1F9BF2, -6, 0, 0x168CEF, -7, 0, 0x0D7FEC }
 
     --按钮
-    back_points={{ 0x00AFE0, 0, 23, 0xE0F2F8, 0, 29, 0x329AC8, 0, 36, 0xEDFAFF, 0, 41, 0xFEFFFE, 1, 54, 0x1C5495, 1, 57, 0xFDFEFF }, 90, 37, 1205, 38, 1262}
+    back_points={{ 0x00B7E6, 1, 4, 0x00B2E0, 0, 87, 0x009FD6, 1, 94, 0x00B7E2 }, 90, 37, 1200, 38, 1294}
     back_button={35,1253}
     attack_points={{ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213}
     attack_button={88,1164}
@@ -299,7 +303,8 @@ function init_points()
 
 
     --三、结束战斗
-    kituna_points={{ 0x48A9C3, -16, 0, 0x0209AF, -15, 35, 0x006402, -2, 33, 0x50E35B, -2, 39, 0x6BE670 }, 90, 291, 595, 307, 634}
+    kizuna_points={{ 0x48A9C3, -16, 0, 0x0209AF, -15, 35, 0x006402, -2, 33, 0x50E35B, -2, 39, 0x6BE670 }, 90, 291, 595, 307, 634}
+    kizuna_upgraded_points={{ 0x7642E0, 6, 3, 0x2E7AEE, 16, 10, 0x6FE29D, 17, -7, 0xF2AC9E }, 90, 223, 702, 240, 719}
     failed_points={{ 0x7632D8, 19, 9, 0x77E890, 26, 3, 0xF9EAC0, 15, -7, 0xE171A0, 13, 3, 0xF1F9F9 }, 90, 602, 963, 628, 979}
     disconnect_points={{ 0xD4D5D7, 0, -37, 0x000000, 0, -43, 0xD8D8D4, 0, -47, 0x000000, 0, -53, 0xD0D0D0, 0, -58, 0x000000, 0, -66, 0xDCDBDC, 3, -73, 0x000000 }, 90, 158, 866, 161, 939}
     reconnect_button={165, 859}
@@ -351,7 +356,7 @@ function info_init()
 
     --是否为打手卡
     is_dashou={true,true,true,true,true}
-    restrain={false,false,false,false,false}
+    counter={false,false,false,false,false}
     weak={false,false,false,false,false}
     --卡色
     color={}
@@ -365,30 +370,22 @@ function get_card_info()
     if dashou=="通用" then
         for i=1,5 do
             color[i]=get_color(i)
-            repeat
-                x, y = findMultiColorInRegionFuzzy(guai1_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+            for j=1,3 do
+                x, y = findMultiColorInRegionFuzzy(guai_points[j],90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
                 if x ~= -1 and y ~= -1 then  
                     is_dashou[i]=false
+                    if color[i]=="red" then
+                        has_sup_b=true
+                    end
+
                     break
                 end
-                ----[[
-                x, y = findMultiColorInRegionFuzzy(guai2_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
-                if x ~= -1 and y ~= -1 then  
-                    is_dashou[i]=false
-                    break
-                end
-                --]]--
-                ----[[
-                x, y = findMultiColorInRegionFuzzy(guai3_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
-                if x ~= -1 and y ~= -1 then  
-                    is_dashou[i]=false
-                    break
-                end
-                --]]--
-            until true
-            x, y = findMultiColorInRegionFuzzy(restrain_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+            end
+
+
+            x, y = findMultiColorInRegionFuzzy(counter_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
             if x ~= -1 and y ~= -1 then  -- 如果找到了
-                restrain[i]=true
+                counter[i]=true
             end
             x, y = findMultiColorInRegionFuzzy(weak_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
             if x ~= -1 and y ~= -1 then  -- 如果找到了
@@ -411,18 +408,13 @@ end
 --计算卡优先级
 function calculate_priority()
     --色卡权重
+    p={["green"]={2,1,3},["blue"]={2,3,1},["red"]={3,2,1}}--baq
     if mode=="green" and current_turn<=3 then
-        q_p=3
-        b_p=2
-        a_p=1
+        m="green"
     elseif mode=="blue" then
-        a_p=3
-        b_p=2
-        q_p=1
+        m="blue"
     else
-        b_p=3
-        a_p=2
-        q_p=1
+        m="red"
     end
 
     for i=1,5 do
@@ -440,7 +432,7 @@ function calculate_priority()
 
         end
         --克制 为两倍
-        if restrain[i] then
+        if counter[i] then
             cards[i].priority=cards[i].priority*2
         end
 
@@ -450,16 +442,20 @@ function calculate_priority()
                 q_num=q_num+1
                 q_index[q_num]=i
                 count=count+1
+                cards[i].priority=cards[i].priority+p[m][3]
+            else
+                cards[i].priority=cards[i].priority+p["red"][3]
             end
-            cards[i].priority=cards[i].priority+q_p
 
         elseif color[i]=="blue" then
             if is_dashou[i] then
                 a_num=a_num+1
                 a_index[a_num]=i
                 count=count+1
+                cards[i].priority=cards[i].priority+p[m][2]
+            else
+                cards[i].priority=cards[i].priority+p["red"][2]
             end
-            cards[i].priority=cards[i].priority+a_p
 
         elseif color[i]=="red" then
             if is_dashou[i] then
@@ -467,8 +463,10 @@ function calculate_priority()
                 b_num=b_num+1
                 b_index[b_num]=i
                 count=count+1
+                cards[i].priority=cards[i].priority+p[m][1]
+            else
+                cards[i].priority=cards[i].priority+p["red"][1]
             end
-            cards[i].priority=cards[i].priority+b_p
         else
             logDebug("error calculate")
 
@@ -483,7 +481,7 @@ function get_info()
     get_card_info()
     calculate_priority()
     keepScreen(false)
-    logDebug(string.format("\n打手:%s %s %s %s %s, \n颜色:%s %s %s %s %s, \n克制:%s %s %s %s %s,\n被克制:%s %s %s %s %s,\n优先:%d %d %d %d %d     \nb:%d a:%d q:%d count:%d      ",is_dashou[1],is_dashou[2],is_dashou[3],is_dashou[4],is_dashou[5],color[1],color[2],color[3],color[4],color[5],restrain[1],restrain[2],restrain[3],restrain[4],restrain[5],weak[1],weak[2],weak[3],weak[4],weak[5],cards[1].priority,cards[2].priority,cards[3].priority,cards[4].priority,cards[5].priority,b_num,a_num,q_num,count))
+    logDebug(string.format("\n打手:%s %s %s %s %s, \n颜色:%s %s %s %s %s, \n克制:%s %s %s %s %s,\n被克制:%s %s %s %s %s,\n优先:%d %d %d %d %d     \nb:%d a:%d q:%d count:%d  has_sup_b:%s    ",is_dashou[1],is_dashou[2],is_dashou[3],is_dashou[4],is_dashou[5],color[1],color[2],color[3],color[4],color[5],counter[1],counter[2],counter[3],counter[4],counter[5],weak[1],weak[2],weak[3],weak[4],weak[5],cards[1].priority,cards[2].priority,cards[3].priority,cards[4].priority,cards[5].priority,b_num,a_num,q_num,count,has_sup_b))
     table.sort(cards)
 end
 
@@ -594,10 +592,16 @@ function select_np(t,is_debug)
             end
         end
     end
-    if big_enemy_mode=="先垫刀" then
-        for i=1,q_num do
-            cards[q_index[i]].priority=0
+    if big_enemy_mode[t]=="先垫刀" then
+
+        if mode_=="绿卡" and t==2 then
+            table.sort(cards,function(a,b) return a.index<b.index end)
+            for i=1,q_num do
+                cards[q_index[i]].priority=0
+            end
+            table.sort(cards)
         end
+
         for i=1,3 do
             if index[i]==0 then
                 choose_card_priority(i)
@@ -632,11 +636,18 @@ function select_normal(t,is_debug)
     index={0,0,0}
 
     if count>=3 then
-        if b_num>=1 then--有红
+        if b_num==1 then--有红
             index[1]=b_index[b_num]
-            b_num=b_num-1
-            used[index[1]]=true
+
+        elseif b_num==2 then
+            temp_i=b_index[1]
+            if cards[b_index[2]].priority<cards[b_index[1]].priority then
+                temp_i=b_index[2]
+            end
+            index[1]=temp_i
         end
+        b_num=b_num-1
+        used[index[1]]=true
     elseif count>=1 then--1 2
         if b_num==1 then--有红
             if has_sup_b==false then--有红没拐红
@@ -793,13 +804,11 @@ function click_skill(index,target,target_2)
     end
 
     --按技能
-    click(skill_x[index],skill_y[index])
+    click(skill_x[index],skill_y[index],700)
 
     if not target then
         return
     end
-
-    mSleep(delay_t)
 
     --1.普通目标
     if not target_2 then
@@ -904,23 +913,26 @@ end
 ]]--
 --当前回合(面) 1-3
 function get_current_round()
-    keepScreen(true)
-    for i=1,3 do
-        x, y = findMultiColorInRegionFuzzy(table.unpack(round_cn_points[i]));
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            keepScreen(false)
-            return i
+    while true do
+        keepScreen(true)
+        for i=1,3 do
+            x, y = findMultiColorInRegionFuzzy(table.unpack(round_cn_points[i]));
+            if x ~= -1 and y ~= -1 then  -- 如果找到了
+                keepScreen(false)
+                return i
+            end
         end
-    end
 
-    for i=1,3 do
-        x, y = findMultiColorInRegionFuzzy(table.unpack(round_tw_points[i]));
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            keepScreen(false)
-            return i
+        for i=1,3 do
+            x, y = findMultiColorInRegionFuzzy(table.unpack(round_tw_points[i]));
+            if x ~= -1 and y ~= -1 then  -- 如果找到了
+                keepScreen(false)
+                return i
+            end
         end
+        keepScreen(false)
+        mSleep(8000)
     end
-    keepScreen(false)
     logDebug("error get_current_round")
 end
 --启动前检查防止误启动
@@ -981,6 +993,7 @@ function wait_battle_start(t)
         end
         if sp_mode=="手动" then
             toast("请选择助战并进入关卡",3000)
+            notifyVibrate(1000)
         end
 
         mSleep(t)
@@ -1002,11 +1015,18 @@ function is_battle_ended()
             return false
         end
 
-        x, y = findMultiColorInRegionFuzzy(table.unpack(kituna_points));
+        x, y = findMultiColorInRegionFuzzy(table.unpack(kizuna_points));
         if x ~= -1 and y ~= -1 then  -- 出现羁绊则结束
             keepScreen(false)
             return true
         end
+
+        x, y = findMultiColorInRegionFuzzy(table.unpack(kizuna_upgraded_points));
+        if x ~= -1 and y ~= -1 then  -- 出现羁绊则结束
+            keepScreen(false)
+            return true
+        end
+
         x, y = findMultiColorInRegionFuzzy(table.unpack(failed_points));
         if x ~= -1 and y ~= -1 then  -- 战斗失败
             keepScreen(false)
@@ -1024,6 +1044,7 @@ end
 function quit_mission()
     x, y = findMultiColorInRegionFuzzy(table.unpack(failed_points));
     if x ~= -1 and y ~= -1 then  -- 撤退
+        notifyVibrate(3000)
         for i=1,3 do
             click(table.unpack(retreat_button[i]))
         end
@@ -1059,7 +1080,13 @@ function wait_quit_mission()
     end
 end
 --
-function start_one_mission()
+function start_one_mission(t)
+    logDebug(string.format("times:%d",t))
+    if t==1 and sp_mode=="自动" then
+        notifyMessage("记得换好默认队伍哦！")
+        mSleep(1000)
+    end
+
     current_turn=1
     enter_mission()
 
@@ -1080,8 +1107,9 @@ function find_support(pos)
     else
         x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, 4, 32, 292, 236);
     end
+
     if (x ~= -1 and y ~= -1 ) or mc=="任意" then  -- 如果找到了礼装
-        
+
         if sp=="任意" then --任意从者
             click(x,y)
             return true
