@@ -4,146 +4,21 @@
     -------------------------------------------------------------------
 ]]--
 function init(is_debug_)
-    VERSION="## v1.2.1"
+    VERSION="## v1.2.2"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
     rotateScreen(0);
 
-    --指令卡选择坐标
-    card_x={222,222,222,222,222,542,542,542}--1,2,3,4,5,np
-    card_y={150,400,680,940,1200,454,689,951}--266
-
-    --技能坐标
-    skill_x={ 150,150,150,
-        150,150,150,
-        150,150,150,
-        425,425,425 }
-    skill_y={ 70,170,270,
-        400,500,600,
-        735,835,935,
-        943,1038,1134}
-    master_skill_x=418
-    master_skill_y=1251
-
-    --从者坐标
-    servant_x=281
-    servant_y={a=344,b=671,c=1011}
-
-    --卡色判断区域
-    color_start_x=54
-    color_start_y={7}
-    color_end_x=265
-    color_end_y={284}
-    for i=2,5 do
-        color_start_y[i]=color_start_y[i-1]+268
-        color_end_y[i]=color_end_y[i-1]+268
-    end
-    --切换敌人坐标
-    enemy_x=700
-    enemy_y={47,305,548}
-
-    --卡信息区域
-    feature_start_x=171
-    feature_start_y={24}
-    feature_end_x=459
-    feature_end_y={280}
-    for i=2,5 do
-        feature_start_y[i]=feature_start_y[i-1]+268
-        feature_end_y[i]=feature_end_y[i-1]+268
-    end
-    --技能释放延迟
-    if is_speed_up=="是" then
-        delay_=1300
-    else
-        delay_=3500
-    end
-    --换人礼装目标坐标
-    change_x=388
-    change_y={m=139,n=359,o=579,p=799,q=1019,r=1239}
-    --助战礼装特征
-    mc_points={}
-    mc_points["午餐"]={ 0x67B180, -27, 4, 0xEFEBE2, -7, 64, 0xF3C8BC, -23, 98, 0x493438, 3, 138, 0x67AF82, -6, 131, 0xA0D898, -24, 138, 0xFBFC84, -32, 137, 0xB1F3D5, -26, 141, 0xF5F9BB }
-    mc_points["擦汗"]={ 0x7EA75B, 20, -7, 0xF2ECCF, 29, 24, 0xF5D9D8, 22, 61, 0x9A6ACB, 27, 77, 0xCDA49A, 30, 109, 0x597027, 2, 120, 0xA2C24F, 3, 124, 0xEBF1B2, 7, 120, 0xF9FA44 }
-    mc_points["qp"]={ 0xBF8E69, 21, 10, 0x435DCB, 2, 44, 0x283B56, 10, 69, 0xF9D9A1, 9, 94, 0x1A1F2B, 3, 131, 0xFDFB5C, -1, 132, 0xB8D55E, 22, 115, 0xD3EEFA }
-    mc_points["所长"]={ 0x5F362F, 5, 18, 0xD9A879, 7, 32, 0x63132D, 11, 43, 0x906F5F, 11, 69, 0xF9DEB7, -3, 97, 0xFBCCC5, 18, 125, 0x4E110E, 18, 142, 0xEBAD59, 7, 138, 0xF9F824 }
-    mc_points["新所长"]={ 0x372F2F, -19, 12, 0xF1ECE2, -26, 51, 0x89381B, -11, 50, 0x92C37E, -5, 77, 0xFEEEE3, 9, 105, 0x2A2B58, 9, 142, 0x1D3B29, -13, 137, 0xFAFA54, -18, 137, 0xA2C262 }
-    mc_points["无限池"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F }
-    mc_points["无限池(满破)"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F, -5, 120, 0xFBFC77, -8, 120, 0xC7DA7E, -12, 120, 0xA6E2BA }
-    --助战从者特征
-    support_points={}
-    support_points["孔明"]={ 0xFAF4D6, -6, 4, 0x716256, -3, 15, 0xFBF5D5, -31, 11, 0xDEC4A2, -33, -59, 0xBFEFD6, 36, -15, 0x4C5D59 }
-    support_points["梅林"]={ 0x739EE3, 43, 47, 0x6D4B7C, 46, 66, 0xF3D6D9, 54, 81, 0x1D1B68, 41, 104, 0xAEAAE2, 47, 141, 0xFFF0EF }
-    support_points["cba"]={ 0xD099F5, 44, -4, 0xDEC9F4, 45, 26, 0x793561, 45, 41, 0xAF0E19, 28, 51, 0xFEFFE1, 45, 86, 0xB10B12 }
-    support_points["狐狸"]={ 0xB18B34, 2, 26, 0xE28875, 8, 49, 0xF7C268, 8, 70, 0xF6E4C4, 13, 98, 0xF9CD76, 13, 111, 0xD07765, 13, 152, 0xFEFFF2 }
-
-
-    --np_full={false,false,false}
-
-    --苹果坐标
-    apple_x={["彩"]=574,["金"]=418,["银"]=290}
-    apple_y=700
-
-
-    if dashou=="狂兰" then
-        color_points={ 0x181830, 6, -5, 0x504477, 13, -11, 0xFD0051, 25, -13, 0x444477, 20, -22, 0xF9004C }
-    elseif dashou=="阿塔" then
-        color_points={ 0xFEEDCB, -2, 10, 0xFEECD5, 8, 4, 0x339D00, 19, -1, 0xE3D9B7, 20, 17, 0x1F7A5D }
-    else
-        dashou="通用"
-    end
-
-    --初始化队伍信息
-    if skill_mode=="满破宝石狂兰wcba充能衣服" then
-        init_ber()
-    elseif skill_mode=="满破宝石阿塔wcba充能衣服" then
-        init_ata()
-    elseif skill_mode=="(模板)满破宝石尼托+二号打手+孔明" then
-        init_nituo()
-    elseif skill_mode=="从文件导入" then
-        init_conf()
-    end
-
-
-
     init_points()
-
-    --输入信息处理
-    skills={}
-    skills[1]=Split(skill_serial_1," ")
-    skills[2]=Split(skill_serial_2," ")
-    skills[3]=Split(skill_serial_3," ")
-    np_index={}
-    np_index[1]=tonumber(np_index_1)+5
-    np_index[2]=tonumber(np_index_2)+5
-    np_index[3]=tonumber(np_index_3)+5
-    if mode_=="绿卡" then
-        mode="green"
-    elseif mode_=="红卡" then
-        mode="red"
-    else
-        mode="blue"
-    end
-    big_enemy={big_enemy_1,big_enemy_2}
-    big_enemy_mode={big_enemy_mode_1,big_enemy_mode_2}
-
-    if shuffle_cloth=="是" then
-        shuffled=false
-    else
-        shuffled=true
-    end
-    times=tonumber(times)
-
-    --卡对象
+    init_input_info()
     init_ob()
 
-
     --Debug
-    current_turn=1
+    current_round=1
     logDebug("------------------------------------------------------------")
     is_debug=is_debug_
     need_skip=false
-
 
     check(is_debug)
     if is_check_update=="是" then
@@ -160,7 +35,7 @@ function init_ata()
     np_index_2="1"
     np_index_3="1"
     big_enemy_3="1"
-    mode_="绿卡"
+    mode="绿卡"
     shuffle_cloth="是"
 
 end
@@ -172,7 +47,7 @@ function init_ber()
     np_index_2="1"
     np_index_3="1"
     big_enemy_3="1"
-    mode_="绿卡"
+    mode="绿卡"
     shuffle_cloth="是"
 
 end
@@ -189,7 +64,7 @@ function init_nituo()
     np_index_2="1"
     np_index_3="2"
     big_enemy_3="1"
-    mode_="红卡"
+    mode="红卡"
     shuffle_cloth="否"
 end
 function init_conf()
@@ -220,7 +95,7 @@ function save_conf()
     t=t.."big_enemy_2=\""..big_enemy_2.."\"--二面大怪".."\n"
     t=t.."big_enemy_mode_2=\""..big_enemy_mode_2.."\"\n\n"
     t=t.."big_enemy_3=\""..big_enemy_3.."\"--三面大怪".."\n"
-    t=t.."mode_=\""..mode_.."\"--队伍".."\n"
+    t=t.."mode=\""..mode.."\"--队伍".."\n"
     t=t.."shuffle_cloth=\""..shuffle_cloth.."\"--洗牌服".."\n"
     io.write(t)
 
@@ -234,10 +109,55 @@ function save_conf()
     io.close(file)
 
 end
+function init_input_info()
+    if dashou=="狂兰" then
+        color_points={ 0x181830, 6, -5, 0x504477, 13, -11, 0xFD0051, 25, -13, 0x444477, 20, -22, 0xF9004C }
+    elseif dashou=="阿塔" then
+        color_points={ 0xFEEDCB, -2, 10, 0xFEECD5, 8, 4, 0x339D00, 19, -1, 0xE3D9B7, 20, 17, 0x1F7A5D }
+    else
+        dashou="通用"
+    end
+
+    --初始化队伍信息
+    if skill_mode=="满破宝石狂兰wcba充能衣服" then
+        init_ber()
+    elseif skill_mode=="满破宝石阿塔wcba充能衣服" then
+        init_ata()
+    elseif skill_mode=="(模板)满破宝石尼托+二号打手+孔明" then
+        init_nituo()
+    elseif skill_mode=="从文件导入" then
+        init_conf()
+    end
+
+    if mode_ then
+        mode=mode_
+    end
+
+
+    --输入信息处理
+    skills={}
+    skills[1]=Split(skill_serial_1," ")
+    skills[2]=Split(skill_serial_2," ")
+    skills[3]=Split(skill_serial_3," ")
+    np_indexs={}
+    np_indexs[1]=tonumber(np_index_1)+5
+    np_indexs[2]=tonumber(np_index_2)+5
+    np_indexs[3]=tonumber(np_index_3)+5
+
+    big_enemy={big_enemy_1,big_enemy_2}
+    big_enemy_mode={big_enemy_mode_1,big_enemy_mode_2}
+
+    if shuffle_cloth=="是" then
+        shuffled=false
+    else
+        shuffled=true
+    end
+    times=tonumber(times)
+end
 
 --卡对象
 function init_ob()
-    Card={index=0,priority=0}
+    Card={index=0,priority=0,used=false,is_dashou=true,counter=false,weak=false,color=false,test=1}
     Card.__index=Card 
     Card.__lt=function(a,b)return a.priority>b.priority end
     function Card:new(i,p)
@@ -255,6 +175,8 @@ function init_points()
     menu_points[2]={{ 0xD6D6D6, 0, -18, 0x10172D, -1, -25, 0xAEB6C3, -1, -29, 0x192245, -1, -34, 0xAEB6C7, -1, -47, 0xCFD2D6, 19, -1029, 0xD4D5D5 }, 90, 36, 257, 56, 1286}
 
     mission_entry={563,999}
+    apple_x={["彩"]=574,["金"]=418,["银"]=290}
+    apple_y=700
     apple_window_points={{ 0xDA6888, -31, 24, 0x6E46E3, -9, 28, 0xF9F8F5, -1, 49, 0x5DD7B5, -168, 36, 0xFEFF9B, -344, 30, 0x414E57 }, 90, 231, 361, 575, 410}
     close_apple_button={100,678}
     affirm_apple_button={165,863}
@@ -266,13 +188,48 @@ function init_points()
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     scroll_bar={{ 0xF7F8FB, 21, 0, 0xEAEBF0 }, 90, 24, 1292, 45, 1292}
-    refresh_too_fast_warning={{ 0xE3E4E5, 0, -52, 0xE1E2E2, 0, -156, 0xEAEBEC, 0, -203, 0xE0E1E1 }, 90, 140, 562, 140, 765}
+    refresh_too_fast_warning={{ 0xEDEEEA, 43, -2, 0xEFEFEF }, 90, 138, 666, 181, 668}
+    refresh_warning_close_button={171,673}
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     support_1={452,137}
     --find/move_support需在内部改
 
+    --助战礼装特征
+    mc_points={}
+    mc_points["午餐"]={ 0x67B180, -27, 4, 0xEFEBE2, -7, 64, 0xF3C8BC, -23, 98, 0x493438, 3, 138, 0x67AF82, -6, 131, 0xA0D898, -24, 138, 0xFBFC84, -32, 137, 0xB1F3D5, -26, 141, 0xF5F9BB }
+    mc_points["擦汗"]={ 0x7EA75B, 20, -7, 0xF2ECCF, 29, 24, 0xF5D9D8, 22, 61, 0x9A6ACB, 27, 77, 0xCDA49A, 30, 109, 0x597027, 2, 120, 0xA2C24F, 3, 124, 0xEBF1B2, 7, 120, 0xF9FA44 }
+    mc_points["qp"]={ 0xBF8E69, 21, 10, 0x435DCB, 2, 44, 0x283B56, 10, 69, 0xF9D9A1, 9, 94, 0x1A1F2B, 3, 131, 0xFDFB5C, -1, 132, 0xB8D55E, 22, 115, 0xD3EEFA }
+    mc_points["所长"]={ 0x5F362F, 5, 18, 0xD9A879, 7, 32, 0x63132D, 11, 43, 0x906F5F, 11, 69, 0xF9DEB7, -3, 97, 0xFBCCC5, 18, 125, 0x4E110E, 18, 142, 0xEBAD59, 7, 138, 0xF9F824 }
+    mc_points["新所长"]={ 0x372F2F, -19, 12, 0xF1ECE2, -26, 51, 0x89381B, -11, 50, 0x92C37E, -5, 77, 0xFEEEE3, 9, 105, 0x2A2B58, 9, 142, 0x1D3B29, -13, 137, 0xFAFA54, -18, 137, 0xA2C262 }
+    mc_points["无限池"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F }
+    mc_points["无限池(满破)"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F, -5, 120, 0xFBFC77, -8, 120, 0xC7DA7E, -12, 120, 0xA6E2BA }
+    --助战从者特征
+    support_points={}
+    support_points["孔明"]={ 0xFAF4D6, -6, 4, 0x716256, -3, 15, 0xFBF5D5, -31, 11, 0xDEC4A2, -33, -59, 0xBFEFD6, 36, -15, 0x4C5D59 }
+    support_points["梅林"]={ 0x739EE3, 43, 47, 0x6D4B7C, 46, 66, 0xF3D6D9, 54, 81, 0x1D1B68, 41, 104, 0xAEAAE2, 47, 141, 0xFFF0EF }
+    support_points["cba"]={ 0xD099F5, 44, -4, 0xDEC9F4, 45, 26, 0x793561, 45, 41, 0xAF0E19, 28, 51, 0xFEFFE1, 45, 86, 0xB10B12 }
+    support_points["310cba"]=support_points["cba"]
+    support_points["狐狸"]={ 0xB18B34, 2, 26, 0xE28875, 8, 49, 0xF7C268, 8, 70, 0xF6E4C4, 13, 98, 0xF9CD76, 13, 111, 0xD07765, 13, 152, 0xFEFFF2 }
+
     --二、战斗中
+    --卡色判断区域
+    color_start_x=54
+    color_start_y={7}
+    color_end_x=265
+    color_end_y={284}
+
+    --卡打手信息区域
+    feature_start_x=171
+    feature_start_y={24}
+    feature_end_x=459
+    feature_end_y={280}
+    for i=2,5 do
+        color_start_y[i]=color_start_y[i-1]+268
+        color_end_y[i]=color_end_y[i-1]+268
+        feature_start_y[i]=feature_start_y[i-1]+268
+        feature_end_y[i]=feature_end_y[i-1]+268
+    end
     --卡信息
     blue_color_points={ 0x357FFE, -2, 48, 0x56AFFE, 23, 20, 0xB0834A, 52, 13, 0xFEF9CA, 75, -31, 0x075CFE, 61, 69, 0x55C7FE }
     red_color_points={ 0xFE5612, -7, 33, 0xFD6F1A, 2, 71, 0xFF3A1E, 68, 11, 0xFEE13A, 76, 67, 0xFE6B1F }
@@ -283,6 +240,28 @@ function init_points()
     counter_points={ 0xC32823, 1, 13, 0xDD3B35, 0, 8, 0xC11816, 11, 11, 0xF2B16F, 10, 0, 0xF0AF6C, 16, 5, 0xF9E991, 13, 5, 0xF0C567 }
     weak_points={ 0x91F0FD, -1, 0, 0x46D4FC, -2, 0, 0x3CC7FA, -3, 0, 0x33B9F8, -4, 0, 0x29AAF5, -5, 0, 0x1F9BF2, -6, 0, 0x168CEF, -7, 0, 0x0D7FEC }
 
+    --切换敌人坐标
+    enemy_x=700
+    enemy_y={47,305,548}
+    --指令卡选择坐标
+    card_x={222,222,222,222,222,542,542,542}--1,2,3,4,5,np
+    card_y={150,400,680,940,1200,454,689,951}--266
+    --技能坐标
+    skill_x={ 150,150,150,
+        150,150,150,
+        150,150,150,
+        425,425,425 }
+    skill_y={ 70,170,270,
+        400,500,600,
+        735,835,935,
+        943,1038,1134}
+    master_skill_button={418,1251}
+    --技能目标坐标
+    servant_x=281
+    servant_y={a=344,b=671,c=1011}
+    --换人技能目标坐标
+    change_x=388
+    change_y={m=139,n=359,o=579,p=799,q=1019,r=1239}
     --按钮
     back_points={{ 0x00B7E6, 1, 4, 0x00B2E0, 0, 87, 0x009FD6, 1, 94, 0x00B7E2 }, 90, 37, 1200, 38, 1294}
     back_button={35,1253}
@@ -341,27 +320,18 @@ function get_color(i)
 end
 --卡信息变量初始化
 function info_init()
-    --是否已选
-    used={false,false,false,false,false}
-    --本轮打手各色色卡的序号
-    q_index={}
-    a_index={}
-    b_index={}
+    --卡对象
+    cards={Card:new(1,10),Card:new(2,10),Card:new(3,10),Card:new(4,10),Card:new(5,10)}
+    --本轮打手各色色卡
+    q_card={}
+    a_card={}
+    b_card={}
     --本轮打手各色色卡的数量
     q_num=0
     a_num=0
     b_num=0
     --打手卡数
     count=0
-
-    --是否为打手卡
-    is_dashou={true,true,true,true,true}
-    counter={false,false,false,false,false}
-    weak={false,false,false,false,false}
-    --卡色
-    color={}
-    --序号与优先级
-    cards={Card:new(1,10),Card:new(2,10),Card:new(3,10),Card:new(4,10),Card:new(5,10)}
     --是否有拐红卡
     has_sup_b=false
 end
@@ -369,12 +339,12 @@ end
 function get_card_info()
     if dashou=="通用" then
         for i=1,5 do
-            color[i]=get_color(i)
+            cards[i].color=get_color(i)
             for j=1,3 do
                 x, y = findMultiColorInRegionFuzzy(guai_points[j],90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
                 if x ~= -1 and y ~= -1 then  
-                    is_dashou[i]=false
-                    if color[i]=="red" then
+                    cards[i].is_dashou=false
+                    if cards[i].color=="red" then
                         has_sup_b=true
                     end
 
@@ -385,21 +355,21 @@ function get_card_info()
 
             x, y = findMultiColorInRegionFuzzy(counter_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
             if x ~= -1 and y ~= -1 then  -- 如果找到了
-                counter[i]=true
+                cards[i].counter=true
             end
             x, y = findMultiColorInRegionFuzzy(weak_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
             if x ~= -1 and y ~= -1 then  -- 如果找到了
-                weak[i]=true
+                cards[i].weak=true
             end
         end
     else
         for i=1,5 do
-            color[i]=get_color(i)
+            cards[i].color=get_color(i)
             x, y = findMultiColorInRegionFuzzy(color_points, 80, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
             if x ~= -1 and y ~= -1 then  -- 如果找到了
-                is_dashou[i]=true   
+                cards[i].is_dashou=true   
             else
-                is_dashou[i]=false
+                cards[i].is_dashou=false
             end
         end
     end
@@ -409,59 +379,83 @@ end
 function calculate_priority()
     --色卡权重
     p={["green"]={2,1,3},["blue"]={2,3,1},["red"]={3,2,1}}--baq
-    if mode=="green" and current_turn<=3 then
+    if mode=="绿卡" and current_round<=3 then
         m="green"
-    elseif mode=="blue" then
+    elseif mode=="蓝卡" then
         m="blue"
     else
         m="red"
     end
 
     for i=1,5 do
-        --克制打手200 打手100 克制拐20 拐10 被克打手5 被克拐1
-        if is_dashou[i] then
-            if not weak[i] then
-                cards[i].priority=100
+        if (current_round==2 or current_round==3) and mode=="绿卡" then
+            --克制打手200 打手100 克制拐20 拐10 被克打手5 被克拐1
+            if cards[i].is_dashou then
+                if not cards[i].weak then
+                    cards[i].priority=100
+                else
+                    cards[i].priority=5
+                end
             else
-                cards[i].priority=5
+                if cards[i].weak then
+                    cards[i].priority=1
+                end
+
+            end
+            --克制 为两倍
+            if cards[i].counter then
+                cards[i].priority=cards[i].priority*2
             end
         else
-            if weak[i] then
-                cards[i].priority=1
+            --克制打手200 克制拐100 打手20 拐10 被克打手5 被克拐1
+            if cards[i].counter then
+                if cards[i].is_dashou then
+                    cards[i].priority=200
+                else
+                    cards[i].priority=100
+                end
+            elseif cards[i].weak then
+                if cards[i].is_dashou then
+                    cards[i].priority=5
+                else
+                    cards[i].priority=1
+                end
+            else
+                if cards[i].is_dashou then
+                    cards[i].priority=20
+                else
+                    cards[i].priority=10
+                end
             end
 
         end
-        --克制 为两倍
-        if counter[i] then
-            cards[i].priority=cards[i].priority*2
-        end
+
 
         --颜色权重，顺便统计打手卡信息
-        if color[i]=="green" then
-            if is_dashou[i] then
+        if cards[i].color=="green" then
+            if cards[i].is_dashou then
                 q_num=q_num+1
-                q_index[q_num]=i
+                table.insert(q_card,cards[i])
                 count=count+1
                 cards[i].priority=cards[i].priority+p[m][3]
             else
                 cards[i].priority=cards[i].priority+p["red"][3]
             end
 
-        elseif color[i]=="blue" then
-            if is_dashou[i] then
+        elseif cards[i].color=="blue" then
+            if cards[i].is_dashou then
                 a_num=a_num+1
-                a_index[a_num]=i
+                table.insert(a_card,cards[i])
                 count=count+1
                 cards[i].priority=cards[i].priority+p[m][2]
             else
                 cards[i].priority=cards[i].priority+p["red"][2]
             end
 
-        elseif color[i]=="red" then
-            if is_dashou[i] then
-
+        elseif cards[i].color=="red" then
+            if cards[i].is_dashou then
                 b_num=b_num+1
-                b_index[b_num]=i
+                table.insert(b_card,cards[i])
                 count=count+1
                 cards[i].priority=cards[i].priority+p[m][1]
             else
@@ -481,8 +475,14 @@ function get_info()
     get_card_info()
     calculate_priority()
     keepScreen(false)
-    logDebug(string.format("\n打手:%s %s %s %s %s, \n颜色:%s %s %s %s %s, \n克制:%s %s %s %s %s,\n被克制:%s %s %s %s %s,\n优先:%d %d %d %d %d     \nb:%d a:%d q:%d count:%d  has_sup_b:%s    ",is_dashou[1],is_dashou[2],is_dashou[3],is_dashou[4],is_dashou[5],color[1],color[2],color[3],color[4],color[5],counter[1],counter[2],counter[3],counter[4],counter[5],weak[1],weak[2],weak[3],weak[4],weak[5],cards[1].priority,cards[2].priority,cards[3].priority,cards[4].priority,cards[5].priority,b_num,a_num,q_num,count,has_sup_b))
-    table.sort(cards)
+    logDebug(string.format("\n打手:%s %s %s %s %s, \n颜色:%s %s %s %s %s, \n克制:%s %s %s %s %s,\n被克制:%s %s %s %s %s,\n优先:%d %d %d %d %d     \nb:%d a:%d q:%d count:%d  has_sup_b:%s    ",
+            cards[1].is_dashou,cards[2].is_dashou,cards[3].is_dashou,cards[4].is_dashou,cards[5].is_dashou, 
+            cards[1].color,cards[2].color,cards[3].color,cards[4].color,cards[5].color,  
+            cards[1].counter,cards[2].counter,cards[3].counter,cards[4].counter,cards[5].counter,    
+            cards[1].weak,cards[2].weak,cards[3].weak,cards[4].weak,cards[5].weak,  
+            cards[1].priority,cards[2].priority,cards[3].priority,cards[4].priority,cards[5].priority,
+            b_num,a_num,q_num,count,has_sup_b))
+
 end
 
 
@@ -495,25 +495,22 @@ end
 
 --没决定第一张卡时考虑首红
 function choose_first()
-    if index[1]~=0 then
+    if seleted_card[1].index~=0 then
         return
     end
 
     local x=1
     for i=1,5 do
-        if not used[i] and color[i]=="red" and not is_dashou[i] then
-            index[x]=i
-            used[i]=true
+        if not cards[i].used and cards[i].color=="red" and not cards[i].is_dashou then
+            seleted_card[x]=cards[i]
+            cards[i].used=true
             return
         end
     end
     for i=1,5 do
-        if not used[i] and color[i]=="red" then
-            table.remove(b_index,1)
-            b_num=b_num-1
-            count=count-1
-            index[x]=i
-            used[i]=true
+        if not cards[i].used and cards[i].color=="red" then
+            seleted_card[x]=cards[i]
+            cards[i].used=true
             return
         end
     end
@@ -522,9 +519,9 @@ end
 --按优先级选第x张卡
 function choose_card_priority(x)
     for i=1,5 do
-        if not used[cards[i].index] then
-            index[x]=cards[i].index
-            used[cards[i].index]=true
+        if not cards[i].used then
+            seleted_card[x]=cards[i]
+            cards[i].used=true
             return
         end
     end
@@ -535,54 +532,58 @@ end
 --带宝具选第t面卡
 function select_np(t,is_debug)
     get_info()
-    np_index_=np_index[t]
-    if np_index_==5 then
+    np_card=Card:new(np_indexs[t],0)
+    if np_card.index==5 then
         select_normal()
         return
     end
 
-    index={0,0,0}
+    seleted_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
     if t==2 and big_enemy_mode[t]=="先垫刀" then
-        if mode_=="绿卡" then
-            if q_num==4 then
-                index[2]=np_index_
+        if mode=="绿卡" then
+            if q_num==4 then--只能垫1张
+                seleted_card[2]=np_card
+                table.sort(cards)
                 choose_card_priority(3)
             else
-                index[3]=np_index_
+                seleted_card[3]=np_card--垫2张
             end
         end
     elseif t==1 and big_enemy_mode[t]=="先垫刀" then
-        index[3]=np_index_
+        seleted_card[3]=np_card
     else
+        --优先打手首红
         if count>=2 then
             --绿卡模式考虑首红
-            if b_num>=1 and mode=="green" and t>=3 then--有红
-                index[1]=b_index[b_num]
+            if b_num>=1 and mode=="绿卡" and t>=3 then--有红
+                card=b_card[b_num]
                 b_num=b_num-1
-                used[index[1]]=true
-                index[2]=np_index_
+                card.used=true
+                seleted_card[2]=np_card
+                seleted_card[1]=card
             else
-                index[1]=np_index_
+                seleted_card[1]=np_card
             end
-        elseif count==1 then
+        elseif count==1 then--1张打手
             if b_num==1 then
-                if not has_sup_b and mode=="green" and t>=3 then--有红没拐红
-                    index[1]=b_index[b_num]
+                if not has_sup_b and mode=="绿卡" and t>=3 then--有红没拐红
+                    card=b_card[b_num]
                     b_num=b_num-1
-                    used[index[1]]=true
-                    index[2]=np_index_
+                    card.used=true
+                    seleted_card[2]=np_card
+                    seleted_card[1]=card
                 else
-                    index[1]=np_index_
+                    seleted_card[1]=np_card
                 end
             else
-                if has_sup_b and mode=="green" and t>=3 then
-                    index[2]=np_index_
+                if has_sup_b and mode=="绿卡" and t>=3 then
+                    seleted_card[2]=np_card
                 else
-                    index[1]=np_index_
+                    seleted_card[1]=np_card
                 end
             end
-        else
-            index[1]=np_index_
+        else--0打手
+            seleted_card[1]=np_card
             --绿卡队3t需洗牌
             if sp=="cba" and t==3 and not shuffled then
                 if is_debug then
@@ -592,39 +593,40 @@ function select_np(t,is_debug)
             end
         end
     end
+    table.sort(cards)
     if big_enemy_mode[t]=="先垫刀" then
-
-        if mode_=="绿卡" and t==2 then
-            table.sort(cards,function(a,b) return a.index<b.index end)
+        if mode=="绿卡" and t==2 then
             for i=1,q_num do
-                cards[q_index[i]].priority=0
+                q_card[i].priority=0
             end
             table.sort(cards)
         end
-
         for i=1,3 do
-            if index[i]==0 then
+            if seleted_card[i].index==0 then
                 choose_card_priority(i)
             end
         end
     else
-        choose_first()
+        if count<2 then
+            choose_first()
+        end
+        
         for i=3,1,-1 do
-            if index[i]==0 then
+            if seleted_card[i].index==0 then
                 choose_card_priority(i)
             end
         end
     end
 
 
-    logDebug(string.format("select_np: %d %d %d\n",index[1],index[2],index[3]))
+    logDebug(string.format("select_np: %d %d %d\n",seleted_card[1].index,seleted_card[2].index,seleted_card[3].index))
     if is_debug then
         return
     end
-    click_card(index[1],index[2],index[3])
+    click_card(seleted_card[1].index,seleted_card[2].index,seleted_card[3].index)
 
     if is_select_fail() then
-        click_card(index[1],index[2],index[3])
+        click_card(seleted_card[1].index,seleted_card[2].index,seleted_card[3].index)
         select_normal()
     end
 
@@ -633,28 +635,27 @@ end
 --不带宝具选第t面卡
 function select_normal(t,is_debug)
     get_info()
-    index={0,0,0}
-
-    if count>=3 then
-        if b_num==1 then--有红
-            index[1]=b_index[b_num]
+    seleted_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
+    
+    --优先选打手首红
+    if count>=3 and b_num>0 then
+        if b_num==1 and not has_sup_b then--有红
+            seleted_card[1]=b_card[b_num]
 
         elseif b_num==2 then
-            temp_i=b_index[1]
-            if cards[b_index[2]].priority<cards[b_index[1]].priority then
-                temp_i=b_index[2]
+            temp_card=b_card[1]
+            if b_card[2].priority<b_card[1].priority then--多打手情况不克制优先
+                temp_card=b_card[2]
             end
-            index[1]=temp_i
+            seleted_card[1]=temp_card
         end
         b_num=b_num-1
-        used[index[1]]=true
+        seleted_card[1].used=true
     elseif count>=1 then--1 2
-        if b_num==1 then--有红
-            if has_sup_b==false then--有红没拐红
-                index[1]=b_index[b_num]
-                b_num=b_num-1
-                used[index[1]]=true
-            end
+        if b_num==1 and not has_sup_b then--有红没拐红
+            seleted_card[1]=b_card[b_num]
+            b_num=b_num-1
+            seleted_card[1].used=true
         end
     else
         if sp=="cba" and t==4 and not shuffled then
@@ -662,18 +663,21 @@ function select_normal(t,is_debug)
         end
 
     end
-    choose_first()
+    if count<3 then
+        choose_first()
+    end
 
+    table.sort(cards)
     for i=3,1,-1 do
-        if index[i]==0 then
+        if seleted_card[i].index==0 then
             choose_card_priority(i)
         end
     end
-    logDebug(string.format("select_normal: %d %d %d\n",index[1],index[2],index[3]))
+    logDebug(string.format("select_normal: %d %d %d\n",seleted_card[1].index,seleted_card[2].index,seleted_card[3].index))
     if is_debug then
         return
     end
-    click_card(index[1],index[2],index[3])
+    click_card(seleted_card[1].index,seleted_card[2].index,seleted_card[3].index)
     return false
 end
 --select_np失败
@@ -690,11 +694,11 @@ end
 function turn_1_2(is_debug,need_skip)
     for i=1,2 do
         repeat
-            if get_current_round()>current_turn then
+            if get_current_round()>current_round then
                 break
             end
 
-            logDebug(string.format("current_turn:%d",current_turn))
+            logDebug(string.format("current_round:%d",current_round))
             --点技能
             click_enemy(big_enemy[i])  
             select_skill(i)
@@ -712,13 +716,13 @@ function turn_1_2(is_debug,need_skip)
                 end
             end
         until true
-        current_turn=current_turn+1
+        current_round=current_round+1
     end
 
 end
 --3t的操作
 function turn_3(is_debug)
-    logDebug(string.format("current_turn:%d",current_turn))
+    logDebug(string.format("current_turn:%d",current_round))
     click_enemy(big_enemy_3)    
     select_skill(3)
     click_attack()
@@ -733,7 +737,7 @@ function turn_3(is_debug)
 
 
     end
-    current_turn=current_turn+1
+    current_round=current_round+1
     --wait_attack_end()
 
 end
@@ -748,7 +752,7 @@ function turn_4(is_debug)
     end
 
     while not is_battle_ended() do
-        logDebug(string.format("current_turn:%d",current_turn))
+        logDebug(string.format("current_turn:%d",current_round))
         --attack
         click_attack()
         need_shuffle=select_normal(4)
@@ -757,7 +761,7 @@ function turn_4(is_debug)
             shuffled=true
             need_shuffle=select_normal(4)
         end
-        current_turn=current_turn+1
+        current_round=current_round+1
     end
 end
 --提取某一回合的技能
@@ -799,7 +803,7 @@ function click_skill(index,target,target_2)
     local delay_t=400
     --按御主技能
     if index>=10 then
-        click(master_skill_x,master_skill_y)
+        click(table.unpack(master_skill_button))
         mSleep(delay_t)
     end
 
@@ -972,7 +976,12 @@ function enter_mission()
                 notifyVibrate(1500)
                 os.exit()
             end
-            click(apple_x[apple],apple_y)
+            if apple=="铜" then
+                click(174,1058)
+                click(apple_x["银"],apple_y)
+            else
+                click(apple_x[apple],apple_y)
+            end
             click(table.unpack(affirm_apple_button))
         end
 
@@ -991,7 +1000,7 @@ function wait_battle_start(t)
         if x ~= -1 and y ~= -1 then  -- attack
             return 
         end
-        if sp_mode=="手动" then
+        if sp_mode=="手动" and t==5000 then
             toast("请选择助战并进入关卡",3000)
             notifyVibrate(1000)
         end
@@ -1083,11 +1092,19 @@ end
 function start_one_mission(t)
     logDebug(string.format("times:%d",t))
     if t==1 and sp_mode=="自动" then
-        notifyMessage("记得换好默认队伍哦！")
+        notify="记得换好默认队伍哦！"
+        if line then
+            for i=1,#(line) do
+                if string.sub(line[i],1,1)=='-' then
+                    notify="当前文件："..line[i].."\n"..notify
+                end
+            end
+        end
+        notifyMessage(notify,3000)
         mSleep(1000)
     end
 
-    current_turn=1
+    current_round=1
     enter_mission()
 
     turn_1_2(is_debug,need_skip)
@@ -1129,6 +1146,12 @@ function find_support(pos)
             --notifyMessage(string.format("%d %d",x,y))
             if sp=="cba" then --cba技能是否满了
                 xx, yy = findMultiColorInRegionFuzzy({ 0xFEFFFE, -1, 2, 0xFEFFFE, -9, 3, 0xFEFFFE, -11, 15, 0xFEFFFE, -5, 11, 0xFEFFFE, -3, 19, 0xFEFFFE, 3, 15, 0xFEFFFE }, 90, x-70, 1021, x-36, 1082);
+                if xx~=-1 and yy~=-1 then  -- 如果找到了
+                    click(x,y)
+                    return true
+                end
+            elseif sp=="310cba" then
+                xx, yy = findMultiColorInRegionFuzzy({ 0xFFFFFF, 9, 0, 0xFFFFFF, 9, -3, 0xFFFFFF, 5, 9, 0xFFFFFF, -1, 13, 0xFFFFFF, 12, 13, 0xFFFFFF, 5, 17, 0xFFFFFF, 0, 81, 0xFFFFFF, 5, 81, 0xFFFFFF, 9, 79, 0xFFFFFF, 5, 90, 0xFFFFFF, -2, 94, 0xE6E6E6, 13, 94, 0xF1F1F1, 5, 98, 0xFFFFFF, 5, 162, 0xFFFFFF, 1, 162, 0xFFFFFF, 6, 170, 0xFFFFFF, 13, 174, 0xF9F9F9, -1, 175, 0xFFFFFF, 5, 179, 0xFFFFFF }, 90, x-70, 858, x-36, 1082);
                 if xx~=-1 and yy~=-1 then  -- 如果找到了
                     click(x,y)
                     return true
