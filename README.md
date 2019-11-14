@@ -29,10 +29,9 @@
   * 加速最好不要超过6倍(游戏蜂窝)/30倍(叉叉助手)，再快不好区分点击与按住
   * 个人开了1年加速没啥事，建议平时开、无限池别开
   * 游戏蜂窝源 apt.ifengwoo.com 
-  * 叉叉离线版：https://pan.baidu.com/s/1JGxNWBWr4SZNuyBCpLeWvA 提取码：p4ig 。使用方法：https://pan.baidu.com/s/1I0WfQpSfCIKWeS7S3Uaorw 提取码：09jq 
+  * 叉叉离线版：brendonjkding.github.io 搜xxacctoggle
 * 兼容台服
   * 主要区别是字体不同(如回合数)
-* 应该不支持新最新客户端的技击、迅击、力击，请用appstore++ 降级至1.45.5
 * 为了避免干扰识别与点击，请关闭assistivetouch，activator是个更好的替代
 * qq、微信等通知关了比较好，不然可能误点击
 * 勾选检查更新再启动时如有更新会自动更新

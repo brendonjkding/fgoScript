@@ -3,27 +3,25 @@
     初始化数据类函数
     -------------------------------------------------------------------
 ]]--
-function init(is_debug_)
-    VERSION="## v1.2.2"
+function init(d)
+    VERSION="## v1.2.3"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
     rotateScreen(0);
 
     init_points()
-    init_input_info()
     init_ob()
+    init_input_info()
 
     --Debug
     current_round=1
     logDebug("------------------------------------------------------------")
-    is_debug=is_debug_
-    need_skip=false
+    is_debug=d
 
-    check(is_debug)
-    if is_check_update=="是" then
-        check_version(is_debug)
-    end
+    check_miss_operate()
+    check_version()
+
     save_conf()
 end
 --内置队伍信息
@@ -74,7 +72,12 @@ function init_conf()
     text=io.read("*a")
     io.close(file)
     line=Split(text,'\n')
-
+    for i=1,#(line) do
+        if string.sub(line[i],1,1)=='-' then
+            conf_name=line[i]
+            break
+        end
+    end
 end
 function save_conf()
     file=io.open("/var/touchelf/scripts/conf"..conf_index..".lua","w")
@@ -97,19 +100,14 @@ function save_conf()
     t=t.."big_enemy_3=\""..big_enemy_3.."\"--三面大怪".."\n"
     t=t.."mode=\""..mode.."\"--队伍".."\n"
     t=t.."shuffle_cloth=\""..shuffle_cloth.."\"--洗牌服".."\n"
+    t=t..conf_name.."\n"
     io.write(t)
-
-    if line then
-        for i=1,#(line) do
-            if string.sub(line[i],1,1)=='-' then
-                io.write(line[i]..'\n')
-            end
-        end
-    end
     io.close(file)
 
 end
 function init_input_info()
+    conf_name="--"..conf_name
+    
     if dashou=="狂兰" then
         color_points={ 0x181830, 6, -5, 0x504477, 13, -11, 0xFD0051, 25, -13, 0x444477, 20, -22, 0xF9004C }
     elseif dashou=="阿塔" then
@@ -132,7 +130,8 @@ function init_input_info()
     if mode_ then
         mode=mode_
     end
-
+    
+    
 
     --输入信息处理
     skills={}
@@ -193,7 +192,6 @@ function init_points()
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     support_1={452,137}
-    --find/move_support需在内部改
 
     --助战礼装特征
     mc_points={}
@@ -211,6 +209,23 @@ function init_points()
     support_points["cba"]={ 0xD099F5, 44, -4, 0xDEC9F4, 45, 26, 0x793561, 45, 41, 0xAF0E19, 28, 51, 0xFEFFE1, 45, 86, 0xB10B12 }
     support_points["310cba"]=support_points["cba"]
     support_points["狐狸"]={ 0xB18B34, 2, 26, 0xE28875, 8, 49, 0xF7C268, 8, 70, 0xF6E4C4, 13, 98, 0xF9CD76, 13, 111, 0xD07765, 13, 152, 0xFEFFF2 }
+
+    mc_start_x={288,4}
+    mc_start_y={23,32}
+    mc_end_x={588,292}
+    mc_end_y={232,236}
+    sp_start_dx=0
+    sp_start_dy=-60
+    sp_end_dx=174
+    sp_end_dy=155
+    cba_skill_points={ 0xFEFFFE, -1, 2, 0xFEFFFE, -9, 3, 0xFEFFFE, -11, 15, 0xFEFFFE, -5, 11, 0xFEFFFE, -3, 19, 0xFEFFFE, 3, 15, 0xFEFFFE }
+    cba_skill_start_dx=-70
+    cba_skill_start_y=1021
+    cba_skill_end_dx=-36
+    cba_skill_end_y=1082
+    cba_310skill_points={ 0xFFFFFF, 9, 0, 0xFFFFFF, 9, -3, 0xFFFFFF, 5, 9, 0xFFFFFF, -1, 13, 0xFFFFFF, 12, 13, 0xFFFFFF, 5, 17, 0xFFFFFF, 0, 81, 0xFFFFFF, 5, 81, 0xFFFFFF, 9, 79, 0xFFFFFF, 5, 90, 0xFFFFFF, -2, 94, 0xE6E6E6, 13, 94, 0xF1F1F1, 5, 98, 0xFFFFFF, 5, 162, 0xFFFFFF, 1, 162, 0xFFFFFF, 6, 170, 0xFFFFFF, 13, 174, 0xF9F9F9, -1, 175, 0xFFFFFF, 5, 179, 0xFFFFFF }
+    cba_310skill_start_y=858
+    cba_310skill_end_y=cba_skill_end_y
 
     --二、战斗中
     --卡色判断区域
@@ -279,6 +294,27 @@ function init_points()
     round_tw_points[2]={{ 0xCCCCCC, 0, -7, 0xCDCDCD, 5, -4, 0x888888, 13, 2, 0xEAEAEA, 16, 0, 0xE5E5E5, 12, -6, 0xEFEFEF, 16, -6, 0x878787 }, 90, 715, 905, 731, 914}
     round_tw_points[3]={{ 0xE2E2E2, -4, 3, 0x959595, 1, 8, 0xF2F2F2, 6, 3, 0x636363, 6, 6, 0xEAEAEA, 10, 7, 0xD5D5D5, 11, -1, 0xCECECE }, 90, 714, 905, 729, 914}
 
+    --np
+    --3/8 4/1(53) 5/89 2/8 9/8 4/0
+    num={}
+    num[0]={ 0xF7F7F7, 0, 1, 0x5D5D5D, 0, -2, 0x676767, 0, -3, 0x302C25, 0, 2, 0x252119, -6, 4, 0xFDFEFD, -4, 7, 0xE1E1E1, 1, 8, 0xFEFFFE, 1, 6, 0x353029, 7, 8, 0xEBEBEB, 9, 4, 0xACACAC }
+    num[1]={ 0x333231, 1, 0, 0x32312F, 2, 0, 0x2F2F2E, 2, 1, 0xB8B8B8, 1, 1, 0xB8B8B8, 0, 1, 0xB8B8B8, 1, 2, 0xEFEFEF, -2, 2, 0xE8E8E8, 11, 2, 0xFDFEFD, 10, 0, 0xE3E3E3, 8, -2, 0xC2C2C2 }
+    num[2]={ 0xEFEFEF, 1, 4, 0xC7C7C7, -2, 8, 0xFDFEFD, -7, 4, 0xE7E7E7, -4, 4, 0x25221D, -5, 3, 0x1C1B17, -6, 2, 0x292826, -7, 7, 0x383838, -8, 6, 0x181818, -9, 5, 0x1F1E1E, -12, 0, 0xF5F5F5, -14, -1, 0x3B3B3B, -14, 4, 0x3B3B3A, -14, 8, 0x3B3B3B, -13, 7, 0xD9DAD9 }
+    num[3]={ 0x261709, -2, 0, 0x241A0F, -2, 1, 0x727171, -6, -1, 0x22221C, -2, 3, 0xE2E2E2, -2, 5, 0xF1F1F1, -7, 7, 0xD4D4D4, 2, 7, 0xEBEBEB, 4, 3, 0xC6C6C6, -10, 3, 0xF4F4F4 }
+    num[4]={ 0xEBEBEB, 3, 0, 0xFDFEFD, 3, 2, 0xEFEFEF, 9, 0, 0xF2F2F2, 12, 0, 0xFEFFFE, 9, -3, 0xAEAEAE, 7, -6, 0xBCBCBC, 3, -7, 0xFBFCFB, 3, -4, 0xEAEAEA, 5, -4, 0x242320, 5, -3, 0x211E1A, 6, -3, 0x211D17 }
+    num[5]={ 0x181717, -3, 2, 0xDADBDA, -4, 5, 0xF9F9F8, -2, 8, 0xF5F5F5, 0, 9, 0xE5E5E5, 3, 8, 0xF1F1F1, 5, -1, 0x171513, 11, -1, 0x1E1912, 7, 1, 0xEDEDED, 11, 6, 0x8F8F8F, 11, 10, 0x5A5A5A, 9, 10, 0x191714, 5, 9, 0x222221 }
+    num[6]={ 0xF8F8F7, 5, 4, 0xF3F3F3, 4, -5, 0xF9FAF9, 8, -5, 0xFBFCFB, 9, 0, 0xDCDDDC, 13, -4, 0xF9FAF9, 15, 0, 0xAEAEAE, 13, 3, 0xE3E3E3 }
+    num[7]={ 0xF5F5F5, 4, 1, 0xE8E8E8, 7, 3, 0xF9FAF9, 12, 5, 0xFCFDFC, 12, 0, 0xCECECE, 12, -3, 0xCECECE }
+    num[8]={ 0xFEFFFE, 3, 4, 0xF4F4F4, 4, -5, 0xEAEAEA, 8, 0, 0xEAEAEA, 10, 4, 0xD4D4D4, 11, -4, 0xF2F2F2, 14, 0, 0xC1C1C1 }
+    num[9]={ 0x191919, 0, -3, 0x2E2C2C, 1, -5, 0x100E0C, 3, -7, 0x23211E, 6, -5, 0xD3D3D3, 10, -1, 0xC5C5C5, 6, 3, 0xE9E9E9, 2, 3, 0xEAEAEA, -4, -1, 0xFCFDFC, -1, 3, 0xF5F5F5 }
+    np_start_x=44
+    np_start_y={225}
+    np_end_x=68
+    np_end_y={290}
+    for i=2,3 do
+        np_start_y[i]=np_start_y[i-1]+330
+        np_end_y[i]=np_end_y[i-1]+330
+    end
 
 
     --三、结束战斗
@@ -287,6 +323,7 @@ function init_points()
     failed_points={{ 0x7632D8, 19, 9, 0x77E890, 26, 3, 0xF9EAC0, 15, -7, 0xE171A0, 13, 3, 0xF1F9F9 }, 90, 602, 963, 628, 979}
     disconnect_points={{ 0xD4D5D7, 0, -37, 0x000000, 0, -43, 0xD8D8D4, 0, -47, 0x000000, 0, -53, 0xD0D0D0, 0, -58, 0x000000, 0, -66, 0xDCDBDC, 3, -73, 0x000000 }, 90, 158, 866, 161, 939}
     reconnect_button={165, 859}
+    ended_points={kizuna_points,kizuna_upgraded_points,failed_points}
 
     retreat_button={}
     retreat_button[1]={416,338}
@@ -298,8 +335,6 @@ function init_points()
     blank_region={680,900}
 
 end
-
-
 --[[
     -------------------------------------------------------------------
     获取卡信息相关函数
@@ -351,8 +386,6 @@ function get_card_info()
                     break
                 end
             end
-
-
             x, y = findMultiColorInRegionFuzzy(counter_points,90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 cards[i].counter=true
@@ -388,7 +421,7 @@ function calculate_priority()
     end
 
     for i=1,5 do
-        if (current_round==2 or current_round==3) and mode=="绿卡" then
+        if (current_round==2 or current_round==3) and (mode=="绿卡" or mode=="红卡") then
             --克制打手200 打手100 克制拐20 拐10 被克打手5 被克拐1
             if cards[i].is_dashou then
                 if not cards[i].weak then
@@ -485,7 +518,33 @@ function get_info()
 
 end
 
-
+function get_np()
+    function _get_np(t)
+        np=0
+        start_y=np_start_y[t]
+        for j=1,3 do
+            min_y=1334
+            for i=0,9 do
+                x, y = findMultiColorInRegionFuzzy(num[i], 70, np_start_x,start_y,np_end_x,np_end_y[t]);
+                if x ~= -1 and y ~= -1 and y<min_y then  -- 如果找到了
+                    min_y=y
+                    unit=i
+                end
+            end
+            if unit then
+                np=np*10
+                np=np+unit
+            end
+            unit=false
+            start_y=min_y+2
+        end
+        return np
+    end
+    keepScreen(true)
+    a,b,c=_get_np(1),_get_np(2),_get_np(3)
+    keepScreen(false)
+    return a,b,c
+end
 
 --[[
     -------------------------------------------------------------------
@@ -589,7 +648,9 @@ function select_np(t,is_debug)
                 if is_debug then
                     return false
                 end
-                return true
+                shuffle()
+                select_np(t,is_debug)
+                return
             end
         end
     end
@@ -610,7 +671,7 @@ function select_np(t,is_debug)
         if count<2 then
             choose_first()
         end
-        
+
         for i=3,1,-1 do
             if seleted_card[i].index==0 then
                 choose_card_priority(i)
@@ -621,7 +682,7 @@ function select_np(t,is_debug)
 
     logDebug(string.format("select_np: %d %d %d\n",seleted_card[1].index,seleted_card[2].index,seleted_card[3].index))
     if is_debug then
-        return
+        os.exit(0)
     end
     click_card(seleted_card[1].index,seleted_card[2].index,seleted_card[3].index)
 
@@ -636,7 +697,7 @@ end
 function select_normal(t,is_debug)
     get_info()
     seleted_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
-    
+
     --优先选打手首红
     if count>=3 and b_num>0 then
         if b_num==1 and not has_sup_b then--有红
@@ -659,7 +720,9 @@ function select_normal(t,is_debug)
         end
     else
         if sp=="cba" and t==4 and not shuffled then
-            return true
+            shuffle()
+            select_normal(t,is_debug)
+            return
         end
 
     end
@@ -675,12 +738,12 @@ function select_normal(t,is_debug)
     end
     logDebug(string.format("select_normal: %d %d %d\n",seleted_card[1].index,seleted_card[2].index,seleted_card[3].index))
     if is_debug then
-        return
+        os.exit(0)
     end
     click_card(seleted_card[1].index,seleted_card[2].index,seleted_card[3].index)
     return false
 end
---select_np失败
+--猝死等原因导致预设宝具放不了
 function is_select_fail()
     mSleep(800)
     x, y = findMultiColorInRegionFuzzy(table.unpack(back_points));
@@ -720,46 +783,34 @@ function turn_1_2(is_debug,need_skip)
     end
 
 end
---3t的操作
+--3面第一次操作
 function turn_3(is_debug)
     logDebug(string.format("current_turn:%d",current_round))
     click_enemy(big_enemy_3)    
     select_skill(3)
     click_attack()
 
-
-    --3t选卡
-    local need_shuffle=select_np(3,is_debug)
-    ----[[
-    if need_shuffle then
-        shuffle()
-        select_np(3,is_debug)
-
-
-    end
+    --选卡
+    select_np(3,is_debug)
     current_round=current_round+1
-    --wait_attack_end()
-
 end
-
-
-
-
---4t操作
+--3面之后操作
 function turn_4(is_debug)
-    if is_debug then
-        return
-    end
-
     while not is_battle_ended() do
         logDebug(string.format("current_turn:%d",current_round))
         --attack
+        np=table.pack(get_np())
+        logDebug(string.format("np: %d,%d,%d",np[1],np[2],np[3]))
+        for i=1,3 do
+            if np[i]>=100 then
+                np_indexs[current_round]=i+5
+            end
+        end
         click_attack()
-        need_shuffle=select_normal(4)
-        if need_shuffle then
-            shuffle()
-            shuffled=true
-            need_shuffle=select_normal(4)
+        if np_indexs[current_round] then
+            select_np(current_round,is_debug)
+        else
+            select_normal(4,is_debug)
         end
         current_round=current_round+1
     end
@@ -784,10 +835,10 @@ function select_skill(t)
         else
             click_skill(index)
         end
-        wait_skill()
+        wait_skill_casted()
     end
 end
-function wait_skill()
+function wait_skill_casted()
     mSleep(1500)
     wait_battle_start(2000)
 end
@@ -940,7 +991,7 @@ function get_current_round()
     logDebug("error get_current_round")
 end
 --启动前检查防止误启动
-function check(is_debug)
+function check_miss_operate()
     if is_debug then
         return
     end
@@ -1024,23 +1075,14 @@ function is_battle_ended()
             return false
         end
 
-        x, y = findMultiColorInRegionFuzzy(table.unpack(kizuna_points));
-        if x ~= -1 and y ~= -1 then  -- 出现羁绊则结束
-            keepScreen(false)
-            return true
+        for i=1,3 do
+            x, y = findMultiColorInRegionFuzzy(table.unpack(ended_points[i]));
+            if x ~= -1 and y ~= -1 then  -- 出现羁绊/失败则结束
+                keepScreen(false)
+                return true
+            end
         end
 
-        x, y = findMultiColorInRegionFuzzy(table.unpack(kizuna_upgraded_points));
-        if x ~= -1 and y ~= -1 then  -- 出现羁绊则结束
-            keepScreen(false)
-            return true
-        end
-
-        x, y = findMultiColorInRegionFuzzy(table.unpack(failed_points));
-        if x ~= -1 and y ~= -1 then  -- 战斗失败
-            keepScreen(false)
-            return true
-        end
         x, y = findMultiColorInRegionFuzzy(table.unpack(disconnect_points));
         if x ~= -1 and y ~= -1 then  -- 掉线
             click(table.unpack(reconnect_button))
@@ -1107,7 +1149,7 @@ function start_one_mission(t)
     current_round=1
     enter_mission()
 
-    turn_1_2(is_debug,need_skip)
+    turn_1_2(is_debug)
     if not is_battle_ended() then
         turn_3(is_debug)
         turn_4()
@@ -1119,11 +1161,9 @@ end
 --
 --检查pos位置的助战是否为指定助战
 function find_support(pos)
-    if pos==1 then
-        x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, 288, 23, 588, 232);
-    else
-        x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, 4, 32, 292, 236);
-    end
+
+    x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, mc_start_x[pos], mc_start_y[pos], mc_end_x[pos], mc_end_y[pos]);
+
 
     if (x ~= -1 and y ~= -1 ) or mc=="任意" then  -- 如果找到了礼装
 
@@ -1132,26 +1172,20 @@ function find_support(pos)
             return true
         end
         if mc=="任意" then
-            if pos==1 then
-                x, y = findMultiColorInRegionFuzzy(support_points[sp], 90, 288, 23, 588, 232);
-            else
-                x, y = findMultiColorInRegionFuzzy(support_points[sp], 90, 4, 32, 292, 236);
-            end
+            x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, mc_start_x[pos], mc_start_y[pos], mc_end_x[pos], mc_end_y[pos]);
         else
-            x, y = findMultiColorInRegionFuzzy(support_points[sp], 90, x, y-60 , x+174, x+155);
+            x, y = findMultiColorInRegionFuzzy(support_points[sp], 90, x+sp_start_dx, y+sp_start_dy , x+sp_end_dx, x+sp_end_dy);
         end
-        --toast(string.format("%d %d",x,y))
 
         if x ~= -1 and y ~= -1 then  -- 如果找到了英灵
-            --notifyMessage(string.format("%d %d",x,y))
             if sp=="cba" then --cba技能是否满了
-                xx, yy = findMultiColorInRegionFuzzy({ 0xFEFFFE, -1, 2, 0xFEFFFE, -9, 3, 0xFEFFFE, -11, 15, 0xFEFFFE, -5, 11, 0xFEFFFE, -3, 19, 0xFEFFFE, 3, 15, 0xFEFFFE }, 90, x-70, 1021, x-36, 1082);
+                xx, yy = findMultiColorInRegionFuzzy(cba_skill_points, 90, x+cba_skill_start_dx, cba_skill_start_y, x+cba_skill_end_dx, cba_skill_end_y);
                 if xx~=-1 and yy~=-1 then  -- 如果找到了
                     click(x,y)
                     return true
                 end
             elseif sp=="310cba" then
-                xx, yy = findMultiColorInRegionFuzzy({ 0xFFFFFF, 9, 0, 0xFFFFFF, 9, -3, 0xFFFFFF, 5, 9, 0xFFFFFF, -1, 13, 0xFFFFFF, 12, 13, 0xFFFFFF, 5, 17, 0xFFFFFF, 0, 81, 0xFFFFFF, 5, 81, 0xFFFFFF, 9, 79, 0xFFFFFF, 5, 90, 0xFFFFFF, -2, 94, 0xE6E6E6, 13, 94, 0xF1F1F1, 5, 98, 0xFFFFFF, 5, 162, 0xFFFFFF, 1, 162, 0xFFFFFF, 6, 170, 0xFFFFFF, 13, 174, 0xF9F9F9, -1, 175, 0xFFFFFF, 5, 179, 0xFFFFFF }, 90, x-70, 858, x-36, 1082);
+                xx, yy = findMultiColorInRegionFuzzy(cba_310skill_points, 90, x+cba_skill_start_dx, cba_310skill_start_y, x+cba_skill_end_dx, cba_310skill_end_y);
                 if xx~=-1 and yy~=-1 then  -- 如果找到了
                     click(x,y)
                     return true
@@ -1191,7 +1225,7 @@ function select_support()
         end
         keepScreen(false)
 
-        move_support()
+        move_upward(5)
         x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar));
         if x ~= -1 and y ~= -1 then  -- 如果到底了
             refresh_support()
@@ -1200,19 +1234,19 @@ function select_support()
     end
 
 end
---助战列表小幅上移
-function move_support()
+--上滑
+function move_upward(t)
     touchDown(5, 100, 770)
     mSleep(34);
     local dx=15
-    for i=1,5 do
+    for i=1,t do
         touchMove(5, 100+dx, 770)
         mSleep(20);
         dx=dx+15
     end
     touchUp(5)
 
-    mSleep(1000);
+    mSleep(500);
 end
 --刷新助战
 function refresh_support()
@@ -1242,11 +1276,10 @@ end
     -------------------------------------------------------------------
 ]]--
 
-function check_version(d)
-    if d then
+function check_version()
+    if is_check_update~="是" then
         return
     end
-
     data = httpGet('https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/UPDATE.md')
     if data=="" then
         return

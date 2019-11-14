@@ -3,22 +3,21 @@ UI = {
     { 'DropList{不吃|金|银|彩|铜}',             'apple',    '吃苹果：' },
 
     { 'DropList{自定义(在下方输入)|从文件导入|满破宝石狂兰wcba充能衣服|满破宝石阿塔wcba充能衣服|(模板)满破宝石尼托+二号打手+孔明|(模板队(仅)需填写二号打手技能)}', 'skill_mode', '设置：' },
+    { 'DropList{1|2|3|4|5|6|7|8|9}', 'conf_index','文件序号：'},
     { 'TextView{输入信息运行一次后会自动保存至选}' },
     { 'TextView{择的文件，以后可直接选择导入，之}' },
     { 'TextView{后的信息不用再设置}' },
-    { 'DropList{1|2|3|4|5|6|7|8|9}', 'conf_index','文件序号：'},
+    { 'InputBox{}',             'conf_name',    '配置名(仅运行前提示用)' },
     
+    { 'TextView{}' },
     { 'DropList{否|是}', 'is_check_update','检查更新：'},
 
-    { 'TextView{ }' },
+    { 'TextView{}' },
     { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
     { 'TextView{如手动选助战，则无视接下来两项}' },
     { 'DropList{无限池(满破)|无限池|所长|新所长|擦汗|午餐|qp|任意}', 'mc', '礼装：' },
     { 'DropList{孔明|310cba|cba|梅林|狐狸|任意}', 'sp', '从者：' },
-    { 'TextView{ }' },
-    
-    
-    
+    { 'TextView{}' },
     
     { 'TextView{}' },
     { 'TextView{技能格式：从者1-9，御主10-12，}' },
@@ -44,35 +43,7 @@ UI = {
 }
 dofile("/var/touchelf/scripts/lib_fgo.lua")
 
-
-
-
 function main()
-    --[[
-    times=1
-    apple="不吃"
-    is_speed_up="是"
-    
-    sp_mode="手动"
-    mc="午餐"
-    sp="梅林"
-    
-    skill_mode="手动"
-    skill_serial_1="7a"
-    skill_serial_2="8 9"
-    skill_serial_3=""
-    np_index_1="1"
-    np_index_2="1"
-    np_index_3="2"
-    
-    big_enemy="2"
-    mode_="红卡"
-    shuffled_="否"
-    dashou="通用"
-    
-    server="国服"
-    ]]--
-
     init()
 
     for ii=1,times do
@@ -81,5 +52,4 @@ function main()
 
     notifyMessage("感谢使用")
     notifyVibrate(3000)
-
 end
