@@ -4,7 +4,7 @@
     -------------------------------------------------------------------
 ]]--
 function init(d)
-    VERSION="## v1.2.3"
+    VERSION="## v1.2.4"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -258,6 +258,8 @@ function init_points()
     --切换敌人坐标
     enemy_x=700
     enemy_y={47,305,548}
+    enemy_x=526
+    enemy_y={483,318,155}
     --指令卡选择坐标
     card_x={222,222,222,222,222,542,542,542}--1,2,3,4,5,np
     card_y={150,400,680,940,1200,454,689,951}--266
@@ -917,17 +919,17 @@ end
 
 --选择敌人
 function click_enemy(index)
-    index=tonumber(index)
+    index=tonumber(index)  
     click(enemy_x, enemy_y[index])
 end
 --点坐标
-function click(x,y,t)
+function click(x,y,d,h)
+    d=d or 1700
+    h=h or 50
     touchDown(3, x, y)
-    mSleep(64);
+    mSleep(h);
     touchUp(3)
-    t=t or 1700
-
-    mSleep(t);
+    mSleep(d);
 end
 
 

@@ -8,8 +8,8 @@
 * `main.lua` 主程序
 * `UPDATE.md` 更新内容
 ## 如何使用
-* 越狱，添加源 cydia.touchelf.com 安装触摸精灵正式版
-* 导入两个lua文件到/var/touchelf/scripts
+* 越狱，添加源 `cydia.touchelf.com` 安装触摸精灵正式版
+* 导入两个lua文件到`/var/touchelf/scripts` 或 添加我的源`brendonjkding.github.io`安装
 * 点`main.lua`--手动播放--简单输入每回合放的宝具、技能等信息
 * 进游戏把要打的本置于第一个，按音量键开始播放即可自动进本、打本、出本、吃苹果，再按可提前停止播放。
 
@@ -28,8 +28,8 @@
 * 搭配游戏蜂窝/叉叉助手加速功能更佳
   * 加速最好不要超过6倍(游戏蜂窝)/30倍(叉叉助手)，再快不好区分点击与按住
   * 个人开了1年加速没啥事，建议平时开、无限池别开
-  * 游戏蜂窝源 apt.ifengwoo.com 
-  * 叉叉离线版：brendonjkding.github.io 搜xxacctoggle
+  * 游戏蜂窝源： `apt.ifengwoo.com`
+  * 叉叉离线版： 在我的源搜`xxacctoggle`
 * 兼容台服
   * 主要区别是字体不同(如回合数)
 * 为了避免干扰识别与点击，请关闭assistivetouch，activator是个更好的替代
