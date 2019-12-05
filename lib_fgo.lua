@@ -4,7 +4,7 @@
     -------------------------------------------------------------------
 ]]--
 function init(d)
-    VERSION="## v1.2.4"
+    VERSION="## v1.3"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -80,8 +80,7 @@ function init_conf()
     end
 end
 function save_conf()
-    file=io.open("/var/touchelf/scripts/conf"..conf_index..".lua","w")
-    io.output(file)
+
 
     t=''
     t=t.."sp_mode=\""..sp_mode.."\"--助战".."\n"
@@ -100,14 +99,17 @@ function save_conf()
     t=t.."big_enemy_3=\""..big_enemy_3.."\"--三面大怪".."\n"
     t=t.."mode=\""..mode.."\"--队伍".."\n"
     t=t.."shuffle_cloth=\""..shuffle_cloth.."\"--洗牌服".."\n"
+    t=t.."party_index=\""..party_index.."\"--队伍序号".."\n"
     t=t..conf_name.."\n"
+    file=io.open("/var/touchelf/scripts/conf"..conf_index..".lua","w")
+    io.output(file)
     io.write(t)
     io.close(file)
 
 end
 function init_input_info()
     conf_name="--"..conf_name
-    
+
     if dashou=="狂兰" then
         color_points={ 0x181830, 6, -5, 0x504477, 13, -11, 0xFD0051, 25, -13, 0x444477, 20, -22, 0xF9004C }
     elseif dashou=="阿塔" then
@@ -130,8 +132,8 @@ function init_input_info()
     if mode_ then
         mode=mode_
     end
-    
-    
+
+
 
     --输入信息处理
     skills={}
@@ -152,6 +154,10 @@ function init_input_info()
         shuffled=true
     end
     times=tonumber(times)
+    if not party_index then
+        party_index="当前"
+    end
+
 end
 
 --卡对象
@@ -186,7 +192,7 @@ function init_points()
     --助战
     refresh_button={612,881}
     refresh_confirm_button={162,870}
-    scroll_bar={{ 0xF7F8FB, 21, 0, 0xEAEBF0 }, 90, 24, 1292, 45, 1292}
+    scroll_bar_arrived_end_points={{ 0xF5E4C3 }, 90, 14, 1291, 14, 1291}
     refresh_too_fast_warning={{ 0xEDEEEA, 43, -2, 0xEFEFEF }, 90, 138, 666, 181, 668}
     refresh_warning_close_button={171,673}
     refresh_button={612,881}
@@ -227,6 +233,14 @@ function init_points()
     cba_310skill_start_y=858
     cba_310skill_end_y=cba_skill_end_y
 
+    party_x=698
+    party_y={549}
+    for i=2,10 do
+        party_y[i]=party_y[i-1]+26
+    end
+    
+    privious_button={716, 100}
+    
     --二、战斗中
     --卡色判断区域
     color_start_x=54
@@ -412,6 +426,13 @@ end
 
 --计算卡优先级
 function calculate_priority()
+    if mode=="XJBD" then
+        for i=1,5 do
+            cards[i].is_dashou=true
+        end
+        return
+    end
+
     --色卡权重
     p={["green"]={2,1,3},["blue"]={2,3,1},["red"]={3,2,1}}--baq
     if mode=="绿卡" and current_round<=3 then
@@ -993,7 +1014,7 @@ function get_current_round()
     logDebug("error get_current_round")
 end
 --启动前检查防止误启动
-function check_miss_operate()
+function check_miss_operate(m)
     if is_debug then
         return
     end
@@ -1012,12 +1033,29 @@ function check_miss_operate()
             return
         end
     end
-
-    toast("请把关卡放在第一个再启动",3000)
+    m=m or "请把关卡放在第一个再启动"
+    toast(m,3000)
     os.exit()
 end
 
 
+function check_disconnected()
+    t=0
+    while true do
+        t=t+1
+        if t>5 then
+            notifyVibrate(3000)
+        end
+        
+        x, y = findMultiColorInRegionFuzzy(table.unpack(disconnect_points));
+        if x ~= -1 and y ~= -1 then  -- 掉线
+            click(table.unpack(reconnect_button))
+            keepScreen(false)
+        else
+            return
+        end
+    end
+end
 
 --进本
 function enter_mission()
@@ -1040,6 +1078,10 @@ function enter_mission()
 
         select_support()
         keepScreen(false)
+        if party_index and party_index~="当前" then
+            click(party_x,party_y[tonumber(party_index)])
+        end
+
         mSleep(2000)
         click(table.unpack(start_mission_button))
     end
@@ -1085,10 +1127,7 @@ function is_battle_ended()
             end
         end
 
-        x, y = findMultiColorInRegionFuzzy(table.unpack(disconnect_points));
-        if x ~= -1 and y ~= -1 then  -- 掉线
-            click(table.unpack(reconnect_button))
-        end
+        check_disconnected()
         keepScreen(false)
         mSleep(4000)
     end
@@ -1222,13 +1261,12 @@ function select_support()
         --解决奇怪的bug
         x, y = findMultiColorInRegionFuzzy(table.unpack(start_mission_points));
         if x ~= -1 and y ~= -1 then  -- 如果找到了
-            touchDown(0, 716, 100);   -- 点击那个点
-            touchUp(0);
+            click(table.unpack(privious_button))
         end
         keepScreen(false)
 
         move_upward(5)
-        x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar));
+        x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_arrived_end_points));
         if x ~= -1 and y ~= -1 then  -- 如果到底了
             refresh_support()
         end
@@ -1237,12 +1275,14 @@ function select_support()
 
 end
 --上滑
-function move_upward(t)
-    touchDown(5, 100, 770)
+function move_upward(t,x,y)
+    x=x or 100 
+    y=y or 770
+    touchDown(5, x, y)
     mSleep(34);
     local dx=15
     for i=1,t do
-        touchMove(5, 100+dx, 770)
+        touchMove(5, x+dx, y)
         mSleep(20);
         dx=dx+15
     end
@@ -1305,5 +1345,8 @@ function update()
 
     dofile("/var/touchelf/scripts/autoupdate.lua")
     autoupdate()
+end
+
+function main()
 end
 

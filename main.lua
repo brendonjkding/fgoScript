@@ -38,14 +38,15 @@ UI = {
     { 'DropList{1|2|3}', 'big_enemy_2', '二面大怪序号：' },
     { 'DropList{后补刀|先垫刀}', 'big_enemy_mode_2', '二面大怪打法：' },
     { 'DropList{1|2|3}', 'big_enemy_3', '三面大怪序号：' },
-    { 'DropList{红卡|绿卡|蓝卡}', 'mode', '队伍性质：' },
-    { 'DropList{否|是|}', 'shuffle_cloth', '是否洗牌衣服：' }
+    { 'DropList{红卡|绿卡|蓝卡|XJBD}', 'mode', '队伍性质：' },
+    { 'DropList{否|是|}', 'shuffle_cloth', '是否洗牌衣服：' },
+    { 'DropList{当前|1|2|3|4|5|6|7|8|9|10}', 'party_index', '游戏中的队伍序号：' }
 }
 dofile("/var/touchelf/scripts/lib_fgo.lua")
 
 function main()
     init()
-
+    
     for ii=1,times do
         start_one_mission(ii)
     end
