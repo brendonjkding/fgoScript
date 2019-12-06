@@ -4,7 +4,7 @@
     -------------------------------------------------------------------
 ]]--
 function init(d)
-    VERSION="## v1.3"
+    VERSION="## v1.3.1"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
