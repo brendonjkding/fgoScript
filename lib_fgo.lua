@@ -4,7 +4,7 @@
     -------------------------------------------------------------------
 ]]--
 function init(d)
-    VERSION="## v1.3.1"
+    VERSION="## v1.3.2"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -100,6 +100,9 @@ function save_conf()
     t=t.."mode=\""..mode.."\"--队伍".."\n"
     t=t.."shuffle_cloth=\""..shuffle_cloth.."\"--洗牌服".."\n"
     t=t.."party_index=\""..party_index.."\"--队伍序号".."\n"
+    t=t.."sp_class_index=\""..sp_class_index.."\"--助战职介".."\n"
+    t=t.."after_failed=\""..after_failed.."\"--如失败".."\n"
+
     t=t..conf_name.."\n"
     file=io.open("/var/touchelf/scripts/conf"..conf_index..".lua","w")
     io.output(file)
@@ -157,6 +160,12 @@ function init_input_info()
     if not party_index then
         party_index="当前"
     end
+    if not after_failed then
+        after_failed="停止"
+    end
+    if not sp_class_index then
+        sp_class_index="当前"
+    end
 
 end
 
@@ -190,6 +199,10 @@ function init_points()
     start_mission_points={{ 0x08BBE8, -23, -9, 0x007AD5, -20, -52, 0x05387C, -2, -188, 0x0F99C0, -9, -111, 0xD2D9DE }, 90, 2, 1139, 25, 1327}
 
     --助战
+    sp_class_button_x=616
+    sp_class_button_y={["全"]=94,["剑"]=164,["弓"]=234,["枪"]=304,["骑"]=374,
+        ["术"]=444,["杀"]=514,["狂"]=584,["EXT"]=654,["MIX"]=724}
+
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     scroll_bar_arrived_end_points={{ 0xF5E4C3 }, 90, 14, 1291, 14, 1291}
@@ -238,9 +251,9 @@ function init_points()
     for i=2,10 do
         party_y[i]=party_y[i-1]+26
     end
-    
+
     privious_button={716, 100}
-    
+
     --二、战斗中
     --卡色判断区域
     color_start_x=54
@@ -253,11 +266,14 @@ function init_points()
     feature_start_y={24}
     feature_end_x=459
     feature_end_y={280}
+    feature_extract_x=260
+    feature_extract_y={123}
     for i=2,5 do
         color_start_y[i]=color_start_y[i-1]+268
         color_end_y[i]=color_end_y[i-1]+268
         feature_start_y[i]=feature_start_y[i-1]+268
         feature_end_y[i]=feature_end_y[i-1]+268
+        feature_extract_y[i]=feature_extract_y[i-1]+268
     end
     --卡信息
     blue_color_points={ 0x357FFE, -2, 48, 0x56AFFE, 23, 20, 0xB0834A, 52, 13, 0xFEF9CA, 75, -31, 0x075CFE, 61, 69, 0x55C7FE }
@@ -569,6 +585,49 @@ function get_np()
     return a,b,c
 end
 
+function get_card_feature(index)
+    local d=2
+    ret={}
+    keepScreen(true)
+    for i=1,10 do
+        for j=1,10 do
+            local dy=d*(i-1)
+            local dx=d*(j-1)
+            local color=getColor(feature_extract_x+dx,feature_extract_y[index]+dy)
+            table.insert(ret,dx)
+            table.insert(ret,dy)
+            table.insert(ret,color)
+            --notifyMessage(string.format("%d %d %x",dx,dy,color))
+            
+            
+        end
+        
+    end
+    table.remove(ret,1)
+    table.remove(ret,1)
+    --notifyMessage(string.format("%x %d %d %x %d %d %x",ret[1],ret[2],ret[3],ret[4],ret[5],ret[6],ret[7]),10000)
+    keepScreen(false)
+    return ret
+end
+
+function get_card_servant()
+    feature=get_card_feature(2)
+
+    ret={0,0,0,0,0}
+    keepScreen(true)
+
+    
+    for i=1,5 do
+        x, y = findMultiColorInRegionFuzzy(feature,100, feature_start_x,feature_start_y[i],feature_end_x,feature_end_y[i]);
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            ret[i]=1
+        end
+    end
+    keepScreen(false)
+    notifyMessage(string.format("%d %d %d %d %d",ret[1],ret[2],ret[3],ret[4],ret[5]))
+end
+
+
 --[[
     -------------------------------------------------------------------
     选卡逻辑相关函数
@@ -723,7 +782,7 @@ function select_normal(t,is_debug)
 
     --优先选打手首红
     if count>=3 and b_num>0 then
-        if b_num==1 and not has_sup_b then--有红
+        if b_num==1 then--有红
             seleted_card[1]=b_card[b_num]
 
         elseif b_num==2 then
@@ -1046,7 +1105,7 @@ function check_disconnected()
         if t>5 then
             notifyVibrate(3000)
         end
-        
+
         x, y = findMultiColorInRegionFuzzy(table.unpack(disconnect_points));
         if x ~= -1 and y ~= -1 then  -- 掉线
             click(table.unpack(reconnect_button))
@@ -1059,7 +1118,7 @@ end
 
 --进本
 function enter_mission()
-    if sp_mode=="自动" then
+    if sp_mode=="自动" or sp_mode=="图片"then
         click(table.unpack(mission_entry))
         if need_apple() then
             if apple=="不吃" then
@@ -1079,6 +1138,7 @@ function enter_mission()
         select_support()
         keepScreen(false)
         if party_index and party_index~="当前" then
+            click(party_x,party_y[tonumber(party_index)%10+1])
             click(party_x,party_y[tonumber(party_index)])
         end
 
@@ -1139,6 +1199,9 @@ function quit_mission()
         notifyVibrate(3000)
         for i=1,3 do
             click(table.unpack(retreat_button[i]))
+        end
+        if after_failed=="停止" then
+            os.exit()
         end
 
         return
@@ -1242,6 +1305,13 @@ end
 
 --自动选助战
 function select_support()
+    if sp_class_index and sp_class_index~="当前" then
+        click(sp_class_button_x,sp_class_button_y[sp_class_index])
+    end
+
+
+
+
     if mc=="任意" and sp=="任意" then
         click(table.unpack(support_1))
         return
@@ -1250,13 +1320,22 @@ function select_support()
     mSleep(1000)
     while true do
         keepScreen(true)
-        --pos-1
-        if find_support(1) then
-            return
-        end
-        --pos-2
-        if find_support(2) then
-            return
+        if sp_mode=="图片" then
+            x, y = findImage("/var/touchelf/scripts/sp.bmp"); -- 
+            if x ~= -1 and y ~= -1 then            -- 如果找到了
+                click(x,y)
+                return
+            end
+
+        else
+            --pos-1
+            if find_support(1) then
+                return
+            end
+            --pos-2
+            if find_support(2) then
+                return
+            end
         end
         --解决奇怪的bug
         x, y = findMultiColorInRegionFuzzy(table.unpack(start_mission_points));
@@ -1348,5 +1427,6 @@ function update()
 end
 
 function main()
+    toast("lib_fgo")
 end
 
