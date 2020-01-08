@@ -2,7 +2,7 @@ UI = {
     { 'InputBox{1}',             'times',    '打本次数：' },
     { 'DropList{不吃|金|银|彩|铜}',             'apple',    '吃苹果：' },
 
-    { 'DropList{自定义(在下方输入)|从文件导入|满破宝石狂兰wcba充能衣服|满破宝石阿塔wcba充能衣服|(模板)满破宝石尼托+二号打手+孔明|(模板队(仅)需填写二号打手技能)}', 'skill_mode', '设置：' },
+    { 'DropList{自定义(在下方输入)|从文件导入}', 'skill_mode', '设置：' },
     { 'DropList{1|2|3|4|5|6|7|8|9}', 'conf_index','文件序号：'},
     { 'TextView{输入信息运行一次后会自动保存至选}' },
     { 'TextView{择的文件，以后可直接选择导入，之}' },
@@ -13,9 +13,9 @@ UI = {
     { 'DropList{否|是}', 'is_check_update','检查更新：'},
 
     { 'TextView{}' },
-    { 'DropList{手动|自动|图片}', 'sp_mode', '助战选择：' },
+    { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
     { 'TextView{如手动选助战，则无视接下来两项}' },
-    { 'DropList{无限池(满破)|无限池|所长|新所长|擦汗|午餐|qp|任意}', 'mc', '礼装：' },
+    { 'DropList{所长|新所长|擦汗|午餐|qp|任意}', 'mc', '礼装：' },
     { 'DropList{孔明|310cba|cba|梅林|狐狸|任意}', 'sp', '从者：' },
     { 'TextView{}' },
     

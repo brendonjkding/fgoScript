@@ -1,4 +1,10 @@
 # 更新内容
+## v1.3.3
+* 刷助战功能
+* 领银狗粮功能
+* 删去一些用不上/不好用的功能
+* wait_battle_start振动频率减小
+* bug fix:quit_mission table.sort(b_card)
 ## v1.3.2
 * 失败可选停止/继续
 * 助战职介选项

@@ -4,7 +4,7 @@
     -------------------------------------------------------------------
 ]]--
 function init(d)
-    VERSION="## v1.3.2"
+    VERSION="## v1.3.3"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -24,47 +24,7 @@ function init(d)
 
     save_conf()
 end
---内置队伍信息
-function init_ata()
-    skill_serial_1="7a 4a 3"
-    skill_serial_2="11a 6a 5 1"
-    skill_serial_3="9a 8"
-    np_index_1="1"
-    np_index_2="1"
-    np_index_3="1"
-    big_enemy_3="1"
-    mode="绿卡"
-    shuffle_cloth="是"
 
-end
-function init_ber()
-    skill_serial_1="7a 4a 2 1"
-    skill_serial_2="11a 6a 3"
-    skill_serial_3="9a 8 5"
-    np_index_1="1"
-    np_index_2="1"
-    np_index_3="1"
-    big_enemy_3="1"
-    mode="绿卡"
-    shuffle_cloth="是"
-
-end
-function init_nituo()
-    skill_serial_1=skill_serial_1 or ""
-    skill_serial_2=skill_serial_2 or ""
-    skill_serial_3=skill_serial_3 or ""
-
-    skill_serial_1="9 8 7b 1 "..skill_serial_1
-    skill_serial_2="2 "..skill_serial_2
-
-    skill_serial_3=skill_serial_3
-    np_index_1="1"
-    np_index_2="1"
-    np_index_3="2"
-    big_enemy_3="1"
-    mode="红卡"
-    shuffle_cloth="否"
-end
 function init_conf()
     dofile("/var/touchelf/scripts/conf"..conf_index..".lua")
     file=io.open("/var/touchelf/scripts/conf"..conf_index..".lua","r")
@@ -122,13 +82,7 @@ function init_input_info()
     end
 
     --初始化队伍信息
-    if skill_mode=="满破宝石狂兰wcba充能衣服" then
-        init_ber()
-    elseif skill_mode=="满破宝石阿塔wcba充能衣服" then
-        init_ata()
-    elseif skill_mode=="(模板)满破宝石尼托+二号打手+孔明" then
-        init_nituo()
-    elseif skill_mode=="从文件导入" then
+    if skill_mode=="从文件导入" then
         init_conf()
     end
 
@@ -598,10 +552,10 @@ function get_card_feature(index)
             table.insert(ret,dy)
             table.insert(ret,color)
             --notifyMessage(string.format("%d %d %x",dx,dy,color))
-            
-            
+
+
         end
-        
+
     end
     table.remove(ret,1)
     table.remove(ret,1)
@@ -616,7 +570,7 @@ function get_card_servant()
     ret={0,0,0,0,0}
     keepScreen(true)
 
-    
+
     for i=1,5 do
         x, y = findMultiColorInRegionFuzzy(feature,100, feature_start_x,feature_start_y[i],feature_end_x,feature_end_y[i]);
         if x ~= -1 and y ~= -1 then  -- 如果找到了
@@ -697,7 +651,15 @@ function select_np(t,is_debug)
         if count>=2 then
             --绿卡模式考虑首红
             if b_num>=1 and mode=="绿卡" and t>=3 then--有红
-                card=b_card[b_num]
+                table.sort(b_card)
+                for i=1,5 do
+                    if card[i].color~="red" and card[i].priority>b_card[1] then
+                        card=b_card[1]
+                        break
+                    else
+                        card=b_card[b_num]
+                    end
+                end
                 b_num=b_num-1
                 card.used=true
                 seleted_card[2]=np_card
@@ -787,6 +749,7 @@ function select_normal(t,is_debug)
 
         elseif b_num==2 then
             temp_card=b_card[1]
+            
             if b_card[2].priority<b_card[1].priority then--多打手情况不克制优先
                 temp_card=b_card[2]
             end
@@ -1150,6 +1113,7 @@ end
 --等待进入一面
 function wait_battle_start(t)
     t=t or 5000
+    c=0
     while true do
         x, y = findMultiColorInRegionFuzzy(table.unpack(attack_points));
         if x ~= -1 and y ~= -1 then  -- attack
@@ -1157,7 +1121,10 @@ function wait_battle_start(t)
         end
         if sp_mode=="手动" and t==5000 then
             toast("请选择助战并进入关卡",3000)
-            notifyVibrate(1000)
+            if c%25==0 then
+                notifyVibrate(1000)
+            end
+            c=c+1
         end
 
         mSleep(t)
@@ -1214,7 +1181,7 @@ function quit_mission()
 
     --不申请
     click(table.unpack(not_apply_button))
-    if times>=2 and sp_mode=="自动" then
+    if times>=2 and sp_mode~="手动" then
         wait_quit_mission()
     end
 end

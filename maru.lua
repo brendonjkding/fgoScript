@@ -1,5 +1,5 @@
 UI = {
-    { 'DropList{抽友情+搓丸子|抽友情|搓丸子|抽无限池}',      'mode',    '功能：' },
+    { 'DropList{抽友情+搓丸子|抽友情|搓丸子|抽无限池|刷助战|领银狗粮}',      'mode',    '功能：' },
 }
 
 dofile("/var/touchelf/scripts/lib_fgo.lua")
@@ -40,6 +40,15 @@ function infinity_points()
     refresh_confirm_button{164,879}
     close_button={164,652}
     draw_button={326,409,80}
+end
+function sp_points()
+    sp_1={491,73}
+    sp_interface_points={{ 0x00609A, -23, -4, 0x3E70B1, -17, 6, 0xEEF1FB, -16, 12, 0x133B6A, -16, 26, 0x0066F2 }, 90, 609, 14, 632, 44}
+end
+
+function exp_points()
+    silver_exp_points={{ 0xA1ABB4, 72, -704, 0x598A84, 18, -695, 0x7F60A0, 34, -726, 0xB7B7D4, 36, -768, 0x96684C },90, 7, 92, 587, 954}
+    scroll_bar_arrived_end_points={{ 0xA8986D, 1, 0, 0xD9C595, 2, 0, 0xE6D1A8 }, 90, 1, 976, 3, 976}
 end
 
 
@@ -184,6 +193,7 @@ function main()
         end
     end
     if mode=="抽无限池" then
+        infinity_points()
         while true do
             x, y = findMultiColorInRegionFuzzy(table.unpack(pool_empty_points));
             if x ~= -1 and y ~= -1 then  -- 如果找到了
@@ -195,6 +205,40 @@ function main()
             for i=1,100 do
                 click(table.unpack(draw_button))
             end
+
+        end
+    end
+    if mode=="刷助战" then
+        sp_points()
+        x, y = findMultiColorInRegionFuzzy(table.unpack(sp_interface_points));
+        if x == -1 and y == -1 then  -- 如果找到了
+            toast("请在助战界面启动")
+            return
+        end
+        while true do
+            click(table.unpack(sp_1))
+            x, y = findMultiColorInRegionFuzzy(table.unpack(start_mission_points));
+            if x ~= -1 and y ~= -1 then  -- 如果找到了
+                notifyVibrate()
+                break
+            end
+            refresh_support()
+
+        end
+    end
+    if mode=="领银狗粮" then
+        exp_points()
+        while true do
+            x, y = findMultiColorInRegionFuzzy(table.unpack(silver_exp_points));
+            while x ~= -1 and y ~= -1 do  -- 如果找到了
+                click(x,y,50)
+                x, y = findMultiColorInRegionFuzzy(table.unpack(silver_exp_points));
+            end
+            x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_arrived_end_points);
+            if x ~= -1 and y ~= -1 then  -- 如果找到了
+                return
+            end
+            move_upward(25)
 
         end
     end
