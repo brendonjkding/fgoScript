@@ -37,7 +37,7 @@ end
 function infinity_points()
     pool_empty_points={{ 0x6A8BC0, -5, 144, 0x87AADE }, 90, 497, 1109, 502, 1253}
     refresh_button={488,1180}
-    refresh_confirm_button{164,879}
+    refresh_confirm_button={164,879}
     close_button={164,652}
     draw_button={326,409,80}
 end
@@ -234,7 +234,7 @@ function main()
                 click(x,y,50)
                 x, y = findMultiColorInRegionFuzzy(table.unpack(silver_exp_points));
             end
-            x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_arrived_end_points);
+            x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_arrived_end_points));
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 return
             end

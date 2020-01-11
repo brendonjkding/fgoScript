@@ -1,4 +1,7 @@
 # 更新内容
+## v1.3.4
+* find_support优化
+* bug fix:select_support maru.lua select_np
 ## v1.3.3
 * 刷助战功能
 * 领银狗粮功能

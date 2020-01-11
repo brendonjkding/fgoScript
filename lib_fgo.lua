@@ -4,7 +4,7 @@
     -------------------------------------------------------------------
 ]]--
 function init(d)
-    VERSION="## v1.3.3"
+    VERSION="## v1.3.4"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -40,8 +40,6 @@ function init_conf()
     end
 end
 function save_conf()
-
-
     t=''
     t=t.."sp_mode=\""..sp_mode.."\"--助战".."\n"
     t=t.."mc=\""..mc.."\"--礼装".."\n"
@@ -71,8 +69,6 @@ function save_conf()
 
 end
 function init_input_info()
-    conf_name="--"..conf_name
-
     if dashou=="狂兰" then
         color_points={ 0x181830, 6, -5, 0x504477, 13, -11, 0xFD0051, 25, -13, 0x444477, 20, -22, 0xF9004C }
     elseif dashou=="阿塔" then
@@ -86,13 +82,14 @@ function init_input_info()
         init_conf()
     end
 
+
     if mode_ then
         mode=mode_
     end
 
-
-
     --输入信息处理
+    conf_name="--"..conf_name
+
     skills={}
     skills[1]=Split(skill_serial_1," ")
     skills[2]=Split(skill_serial_2," ")
@@ -160,6 +157,7 @@ function init_points()
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     scroll_bar_arrived_end_points={{ 0xF5E4C3 }, 90, 14, 1291, 14, 1291}
+    scroll_bar_slot_points={{ 0x56656D, 3, 0, 0x0A1A22, 6, 0, 0x0B1A22 }, 90, 11, 1292, 17, 1292}
     refresh_too_fast_warning={{ 0xEDEEEA, 43, -2, 0xEFEFEF }, 90, 138, 666, 181, 668}
     refresh_warning_close_button={171,673}
     refresh_button={612,881}
@@ -187,6 +185,12 @@ function init_points()
     mc_start_y={23,32}
     mc_end_x={588,292}
     mc_end_y={232,236}
+
+    sp_start_x=4
+    sp_start_y=23
+    sp_end_x=588
+    sp_end_y=232
+
     sp_start_dx=0
     sp_start_dy=-60
     sp_end_dx=174
@@ -196,7 +200,7 @@ function init_points()
     cba_skill_start_y=1021
     cba_skill_end_dx=-36
     cba_skill_end_y=1082
-    cba_310skill_points={ 0xFFFFFF, 9, 0, 0xFFFFFF, 9, -3, 0xFFFFFF, 5, 9, 0xFFFFFF, -1, 13, 0xFFFFFF, 12, 13, 0xFFFFFF, 5, 17, 0xFFFFFF, 0, 81, 0xFFFFFF, 5, 81, 0xFFFFFF, 9, 79, 0xFFFFFF, 5, 90, 0xFFFFFF, -2, 94, 0xE6E6E6, 13, 94, 0xF1F1F1, 5, 98, 0xFFFFFF, 5, 162, 0xFFFFFF, 1, 162, 0xFFFFFF, 6, 170, 0xFFFFFF, 13, 174, 0xF9F9F9, -1, 175, 0xFFFFFF, 5, 179, 0xFFFFFF }
+    cba_310skill_points={ 0xFFFFFF, 4, 0, 0xFFFFFF, 10, 0, 0xFFFFFF, 9, -2, 0xFFFFFF, 5, 9, 0xFFFFFF, -2, 12, 0xFFFFFF, 5, 16, 0xFFFFFF, 12, 13, 0xFFFFFF, 9, 79, 0xFFFFFF, 9, 81, 0xFFFFFF, 5, 81, 0xFFFFFF, 0, 81, 0xFFFFFF, -1, 94, 0xFFFFFF, 5, 89, 0xFFFFFF, 5, 98, 0xFFFFFF, 12, 93, 0xFFFFFF, 9, 160, 0xFFFFFF, 9, 162, 0xFFFFFF, 5, 162, 0xFFFFFF, 0, 162, 0xFFFFFF, -1, 174, 0xFFFFFF, 5, 170, 0xFFFFFF, 11, 174, 0xFFFFFF, 6, 178, 0xFFFFFF }
     cba_310skill_start_y=858
     cba_310skill_end_y=cba_skill_end_y
 
@@ -650,10 +654,10 @@ function select_np(t,is_debug)
         --优先打手首红
         if count>=2 then
             --绿卡模式考虑首红
-            if b_num>=1 and mode=="绿卡" and t>=3 then--有红
+            if b_num>=1 and mode=="绿卡" and t>=3 then--有红               
                 table.sort(b_card)
                 for i=1,5 do
-                    if card[i].color~="red" and card[i].priority>b_card[1] then
+                    if cards[i].color~="red" and cards[i]<b_card[1] then
                         card=b_card[1]
                         break
                     else
@@ -749,7 +753,7 @@ function select_normal(t,is_debug)
 
         elseif b_num==2 then
             temp_card=b_card[1]
-            
+
             if b_card[2].priority<b_card[1].priority then--多打手情况不克制优先
                 temp_card=b_card[2]
             end
@@ -1230,20 +1234,21 @@ function start_one_mission(t)
 end
 
 --
---检查pos位置的助战是否为指定助战
-function find_support(pos)
+--(is_find, new_start_x)检查pos位置的助战是否为指定助战
+function find_support(new_start_x)
+    --logDebug(new_start_x)
+    --找礼装
+    x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, new_start_x, sp_start_y, sp_end_x, sp_end_y);
 
-    x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, mc_start_x[pos], mc_start_y[pos], mc_end_x[pos], mc_end_y[pos]);
 
-
-    if (x ~= -1 and y ~= -1 ) or mc=="任意" then  -- 如果找到了礼装
+    if (x ~= -1 and y ~= -1) or mc=="任意" then  -- 如果找到了礼装
 
         if sp=="任意" then --任意从者
             click(x,y)
             return true
         end
-        if mc=="任意" then
-            x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, mc_start_x[pos], mc_start_y[pos], mc_end_x[pos], mc_end_y[pos]);
+        if mc=="任意" then --找英灵
+            x, y = findMultiColorInRegionFuzzy(support_points[sp], 90, new_start_x, sp_start_y, sp_end_x, sp_end_y);
         else
             x, y = findMultiColorInRegionFuzzy(support_points[sp], 90, x+sp_start_dx, y+sp_start_dy , x+sp_end_dx, x+sp_end_dy);
         end
@@ -1265,26 +1270,29 @@ function find_support(pos)
                 click(x,y)
                 return true
             end
+
         end
     end
-    return false
+    if x~=-1 and y ~= -1 then
+        return false,x+10 --继续找
+    else
+        return false --刷新
+    end
+
 end
 
 --自动选助战
 function select_support()
+    mSleep(2000)
     if sp_class_index and sp_class_index~="当前" then
         click(sp_class_button_x,sp_class_button_y[sp_class_index])
     end
-
-
-
 
     if mc=="任意" and sp=="任意" then
         click(table.unpack(support_1))
         return
     end
 
-    mSleep(1000)
     while true do
         keepScreen(true)
         if sp_mode=="图片" then
@@ -1293,33 +1301,34 @@ function select_support()
                 click(x,y)
                 return
             end
-
         else
-            --pos-1
-            if find_support(1) then
+            new_start_x=sp_start_x
+            is_find, new_start_x=find_support(new_start_x)
+            while (not is_find) and new_start_x do
+                is_find, new_start_x=find_support(new_start_x)
+            end
+            if is_find then
                 return
             end
-            --pos-2
-            if find_support(2) then
-                return
+            --logDebug("loop out")
+            x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_slot_points));
+            if x ~= -1 and y ~= -1 then  -- 如果找到了
+                x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_arrived_end_points));
+                if x ~= -1 and y ~= -1 then  -- 如果到底了
+                    refresh_support()
+                end
+                move_upward(5)
+            else
+                refresh_support()
             end
-        end
-        --解决奇怪的bug
-        x, y = findMultiColorInRegionFuzzy(table.unpack(start_mission_points));
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            click(table.unpack(privious_button))
-        end
-        keepScreen(false)
 
-        move_upward(5)
-        x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_arrived_end_points));
-        if x ~= -1 and y ~= -1 then  -- 如果到底了
-            refresh_support()
-        end
 
+            keepScreen(false)
+        end
     end
-
 end
+
+
 --上滑
 function move_upward(t,x,y)
     x=x or 100 
@@ -1338,6 +1347,7 @@ function move_upward(t,x,y)
 end
 --刷新助战
 function refresh_support()
+    keepScreen(false)
     click(table.unpack(refresh_button))
     x, y = findMultiColorInRegionFuzzy(table.unpack(refresh_too_fast_warning));
     if x ~= -1 and y ~= -1 then  -- 如果找到了
