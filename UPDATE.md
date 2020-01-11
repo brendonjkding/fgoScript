@@ -1,4 +1,7 @@
 # 更新内容
+## v1.3.5
+* 文件名优化
+* bug fix:select_support 抽池子
 ## v1.3.4
 * find_support优化
 * bug fix:select_support maru.lua select_np

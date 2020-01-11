@@ -4,12 +4,9 @@
     -------------------------------------------------------------------
 ]]--
 function init(d)
-    VERSION="## v1.3.4"
-    -- 适用屏幕参数
-    SCREEN_RESOLUTION="750x1334";
-    SCREEN_COLOR_BITS=32;
-    rotateScreen(0);
-
+    VERSION="## v1.3.5"
+    
+    init_arg()
     init_points()
     init_ob()
     init_input_info()
@@ -19,77 +16,82 @@ function init(d)
     logDebug("------------------------------------------------------------")
     is_debug=d
 
-    check_miss_operate()
-    check_version()
+    check_miss_operate(message)
 
     save_conf()
 end
+function init_arg()
+    -- 适用屏幕参数
+    SCREEN_RESOLUTION="750x1334";
+    SCREEN_COLOR_BITS=32;
+    rotateScreen(0);
+end
 
 function init_conf()
-    dofile("/var/touchelf/scripts/conf"..conf_index..".lua")
-    file=io.open("/var/touchelf/scripts/conf"..conf_index..".lua","r")
+    dofile("/var/touchelf/scripts/"..conf_name..".lua")
+    file=io.open("/var/touchelf/scripts/"..conf_name..".lua","r")
     io.input(file)
     text=io.read("*a")
     io.close(file)
     line=Split(text,'\n')
-    for i=1,#(line) do
+    for i=1,#line do
         if string.sub(line[i],1,1)=='-' then
-            conf_name=line[i]
+            conf_name=string.sub(line[i],3)
             break
         end
     end
 end
 function save_conf()
-    t=''
-    t=t.."sp_mode=\""..sp_mode.."\"--助战".."\n"
-    t=t.."mc=\""..mc.."\"--礼装".."\n"
-    t=t.."sp=\""..sp.."\"--从者".."\n"
-    t=t.."skill_serial_1=\""..skill_serial_1.."\"--1t技能".."\n"
-    t=t.."skill_serial_2=\""..skill_serial_2.."\"--2t技能".."\n"
-    t=t.."skill_serial_3=\""..skill_serial_3.."\"--3t技能".."\n"
-    t=t.."np_index_1=\""..np_index_1.."\"--1t宝具".."\n"
-    t=t.."np_index_2=\""..np_index_2.."\"--2t宝具".."\n"
-    t=t.."np_index_3=\""..np_index_3.."\"--3t宝具".."\n\n"
-    t=t.."big_enemy_1=\""..big_enemy_1.."\"--一面大怪".."\n"
-    t=t.."big_enemy_mode_1=\""..big_enemy_mode_1.."\"\n\n"
-    t=t.."big_enemy_2=\""..big_enemy_2.."\"--二面大怪".."\n"
-    t=t.."big_enemy_mode_2=\""..big_enemy_mode_2.."\"\n\n"
-    t=t.."big_enemy_3=\""..big_enemy_3.."\"--三面大怪".."\n"
-    t=t.."mode=\""..mode.."\"--队伍".."\n"
-    t=t.."shuffle_cloth=\""..shuffle_cloth.."\"--洗牌服".."\n"
-    t=t.."party_index=\""..party_index.."\"--队伍序号".."\n"
-    t=t.."sp_class_index=\""..sp_class_index.."\"--助战职介".."\n"
-    t=t.."after_failed=\""..after_failed.."\"--如失败".."\n"
+    if is_debug then return end
 
-    t=t..conf_name.."\n"
-    file=io.open("/var/touchelf/scripts/conf"..conf_index..".lua","w")
+    t=[[sp_mode="%s"--助战
+mc="%s"--礼装
+sp="%s"--从者
+skill_serial_1="%s"--1t技能
+skill_serial_2="%s"--2t技能
+skill_serial_3="%s"--3t技能
+np_index_1="%s"--1t宝具
+np_index_2="%s"--2t宝具
+np_index_3="%s"--3t宝具
+
+big_enemy_1="%s"--一面大怪
+big_enemy_mode_1="%s"
+
+big_enemy_2="%s"--二面大怪
+big_enemy_mode_2="%s"
+
+big_enemy_3="%s"--三面大怪
+mode="%s"--队伍
+shuffle_cloth="%s"--洗牌服
+party_index="%s"--队伍序号
+sp_class_index="%s"--助战职介
+after_failed="%s"--如失败
+--%s
+]]
+
+
+    t=string.format(t,sp_mode,mc,sp,skill_serial_1,skill_serial_2,skill_serial_3,
+        np_index_1,np_index_2,np_index_3,big_enemy_1,big_enemy_mode_1,big_enemy_2,
+        big_enemy_mode_2,big_enemy_3,mode,shuffle_cloth,party_index,sp_class_index,
+        after_failed,conf_name)
+
+    file=io.open("/var/touchelf/scripts/"..conf_name..".lua","w")
     io.output(file)
     io.write(t)
     io.close(file)
 
 end
 function init_input_info()
-    if dashou=="狂兰" then
-        color_points={ 0x181830, 6, -5, 0x504477, 13, -11, 0xFD0051, 25, -13, 0x444477, 20, -22, 0xF9004C }
-    elseif dashou=="阿塔" then
-        color_points={ 0xFEEDCB, -2, 10, 0xFEECD5, 8, 4, 0x339D00, 19, -1, 0xE3D9B7, 20, 17, 0x1F7A5D }
-    else
-        dashou="通用"
-    end
+    if dashou=="狂兰" then color_points={ 0x181830, 6, -5, 0x504477, 13, -11, 0xFD0051, 25, -13, 0x444477, 20, -22, 0xF9004C }
+    elseif dashou=="阿塔" then color_points={ 0xFEEDCB, -2, 10, 0xFEECD5, 8, 4, 0x339D00, 19, -1, 0xE3D9B7, 20, 17, 0x1F7A5D }
+    else dashou="通用" end
 
     --初始化队伍信息
-    if skill_mode=="从文件导入" then
-        init_conf()
-    end
+    local temp=skill_mode=="从文件导入" and init_conf()
 
-
-    if mode_ then
-        mode=mode_
-    end
+    mode=(mode_ and {mode_} or {mode})[1]
 
     --输入信息处理
-    conf_name="--"..conf_name
-
     skills={}
     skills[1]=Split(skill_serial_1," ")
     skills[2]=Split(skill_serial_2," ")
@@ -99,25 +101,17 @@ function init_input_info()
     np_indexs[2]=tonumber(np_index_2)+5
     np_indexs[3]=tonumber(np_index_3)+5
 
-    big_enemy={big_enemy_1,big_enemy_2}
+    big_enemy={big_enemy_1,big_enemy_2,big_enemy_3}
     big_enemy_mode={big_enemy_mode_1,big_enemy_mode_2}
 
-    if shuffle_cloth=="是" then
-        shuffled=false
-    else
-        shuffled=true
-    end
     times=tonumber(times)
-    if not party_index then
-        party_index="当前"
-    end
-    if not after_failed then
-        after_failed="停止"
-    end
-    if not sp_class_index then
-        sp_class_index="当前"
-    end
-
+    party_index=party_index or "当前"
+    sp_class_index=sp_class_index or "当前"
+    after_failed=after_failed or "停止"
+    conf_name=(conf_name=="" and {"默认"} or {conf_name})[1]
+    shuffled=(shuffle_cloth=="是" and {false} or {true})[1]
+    check_miss_operate_points=(sp_mode=="手动" and {{attack_points}} or {menu_points})[1]
+    message=(sp_mode=="手动" and {"请进入副本再启动"} or {"请把关卡放在第一个再启动"})[1]
 end
 
 --卡对象
@@ -162,7 +156,7 @@ function init_points()
     refresh_warning_close_button={171,673}
     refresh_button={612,881}
     refresh_confirm_button={162,870}
-    support_1={452,137}
+    support_slot={{452,137}}
 
     --助战礼装特征
     mc_points={}
@@ -272,7 +266,7 @@ function init_points()
     back_button={35,1253}
     attack_points={{ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213}
     attack_button={88,1164}
-    replace_confirm_button={100,664}
+    switch_confirm_button={100,664}
 
     --面
     round_cn_points={}
@@ -323,7 +317,6 @@ function init_points()
     not_apply_button={106,340}
 
     blank_region={680,900}
-
 end
 --[[
     -------------------------------------------------------------------
@@ -365,7 +358,7 @@ function get_card_info()
     if dashou=="通用" then
         for i=1,5 do
             cards[i].color=get_color(i)
-            for j=1,3 do
+            for j=1,#guai_points do
                 x, y = findMultiColorInRegionFuzzy(guai_points[j],90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
                 if x ~= -1 and y ~= -1 then  
                     cards[i].is_dashou=false
@@ -514,7 +507,7 @@ function get_info()
             b_num,a_num,q_num,count,has_sup_b))
 
 end
-
+--无用
 function get_np()
     function _get_np(t)
         np=0
@@ -540,51 +533,9 @@ function get_np()
     keepScreen(true)
     a,b,c=_get_np(1),_get_np(2),_get_np(3)
     keepScreen(false)
+    logDebug(string.format("np: %d,%d,%d",a,b,c))
     return a,b,c
 end
-
-function get_card_feature(index)
-    local d=2
-    ret={}
-    keepScreen(true)
-    for i=1,10 do
-        for j=1,10 do
-            local dy=d*(i-1)
-            local dx=d*(j-1)
-            local color=getColor(feature_extract_x+dx,feature_extract_y[index]+dy)
-            table.insert(ret,dx)
-            table.insert(ret,dy)
-            table.insert(ret,color)
-            --notifyMessage(string.format("%d %d %x",dx,dy,color))
-
-
-        end
-
-    end
-    table.remove(ret,1)
-    table.remove(ret,1)
-    --notifyMessage(string.format("%x %d %d %x %d %d %x",ret[1],ret[2],ret[3],ret[4],ret[5],ret[6],ret[7]),10000)
-    keepScreen(false)
-    return ret
-end
-
-function get_card_servant()
-    feature=get_card_feature(2)
-
-    ret={0,0,0,0,0}
-    keepScreen(true)
-
-
-    for i=1,5 do
-        x, y = findMultiColorInRegionFuzzy(feature,100, feature_start_x,feature_start_y[i],feature_end_x,feature_end_y[i]);
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            ret[i]=1
-        end
-    end
-    keepScreen(false)
-    notifyMessage(string.format("%d %d %d %d %d",ret[1],ret[2],ret[3],ret[4],ret[5]))
-end
-
 
 --[[
     -------------------------------------------------------------------
@@ -625,8 +576,6 @@ function choose_card_priority(x)
         end
     end
 end
-
-
 
 --带宝具选第t面卡
 function select_np(t,is_debug)
@@ -814,6 +763,7 @@ function turn_1_2(is_debug,need_skip)
             --点技能
             click_enemy(big_enemy[i])  
             select_skill(i)
+            get_np()
             click_attack()
             select_np(i)
             if is_battle_ended() then
@@ -837,6 +787,7 @@ function turn_3(is_debug)
     logDebug(string.format("current_turn:%d",current_round))
     click_enemy(big_enemy_3)    
     select_skill(3)
+    get_np()
     click_attack()
 
     --选卡
@@ -849,7 +800,6 @@ function turn_4(is_debug)
         logDebug(string.format("current_turn:%d",current_round))
         --attack
         np=table.pack(get_np())
-        logDebug(string.format("np: %d,%d,%d",np[1],np[2],np[3]))
         for i=1,3 do
             if np[i]>=100 then
                 np_indexs[current_round]=i+5
@@ -898,7 +848,6 @@ end
 ]]--
 --点index号技能
 function click_skill(index,target,target_2)
-
     --选目标间隔
     local delay_t=400
     --按御主技能
@@ -931,9 +880,7 @@ function click_skill(index,target,target_2)
     b_y=change_y[target_2]
     click(b_x,b_y,delay_t)
 
-    click(table.unpack(replace_confirm_button))
-
-
+    click(table.unpack(switch_confirm_button))
 end
 
 --素质三连
@@ -1041,35 +988,23 @@ function get_current_round()
 end
 --启动前检查防止误启动
 function check_miss_operate(m)
-    if is_debug then
-        return
-    end
-
-    if sp_mode=="手动" then
-        x, y = findMultiColorInRegionFuzzy(table.unpack(attack_points));
-        if x ~= -1 and y ~= -1 then  -- attack
-            return 
-        end
-        toast("请进入副本再启动",3000)
-        os.exit()
-    end
-    for i=1,2 do
-        x, y = findMultiColorInRegionFuzzy(table.unpack(menu_points[i]));
+    if is_debug then return end
+    for i=1,#check_miss_operate_points do
+        x, y = findMultiColorInRegionFuzzy(table.unpack(check_miss_operate_points[i]));
         if x ~= -1 and y ~= -1 then  -- 如果找到了
             return
         end
     end
-    m=m or "请把关卡放在第一个再启动"
     toast(m,3000)
     os.exit()
 end
 
 
 function check_disconnected()
-    t=0
+    local c=0
     while true do
-        t=t+1
-        if t>5 then
+        c=c+1
+        if c>5 then
             notifyVibrate(3000)
         end
 
@@ -1085,7 +1020,7 @@ end
 
 --进本
 function enter_mission()
-    if sp_mode=="自动" or sp_mode=="图片"then
+    if sp_mode=="自动" or sp_mode=="图片" then
         click(table.unpack(mission_entry))
         if need_apple() then
             if apple=="不吃" then
@@ -1104,7 +1039,7 @@ function enter_mission()
 
         select_support()
         keepScreen(false)
-        if party_index and party_index~="当前" then
+        if party_index~="当前" then
             click(party_x,party_y[tonumber(party_index)%10+1])
             click(party_x,party_y[tonumber(party_index)])
         end
@@ -1117,7 +1052,7 @@ end
 --等待进入一面
 function wait_battle_start(t)
     t=t or 5000
-    c=0
+    local c=0
     while true do
         x, y = findMultiColorInRegionFuzzy(table.unpack(attack_points));
         if x ~= -1 and y ~= -1 then  -- attack
@@ -1150,7 +1085,7 @@ function is_battle_ended()
             return false
         end
 
-        for i=1,3 do
+        for i=1,#ended_points do
             x, y = findMultiColorInRegionFuzzy(table.unpack(ended_points[i]));
             if x ~= -1 and y ~= -1 then  -- 出现羁绊/失败则结束
                 keepScreen(false)
@@ -1168,13 +1103,12 @@ function quit_mission()
     x, y = findMultiColorInRegionFuzzy(table.unpack(failed_points));
     if x ~= -1 and y ~= -1 then  -- 撤退
         notifyVibrate(3000)
-        for i=1,3 do
+        for i=1,#retreat_button do
             click(table.unpack(retreat_button[i]))
         end
         if after_failed=="停止" then
             os.exit()
         end
-
         return
     end
     mSleep(2000)
@@ -1190,12 +1124,10 @@ function quit_mission()
     end
 end
 
-
-
 --等待出本
 function wait_quit_mission()
     while true do
-        for i=1,2 do
+        for i=1,#menu_points do
             x, y = findMultiColorInRegionFuzzy(table.unpack(menu_points[i]));
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 return
@@ -1209,15 +1141,7 @@ end
 function start_one_mission(t)
     logDebug(string.format("times:%d",t))
     if t==1 and sp_mode=="自动" then
-        notify="记得换好默认队伍哦！"
-        if line then
-            for i=1,#(line) do
-                if string.sub(line[i],1,1)=='-' then
-                    notify="当前文件："..line[i].."\n"..notify
-                end
-            end
-        end
-        notifyMessage(notify,3000)
+        toast("当前文件: "..conf_name,3000)
         mSleep(1000)
     end
 
@@ -1234,13 +1158,11 @@ function start_one_mission(t)
 end
 
 --
---(is_find, new_start_x)检查pos位置的助战是否为指定助战
+--(is_find, new_start_x)找助战
 function find_support(new_start_x)
     --logDebug(new_start_x)
     --找礼装
     x, y = findMultiColorInRegionFuzzy(mc_points[mc], 80, new_start_x, sp_start_y, sp_end_x, sp_end_y);
-
-
     if (x ~= -1 and y ~= -1) or mc=="任意" then  -- 如果找到了礼装
 
         if sp=="任意" then --任意从者
@@ -1250,7 +1172,7 @@ function find_support(new_start_x)
         if mc=="任意" then --找英灵
             x, y = findMultiColorInRegionFuzzy(support_points[sp], 90, new_start_x, sp_start_y, sp_end_x, sp_end_y);
         else
-            x, y = findMultiColorInRegionFuzzy(support_points[sp], 90, x+sp_start_dx, y+sp_start_dy , x+sp_end_dx, x+sp_end_dy);
+            x, y = findMultiColorInRegionFuzzy(support_points[sp], 90, x+sp_start_dx, y+sp_start_dy , x+sp_end_dx, y+sp_end_dy);
         end
 
         if x ~= -1 and y ~= -1 then  -- 如果找到了英灵
@@ -1289,7 +1211,7 @@ function select_support()
     end
 
     if mc=="任意" and sp=="任意" then
-        click(table.unpack(support_1))
+        click(table.unpack(support_slot[1]))
         return
     end
 
@@ -1310,7 +1232,7 @@ function select_support()
             if is_find then
                 return
             end
-            --logDebug("loop out")
+
             x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_slot_points));
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_arrived_end_points));
@@ -1322,12 +1244,10 @@ function select_support()
                 refresh_support()
             end
 
-
             keepScreen(false)
         end
     end
 end
-
 
 --上滑
 function move_upward(t,x,y)
@@ -1375,20 +1295,17 @@ end
 ]]--
 
 function check_version()
-    if is_check_update~="是" then
-        return
-    end
     data = httpGet('https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/UPDATE.md')
     if data=="" then
         return
     end
-    text=Split(data,'\n')[2]
-    if text==VERSION then
+    local latest_version=Split(data,'\n')[2]
+    if latest_version==VERSION then
         return
     end
-    notifyMessage("存在新版本，准备更新,请勿中止运行",3000)
+    notifyMessage("存在新版本,准备更新,请勿中止运行",3000)
     update()
-    notifyMessage("更新完毕，请重新设置再运行",3000)
+    notifyMessage("更新完毕,请重新设置再运行",3000)
     os.exit(0)
 end
 
@@ -1401,6 +1318,7 @@ function update()
 
     dofile("/var/touchelf/scripts/autoupdate.lua")
     autoupdate()
+    os.remove("/var/touchelf/scripts/autoupdate.lua");
 end
 
 function main()
