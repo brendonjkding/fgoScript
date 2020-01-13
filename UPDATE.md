@@ -1,4 +1,7 @@
 # 更新内容
+## v1.4
+* 主程序仅用作生成新文件，生成的文件可单独运行
+* bug fix:enemy_y check_miss_operate_points
 ## v1.3.5
 * 文件名优化
 * bug fix:select_support 抽池子

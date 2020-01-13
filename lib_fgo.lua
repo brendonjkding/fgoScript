@@ -4,7 +4,7 @@
     -------------------------------------------------------------------
 ]]--
 function init(d)
-    VERSION="## v1.3.5"
+    VERSION="## v1.4"
     
     init_arg()
     init_points()
@@ -32,6 +32,11 @@ function init_conf()
     file=io.open("/var/touchelf/scripts/"..conf_name..".lua","r")
     io.input(file)
     text=io.read("*a")
+    if text=="" then
+        notifyMessage("文件名有误",3000)
+        os.exit()
+    end
+    
     io.close(file)
     line=Split(text,'\n')
     for i=1,#line do
@@ -66,14 +71,33 @@ shuffle_cloth="%s"--洗牌服
 party_index="%s"--队伍序号
 sp_class_index="%s"--助战职介
 after_failed="%s"--如失败
+conf_name="%s"--文件名
+skill_mode="自定义"--队伍信息
 --%s
+
+UI = {
+    { 'InputBox{1}',             'times',    '打本次数：' },
+    { 'DropList{不吃|金|银|铜|彩}',             'apple',    '吃苹果：' }
+}
+dofile("/var/touchelf/scripts/lib_fgo.lua")
+
+function main()
+    init()
+    
+    for i=1,times do
+        start_one_mission(i)
+    end
+
+    notifyMessage("感谢使用")
+    notifyVibrate(3000)
+end
 ]]
 
 
     t=string.format(t,sp_mode,mc,sp,skill_serial_1,skill_serial_2,skill_serial_3,
         np_index_1,np_index_2,np_index_3,big_enemy_1,big_enemy_mode_1,big_enemy_2,
         big_enemy_mode_2,big_enemy_3,mode,shuffle_cloth,party_index,sp_class_index,
-        after_failed,conf_name)
+        after_failed,conf_name,conf_name)
 
     file=io.open("/var/touchelf/scripts/"..conf_name..".lua","w")
     io.output(file)
@@ -204,7 +228,7 @@ function init_points()
         party_y[i]=party_y[i-1]+26
     end
 
-    privious_button={716, 100}
+    previous_button={716, 100}
 
     --二、战斗中
     --卡色判断区域
@@ -238,10 +262,8 @@ function init_points()
     weak_points={ 0x91F0FD, -1, 0, 0x46D4FC, -2, 0, 0x3CC7FA, -3, 0, 0x33B9F8, -4, 0, 0x29AAF5, -5, 0, 0x1F9BF2, -6, 0, 0x168CEF, -7, 0, 0x0D7FEC }
 
     --切换敌人坐标
-    enemy_x=700
-    enemy_y={47,305,548}
     enemy_x=526
-    enemy_y={483,318,155}
+    enemy_y={155,318,483}
     --指令卡选择坐标
     card_x={222,222,222,222,222,542,542,542}--1,2,3,4,5,np
     card_y={150,400,680,940,1200,454,689,951}--266
@@ -785,7 +807,7 @@ end
 --3面第一次操作
 function turn_3(is_debug)
     logDebug(string.format("current_turn:%d",current_round))
-    click_enemy(big_enemy_3)    
+    click_enemy(big_enemy[3])
     select_skill(3)
     get_np()
     click_attack()
@@ -1140,11 +1162,9 @@ end
 --
 function start_one_mission(t)
     logDebug(string.format("times:%d",t))
-    if t==1 and sp_mode=="自动" then
-        toast("当前文件: "..conf_name,3000)
-        mSleep(1000)
-    end
-
+    local notify=string.format("当前文件: %s 剩余次数: %d",conf_name,times-t)
+    toast(notify,3000)
+    
     current_round=1
     enter_mission()
 
@@ -1271,6 +1291,12 @@ function refresh_support()
     click(table.unpack(refresh_button))
     x, y = findMultiColorInRegionFuzzy(table.unpack(refresh_too_fast_warning));
     if x ~= -1 and y ~= -1 then  -- 如果找到了
+        --解决奇怪的bug
+        x, y = findMultiColorInRegionFuzzy(table.unpack(start_mission_points));
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            click(table.unpack(previous_button))
+            return
+        end
         mSleep(8000)
         click(table.unpack(refresh_warning_close_button))
         refresh_support()

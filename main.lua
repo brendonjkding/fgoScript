@@ -1,12 +1,8 @@
 UI = {
-    { 'InputBox{1}',             'times',    '打本次数：' },
-    { 'DropList{不吃|金|银|彩|铜}',             'apple',    '吃苹果：' },
-
     { 'DropList{自定义(在下方输入)|从文件导入}', 'skill_mode', '队伍信息：' },
-    { 'InputBox{}',             'conf_name',    '保存/导入文件名' },
-    { 'TextView{输入信息运行一次后会自动保存至文件}' },
-    { 'TextView{，以后可直接选择导入，之后的信息不}' },
-    { 'TextView{用再设置}' },
+    { 'InputBox{}',             'conf_name',    '保存/导入文件名：' },
+    { 'TextView{输入信息运行后会生成新文件，再去直}' },
+    { 'TextView{接运行生成的新文件。}' },
 
     { 'TextView{}' },
     { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
@@ -43,12 +39,7 @@ UI = {
 dofile("/var/touchelf/scripts/lib_fgo.lua")
 
 function main()
-    init()
-    
-    for i=1,times do
-        start_one_mission(i)
-    end
-
-    notifyMessage("感谢使用")
-    notifyVibrate(3000)
+    init_input_info()
+    save_conf()
+    notifyMessage("保存成功",3000)
 end

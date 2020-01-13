@@ -32,7 +32,7 @@ function maru_points()
     confirm_button={ 134,878 }
     blank={226,1155,500}
 
-    check_miss_operate_points={menu_points}
+    check_miss_operate_points=menu_points
 end
 
 function infinity_points()
@@ -41,7 +41,7 @@ function infinity_points()
     refresh_confirm_button={164,879}
     close_button={164,652}
     draw_button={326,409,80}
-    draw_points={{ 0x09BDF2, -2, 187, 0x09D0FB }, 90, 256, 353, 258, 540}
+    draw_points={{ 0x02C8FA, 6, 143, 0x1F7CAC }, 90, 258, 347, 264, 490}
     bag_full_points={{ 0xD3D4D4, -1, 161, 0xD5D5D5, 0, 457, 0xD4D4D4, 1, 636, 0xD5D5D6, -1, 68, 0x000000, -8, 80, 0xDADADB, 5, 80, 0xDBDBDB }, 90, 157, 349, 170, 985}
     no_ticket_points={{ 0x075E76, 0, 182, 0x04687E }, 90, 253, 230, 253, 412}
     check_miss_operate_points={draw_points,no_ticket_points}
@@ -140,8 +140,8 @@ function make_maru()
                 move_upward(10)
                 x, y = findMultiColorInRegionFuzzy({ 0xFAF3DE }, 90, 28, 1062, 28, 1062);
                 if x ~= -1 and y ~= -1 then  -- 到底没素材了
-                    click(table.unpack(privious_button))
-                    click(table.unpack(privious_button))
+                    click(table.unpack(previous_button))
+                    click(table.unpack(previous_button))
                     return true
                 end
                 x, y = findMultiColorInRegionFuzzy(hungry_mc_points, 90, pos_start_x, pos_start_y[1], pos_end_x, pos_end_y[1]);
