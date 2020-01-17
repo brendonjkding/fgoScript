@@ -1,4 +1,7 @@
 # 更新内容
+## v1.4.2
+* 发现安卓模拟器改好分辨率也能用
+* 助战界面进入(苹果吃完)检测
 ## v1.4.1
 * 掉礼装震动提醒
 * bug fix:big_enemy_mode[3] select_np shuffle find_support

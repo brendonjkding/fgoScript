@@ -4,8 +4,7 @@
     -------------------------------------------------------------------
 ]]--
 function init(d)
-    
-    VERSION="## v1.4.1"
+    VERSION="## v1.4.2"
 
     init_arg()
     init_points()
@@ -16,11 +15,11 @@ function init(d)
     current_round=1
     logDebug("------------------------------------------------------------")
     is_debug=d
-    
+
     check_miss_operate(message)
 
     save_conf()
-    if is_debug then
+    if is_debug and toast then
         local oc = require "liboc"
         NSLog=oc.NSLog
     else
@@ -32,17 +31,24 @@ function init_arg()
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
     rotateScreen(0);
+    if toast then
+        path="/var/touchelf/scripts/"
+    else
+        path="/mnt/sdcard/touchelf/scripts/"
+        toast=notifyMessage
+    end
+
 end
 
 function init_conf()
-    file=io.open("/var/touchelf/scripts/"..conf_name..".lua","r")
+    file=io.open(path..conf_name..".lua","r")
     io.input(file)
     text=io.read("*a")
     if text=="" then
         notifyMessage("文件名有误",3000)
         os.exit()
     end
-    dofile("/var/touchelf/scripts/"..conf_name..".lua")
+    dofile(path..conf_name..".lua")
     io.close(file)
     line=Split(text,'\n')
     for i=1,#line do
@@ -74,6 +80,7 @@ big_enemy_mode_2="%s"
 big_enemy_3="%s"--三面大怪
 mode="%s"--队伍
 shuffle_cloth="%s"--洗牌服
+round_2_shuffle="%s"--二面是否洗牌
 party_index="%s"--队伍序号
 sp_class_index="%s"--助战职介
 after_failed="%s"--如失败
@@ -85,7 +92,7 @@ UI = {
     { 'InputBox{1}',             'times',    '打本次数：' },
     { 'DropList{不吃|金|银|铜|彩}',             'apple',    '吃苹果：' }
 }
-dofile("/var/touchelf/scripts/lib_fgo.lua")
+dofile("%slib_fgo.lua")
 
 function main()
     init()
@@ -102,10 +109,10 @@ end
 
     t=string.format(t,sp_mode,mc,sp,skill_serial_1,skill_serial_2,skill_serial_3,
         np_index_1,np_index_2,np_index_3,big_enemy_1,big_enemy_mode_1,big_enemy_2,
-        big_enemy_mode_2,big_enemy_3,mode,shuffle_cloth,party_index,sp_class_index,
-        after_failed,conf_name,conf_name)
+        big_enemy_mode_2,big_enemy_3,mode,shuffle_cloth,round_2_shuffle,
+        party_index,sp_class_index,after_failed,conf_name,conf_name,path)
 
-    file=io.open("/var/touchelf/scripts/"..conf_name..".lua","w")
+    file=io.open(path..conf_name..".lua","w")
     io.output(file)
     io.write(t)
     io.close(file)
@@ -117,7 +124,7 @@ function init_input_info()
     else dashou="通用" end
 
     --初始化队伍信息
-    local temp=skill_mode=="从文件导入" and init_conf()
+    local _=skill_mode=="从文件导入" and init_conf()
 
 
 
@@ -140,6 +147,7 @@ function init_input_info()
     party_index=party_index or "当前"
     sp_class_index=sp_class_index or "当前"
     after_failed=after_failed or "停止"
+    round_2_shuffle=round_2_shuffle or "否"
     conf_name=(conf_name=="" and {"默认"} or {conf_name})[1]
     shuffled=(shuffle_cloth=="是" and {false} or {true})[1]
     check_miss_operate_points=(sp_mode=="手动" and {{attack_points}} or {menu_points})[1]
@@ -168,6 +176,7 @@ function init_points()
     mission_entry={563,999}
     apple_x={["彩"]=574,["金"]=418,["银"]=290}
     apple_y=700
+    apple_scroll_slot_end={174,1058}
     apple_window_points={{ 0xDA6888, -31, 24, 0x6E46E3, -9, 28, 0xF9F8F5, -1, 49, 0x5DD7B5, -168, 36, 0xFEFF9B, -344, 30, 0x414E57 }, 90, 231, 361, 575, 410}
     close_apple_button={100,678}
     affirm_apple_button={165,863}
@@ -176,6 +185,8 @@ function init_points()
     start_mission_points={{ 0x08BBE8, -23, -9, 0x007AD5, -20, -52, 0x05387C, -2, -188, 0x0F99C0, -9, -111, 0xD2D9DE }, 90, 2, 1139, 25, 1327}
 
     --助战
+    sp_interface_points={{ 0x00609A, -23, -4, 0x3E70B1, -17, 6, 0xEEF1FB, -16, 12, 0x133B6A, -16, 26, 0x0066F2 }, 90, 609, 14, 632, 44}
+
     sp_class_button_x=616
     sp_class_button_y={["全"]=94,["剑"]=164,["弓"]=234,["枪"]=304,["骑"]=374,
         ["术"]=444,["杀"]=514,["狂"]=584,["EXT"]=654,["MIX"]=724}
@@ -200,6 +211,7 @@ function init_points()
     --闪闪祭
     mc_points["无限池"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F }
     mc_points["无限池(满破)"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F, -5, 120, 0xFBFC77, -8, 120, 0xC7DA7E, -12, 120, 0xA6E2BA }
+    mc_points["新午餐"]={ 0x688EC6, 0, 33, 0xF7CDD2, 7, 71, 0xECC4C7, -6, 85, 0xFDEDDB, 6, 96, 0x5F3743, 7, 128, 0xE5D7D2 }
     --助战从者特征
     support_points={}
     support_points["孔明"]={ 0xFAF4D6, -6, 4, 0x716256, -3, 15, 0xFBF5D5, -31, 11, 0xDEC4A2, -33, -59, 0xBFEFD6, 36, -15, 0x4C5D59 }
@@ -546,7 +558,7 @@ function get_np()
     function _get_np(t)
         np=0
         start_y=np_start_y[t]
-        for j=1,3 do
+        for _=1,3 do
             min_y=1334
             for i=0,9 do
                 x, y = findMultiColorInRegionFuzzy(num[i], 70, np_start_x,start_y,np_end_x,np_end_y[t]);
@@ -623,6 +635,12 @@ function select_np(t)
         select_normal()
         return
     end
+
+    if t==2 and round_2_shuffle=="是" and count<0 and not shuffled then
+        shuffle()
+        select_np(t)
+    end
+
 
     seleted_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
     if t==2 and big_enemy_mode[t]~="后补刀" then
@@ -720,7 +738,7 @@ function select_np(t)
     end
 
     logDebug(string.format("select_np: %d %d %d\n",seleted_card[1].index,seleted_card[2].index,seleted_card[3].index))
-    
+
     if is_debug then
         NSLog("test")
         os.exit(0)
@@ -858,7 +876,7 @@ function turn_4()
 end
 --提取某一回合的技能
 function select_skill(t)
-    for j,v in pairs(skills[t]) do
+    for _,v in pairs(skills[t]) do
         local index=get_skill_index(v)
         local target=get_skill_target(v)
         if index==nil then
@@ -1044,20 +1062,12 @@ end
 
 
 function check_disconnected()
-    local c=0
-    while true do
-        c=c+1
-        if c>5 then
-            notifyVibrate(3000)
-        end
-
-        x, y = findMultiColorInRegionFuzzy(table.unpack(disconnect_points));
-        if x ~= -1 and y ~= -1 then  -- 掉线
-            click(table.unpack(reconnect_button))
-            keepScreen(false)
-        else
-            return
-        end
+    x, y = findMultiColorInRegionFuzzy(table.unpack(disconnect_points));
+    if x ~= -1 and y ~= -1 then  -- 掉线
+        click(table.unpack(reconnect_button))
+        keepScreen(false)
+    else
+        return
     end
 end
 
@@ -1072,13 +1082,14 @@ function enter_mission()
                 os.exit()
             end
             if apple=="铜" then
-                click(174,1058)
+                click(table.unpack(apple_scroll_slot_end))
                 click(apple_x["银"],apple_y)
             else
                 click(apple_x[apple],apple_y)
             end
             click(table.unpack(affirm_apple_button))
         end
+        check_sp_interface()
 
         select_support()
         keepScreen(false)
@@ -1160,7 +1171,7 @@ function quit_mission()
     end
     mSleep(2000)
     --连点三下右下角、下一步
-    for i=1,4 do
+    for _=1,4 do
         click(table.unpack(lr_corner))
     end
 
@@ -1203,6 +1214,23 @@ function start_one_mission(t)
 end
 
 --
+function check_sp_interface()
+    mSleep(3000)
+    x, y = findMultiColorInRegionFuzzy(table.unpack(sp_interface_points));
+    local c=0
+    while x == -1 and y == -1 do  -- attack
+        c=c+1
+        if c>5 then
+            os.exit(0)
+        end
+        check_disconnected()
+        mSleep(3000)
+        x, y = findMultiColorInRegionFuzzy(table.unpack(sp_interface_points));
+    end
+
+
+end
+
 --(is_find, new_start_x)找助战
 function find_support(new_start_x)
     --logDebug(new_start_x)
@@ -1267,7 +1295,7 @@ function select_support()
     while true do
         keepScreen(true)
         if sp_mode=="图片" then
-            x, y = findImageFuzzy("/var/touchelf/scripts/sp.bmp"); -- 
+            x, y = findImageFuzzy(path.."sp.bmp"); -- 
             if x ~= -1 and y ~= -1 then            -- 如果找到了
                 click(x,y)
                 return
@@ -1305,7 +1333,7 @@ function move_upward(t,x,y)
     touchDown(5, x, y)
     mSleep(34);
     local dx=15
-    for i=1,t do
+    for _=1,t do
         touchMove(5, x+dx, y)
         mSleep(20);
         dx=dx+15
@@ -1366,14 +1394,14 @@ end
 
 function update()
     data = httpGet("https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/autoupdate.lua")
-    file=io.open("/var/touchelf/scripts/autoupdate.lua","w")
+    file=io.open(path.."autoupdate.lua","w")
     io.output(file)
     io.write(data)
     io.close(file)
 
-    dofile("/var/touchelf/scripts/autoupdate.lua")
+    dofile(path.."autoupdate.lua")
     autoupdate()
-    os.remove("/var/touchelf/scripts/autoupdate.lua");
+    os.remove(path.."autoupdate.lua");
 end
 
 function main()
