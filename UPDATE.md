@@ -1,4 +1,7 @@
 # 更新内容
+## v1.4.1
+* 掉礼装震动提醒
+* bug fix:big_enemy_mode[3] select_np shuffle find_support
 ## v1.4
 * 主程序仅用作生成新文件，生成的文件可单独运行
 * bug fix:enemy_y check_miss_operate_points

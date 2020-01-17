@@ -1,5 +1,5 @@
 UI = {
-    { 'DropList{抽友情+搓丸子|抽友情|搓丸子|抽无限池|刷助战|领银狗粮|检查更新}',      'mode',    '功能：' },
+    { 'DropList{抽友情+搓丸子|抽友情|搓丸子|抽无限池|刷助战|领银狗粮|检查更新|测试|关闭}',      'mode',    '功能：' },
 }
 
 dofile("/var/touchelf/scripts/lib_fgo.lua")
@@ -200,7 +200,7 @@ function draw()
             end
         end
 
-        for i=1,100 do
+        for i=1,50 do
             click(table.unpack(draw_button))
         end
         keepScreen(false)
@@ -235,6 +235,13 @@ end
 
 
 function main()
+    if mode=="空" then return end
+    if mode=="测试" then 
+        rotateScreen(-90)
+        move_upward(30)
+        return
+    end
+    
     mSleep(1000)
     init_arg()
     init_points()
@@ -276,6 +283,7 @@ function main()
     if mode=="检查更新" then
         check_version()
     end
+    
     
 end
 

@@ -4,8 +4,9 @@
     -------------------------------------------------------------------
 ]]--
 function init(d)
-    VERSION="## v1.4"
     
+    VERSION="## v1.4.1"
+
     init_arg()
     init_points()
     init_ob()
@@ -15,10 +16,16 @@ function init(d)
     current_round=1
     logDebug("------------------------------------------------------------")
     is_debug=d
-
+    
     check_miss_operate(message)
 
     save_conf()
+    if is_debug then
+        local oc = require "liboc"
+        NSLog=oc.NSLog
+    else
+        NSLog=function ()end
+    end
 end
 function init_arg()
     -- 适用屏幕参数
@@ -28,7 +35,6 @@ function init_arg()
 end
 
 function init_conf()
-    dofile("/var/touchelf/scripts/"..conf_name..".lua")
     file=io.open("/var/touchelf/scripts/"..conf_name..".lua","r")
     io.input(file)
     text=io.read("*a")
@@ -36,7 +42,7 @@ function init_conf()
         notifyMessage("文件名有误",3000)
         os.exit()
     end
-    
+    dofile("/var/touchelf/scripts/"..conf_name..".lua")
     io.close(file)
     line=Split(text,'\n')
     for i=1,#line do
@@ -113,6 +119,8 @@ function init_input_info()
     --初始化队伍信息
     local temp=skill_mode=="从文件导入" and init_conf()
 
+
+
     mode=(mode_ and {mode_} or {mode})[1]
 
     --输入信息处理
@@ -126,7 +134,7 @@ function init_input_info()
     np_indexs[3]=tonumber(np_index_3)+5
 
     big_enemy={big_enemy_1,big_enemy_2,big_enemy_3}
-    big_enemy_mode={big_enemy_mode_1,big_enemy_mode_2}
+    big_enemy_mode={big_enemy_mode_1,big_enemy_mode_2,"后补刀"}
 
     times=tonumber(times)
     party_index=party_index or "当前"
@@ -140,7 +148,7 @@ end
 
 --卡对象
 function init_ob()
-    Card={index=0,priority=0,used=false,is_dashou=true,counter=false,weak=false,color=false,test=1}
+    Card={index=0,priority=0,used=false,is_dashou=true,counter=false,weak=false,color=false,priority_bak=false,test=1}
     Card.__index=Card 
     Card.__lt=function(a,b)return a.priority>b.priority end
     function Card:new(i,p)
@@ -189,6 +197,7 @@ function init_points()
     mc_points["qp"]={ 0xBF8E69, 21, 10, 0x435DCB, 2, 44, 0x283B56, 10, 69, 0xF9D9A1, 9, 94, 0x1A1F2B, 3, 131, 0xFDFB5C, -1, 132, 0xB8D55E, 22, 115, 0xD3EEFA }
     mc_points["所长"]={ 0x5F362F, 5, 18, 0xD9A879, 7, 32, 0x63132D, 11, 43, 0x906F5F, 11, 69, 0xF9DEB7, -3, 97, 0xFBCCC5, 18, 125, 0x4E110E, 18, 142, 0xEBAD59, 7, 138, 0xF9F824 }
     mc_points["新所长"]={ 0x372F2F, -19, 12, 0xF1ECE2, -26, 51, 0x89381B, -11, 50, 0x92C37E, -5, 77, 0xFEEEE3, 9, 105, 0x2A2B58, 9, 142, 0x1D3B29, -13, 137, 0xFAFA54, -18, 137, 0xA2C262 }
+    --闪闪祭
     mc_points["无限池"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F }
     mc_points["无限池(满破)"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F, -5, 120, 0xFBFC77, -8, 120, 0xC7DA7E, -12, 120, 0xA6E2BA }
     --助战从者特征
@@ -326,10 +335,12 @@ function init_points()
     --三、结束战斗
     kizuna_points={{ 0x48A9C3, -16, 0, 0x0209AF, -15, 35, 0x006402, -2, 33, 0x50E35B, -2, 39, 0x6BE670 }, 90, 291, 595, 307, 634}
     kizuna_upgraded_points={{ 0x7642E0, 6, 3, 0x2E7AEE, 16, 10, 0x6FE29D, 17, -7, 0xF2AC9E }, 90, 223, 702, 240, 719}
+    kizuna_upgraded_points2={{ 0xEEBF28, -2, 20, 0xEABB25, 7, 78, 0xDFB627, -2, 114, 0xEFBD25, -3, 136, 0xEABB25, -10, 183, 0xE0A413, -8, 213, 0xEAAC1B }, 90, 383, 694, 400, 907}
     failed_points={{ 0x7632D8, 19, 9, 0x77E890, 26, 3, 0xF9EAC0, 15, -7, 0xE171A0, 13, 3, 0xF1F9F9 }, 90, 602, 963, 628, 979}
     disconnect_points={{ 0xD4D5D7, 0, -37, 0x000000, 0, -43, 0xD8D8D4, 0, -47, 0x000000, 0, -53, 0xD0D0D0, 0, -58, 0x000000, 0, -66, 0xDCDBDC, 3, -73, 0x000000 }, 90, 158, 866, 161, 939}
     reconnect_button={165, 859}
-    ended_points={kizuna_points,kizuna_upgraded_points,failed_points}
+    battle_ended_points={kizuna_points,kizuna_upgraded_points,failed_points,kizuna_upgraded_points2}
+    drop_mc_points={{ 0x452C0E, 0, 1, 0x654115, 0, 3, 0x7D6E2A, 0, 4, 0x6C7A41, 0, 5, 0x5D7854, 0, 6, 0x4E7466, 0, 10, 0x552F63 }, 90, 724, 981, 724, 991}
 
     retreat_button={}
     retreat_button[1]={416,338}
@@ -531,6 +542,7 @@ function get_info()
 end
 --无用
 function get_np()
+
     function _get_np(t)
         np=0
         start_y=np_start_y[t]
@@ -590,6 +602,10 @@ function choose_first()
 end
 --按优先级选第x张卡
 function choose_card_priority(x)
+    if seleted_card[x].index~=0 then
+        return 
+    end
+
     for i=1,5 do
         if not cards[i].used then
             seleted_card[x]=cards[i]
@@ -600,7 +616,7 @@ function choose_card_priority(x)
 end
 
 --带宝具选第t面卡
-function select_np(t,is_debug)
+function select_np(t)
     get_info()
     np_card=Card:new(np_indexs[t],0)
     if np_card.index==5 then
@@ -609,18 +625,33 @@ function select_np(t,is_debug)
     end
 
     seleted_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
-    if t==2 and big_enemy_mode[t]=="先垫刀" then
+    if t==2 and big_enemy_mode[t]~="后补刀" then
         if mode=="绿卡" then
-            if q_num==4 then--只能垫1张
+            if count-q_num==0 and not shuffled then
+                shuffle()
+                select_np(t)
+                return
+            end
+
+            for i=1,q_num do
+                q_card[i].priority_bak=q_card[i].priority
+                q_card[i].priority=0
+            end
+            table.sort(cards)
+
+            if (big_enemy_mode[t]=="垫一刀" and count-q_num>0)then--垫1张
                 seleted_card[2]=np_card
-                table.sort(cards)
-                choose_card_priority(3)
             else
                 seleted_card[3]=np_card--垫2张
             end
+            choose_card_priority(2)
+            choose_card_priority(1)
+            for i=1,q_num do
+                q_card[i].priority=q_card[i].priority_bak
+            end  
+            table.sort(cards)
+
         end
-    elseif t==1 and big_enemy_mode[t]=="先垫刀" then
-        seleted_card[3]=np_card
     else
         --优先打手首红
         if count>=2 then
@@ -642,6 +673,7 @@ function select_np(t,is_debug)
             else
                 seleted_card[1]=np_card
             end
+            NSLog("test2")
         elseif count==1 then--1张打手
             if b_num==1 then
                 if not has_sup_b and mode=="绿卡" and t>=3 then--有红没拐红
@@ -668,39 +700,29 @@ function select_np(t,is_debug)
                     return false
                 end
                 shuffle()
-                select_np(t,is_debug)
+                select_np(t)
                 return
             end
         end
     end
-    table.sort(cards)
-    if big_enemy_mode[t]=="先垫刀" then
-        if mode=="绿卡" and t==2 then
-            for i=1,q_num do
-                q_card[i].priority=0
-            end
-            table.sort(cards)
-        end
-        for i=1,3 do
-            if seleted_card[i].index==0 then
-                choose_card_priority(i)
-            end
-        end
-    else
-        if count<2 then
-            choose_first()
-        end
 
-        for i=3,1,-1 do
-            if seleted_card[i].index==0 then
-                choose_card_priority(i)
-            end
-        end
+    NSLog("test3")
+    table.sort(cards)
+    NSLog("test4")
+
+    if count<2 then
+        choose_first()
     end
 
 
+    for i=3,1,-1 do
+        choose_card_priority(i)
+    end
+
     logDebug(string.format("select_np: %d %d %d\n",seleted_card[1].index,seleted_card[2].index,seleted_card[3].index))
+    
     if is_debug then
+        NSLog("test")
         os.exit(0)
     end
     click_card(seleted_card[1].index,seleted_card[2].index,seleted_card[3].index)
@@ -713,7 +735,7 @@ function select_np(t,is_debug)
     return false
 end
 --不带宝具选第t面卡
-function select_normal(t,is_debug)
+function select_normal(t)
     get_info()
     seleted_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
 
@@ -741,7 +763,7 @@ function select_normal(t,is_debug)
     else
         if sp=="cba" and t==4 and not shuffled then
             shuffle()
-            select_normal(t,is_debug)
+            select_normal(t)
             return
         end
 
@@ -752,9 +774,7 @@ function select_normal(t,is_debug)
 
     table.sort(cards)
     for i=3,1,-1 do
-        if seleted_card[i].index==0 then
-            choose_card_priority(i)
-        end
+        choose_card_priority(i)
     end
     logDebug(string.format("select_normal: %d %d %d\n",seleted_card[1].index,seleted_card[2].index,seleted_card[3].index))
     if is_debug then
@@ -774,7 +794,7 @@ function is_select_fail()
     return false
 end
 --1t 2t
-function turn_1_2(is_debug,need_skip)
+function turn_1_2()
     for i=1,2 do
         repeat
             if get_current_round()>current_round then
@@ -805,7 +825,7 @@ function turn_1_2(is_debug,need_skip)
 
 end
 --3面第一次操作
-function turn_3(is_debug)
+function turn_3()
     logDebug(string.format("current_turn:%d",current_round))
     click_enemy(big_enemy[3])
     select_skill(3)
@@ -813,11 +833,11 @@ function turn_3(is_debug)
     click_attack()
 
     --选卡
-    select_np(3,is_debug)
+    select_np(3)
     current_round=current_round+1
 end
 --3面之后操作
-function turn_4(is_debug)
+function turn_4()
     while not is_battle_ended() do
         logDebug(string.format("current_turn:%d",current_round))
         --attack
@@ -829,9 +849,9 @@ function turn_4(is_debug)
         end
         click_attack()
         if np_indexs[current_round] then
-            select_np(current_round,is_debug)
+            select_np(current_round)
         else
-            select_normal(4,is_debug)
+            select_normal(4)
         end
         current_round=current_round+1
     end
@@ -922,6 +942,7 @@ function shuffle()
     --返回、点、attack
     click(table.unpack(back_button))
     click_skill(12)
+    wait_skill_casted()
     click_attack()
 
     shuffled=true
@@ -1107,9 +1128,13 @@ function is_battle_ended()
             return false
         end
 
-        for i=1,#ended_points do
-            x, y = findMultiColorInRegionFuzzy(table.unpack(ended_points[i]));
-            if x ~= -1 and y ~= -1 then  -- 出现羁绊/失败则结束
+        for i=1,#battle_ended_points do
+            x, y = findMultiColorInRegionFuzzy(table.unpack(battle_ended_points[i]));
+            if x ~= -1 and y ~= -1 then  -- 
+                x, y = findMultiColorInRegionFuzzy(table.unpack(drop_mc_points));
+                if x ~= -1 and y ~= -1 then  -- 如果找到了
+                    notifyVibrate(3000)
+                end
                 keepScreen(false)
                 return true
             end
@@ -1164,13 +1189,13 @@ function start_one_mission(t)
     logDebug(string.format("times:%d",t))
     local notify=string.format("当前文件: %s 剩余次数: %d",conf_name,times-t)
     toast(notify,3000)
-    
+
     current_round=1
     enter_mission()
 
-    turn_1_2(is_debug)
+    turn_1_2()
     if not is_battle_ended() then
-        turn_3(is_debug)
+        turn_3()
         turn_4()
     end
 
@@ -1186,7 +1211,11 @@ function find_support(new_start_x)
     if (x ~= -1 and y ~= -1) or mc=="任意" then  -- 如果找到了礼装
 
         if sp=="任意" then --任意从者
-            click(x,y)
+            if mc=="任意" then
+                click(table.unpack(support_slot[1]))
+            else
+                click(x,y)
+            end
             return true
         end
         if mc=="任意" then --找英灵
@@ -1218,7 +1247,7 @@ function find_support(new_start_x)
     if x~=-1 and y ~= -1 then
         return false,x+10 --继续找
     else
-        return false --刷新
+        return false --上滑
     end
 
 end
@@ -1238,7 +1267,7 @@ function select_support()
     while true do
         keepScreen(true)
         if sp_mode=="图片" then
-            x, y = findImage("/var/touchelf/scripts/sp.bmp"); -- 
+            x, y = findImageFuzzy("/var/touchelf/scripts/sp.bmp"); -- 
             if x ~= -1 and y ~= -1 then            -- 如果找到了
                 click(x,y)
                 return
