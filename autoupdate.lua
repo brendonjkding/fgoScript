@@ -1,22 +1,17 @@
 function autoupdate()
-    local path="https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/scripts/"
-    data = httpGet(path.."lib_fgo.lua")
-    file=io.open("/var/touchelf/scripts/lib_fgo.lua","w")
-    io.output(file)
-    io.write(data)
-    io.close(file)
-    
-    data = httpGet(path.."main.lua")
-    file=io.open("/var/touchelf/scripts/main.lua","w")
-    io.output(file)
-    io.write(data)
-    io.close(file)
-    
-    data = httpGet(path.."maru.lua")
-    file=io.open("/var/touchelf/scripts/maru.lua","w")
-    io.output(file)
-    io.write(data)
-    io.close(file)
+    if ios then path="/var/touchelf/scripts/"
+    else path="/mnt/sdcard/touchelf/scripts/" end
+    local path_r="https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/scripts/"
+    filenames={"lib_fgo.lua","main.lua","maru.lua"}
+
+    for i=1,#filenames do
+        data = httpGet(path_r..filenames[i])
+        file=io.open(path..filenames[i],"w")
+        io.output(file)
+        io.write(data)
+        io.close(file)
+    end
+
 end
 
 

@@ -2,8 +2,6 @@ UI = {
     { 'DropList{抽友情+搓丸子|抽友情|搓丸子|抽无限池|刷助战|领银狗粮|检查更新|测试|关闭}',      'mode',    '功能：' },
 }
 
-
-
 function maru_points()
     menu_button={38,1237}
     summor_button={  77,560 }
@@ -236,20 +234,21 @@ end
 
 function main()
     if mode=="空" then return end
+    
     if toast then dofile("/var/touchelf/scripts/lib_fgo.lua")
     else dofile("/mnt/sdcard/touchelf/scripts/lib_fgo.lua") end
     
-    mSleep(1000)
     init_arg()
-    init_points()
-    
+    if mode=="检查更新" then
+        check_version()
+    end
     if mode=="测试" then 
         rotateScreen(-90)
         move_upward(30)
         return
     end
     
-    
+    init_points() 
     if mode=="搓丸子" or mode=="抽友情" or mode=="抽友情+搓丸子" then
         maru_points()
         check_miss_operate("请在主界面启动")
@@ -285,9 +284,7 @@ function main()
         check_miss_operate("请在礼物盒界面启动")
         get_silver_exp()
     end
-    if mode=="检查更新" then
-        check_version()
-    end
+    
     
     
 end

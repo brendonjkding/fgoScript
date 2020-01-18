@@ -1,4 +1,7 @@
 # 更新内容
+## v1.4.3
+* 增加几个拐信息
+* bug fix:apple_window, select_np, battle_ended, check_miss_operate
 ## v1.4.2
 * 发现安卓模拟器改好分辨率也能用
 * 助战界面进入(苹果吃完)检测

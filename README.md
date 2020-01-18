@@ -7,19 +7,19 @@
 * `lib_fgo.lua` 各种函数
 * `main.lua` 填入队伍信息运行后会生成新的单独脚本文件
 * `maru.lua` 抽友情池/搓丸子/抽无限池等辅助功能
-* `UPDATE.md` 更新内容
+* `UPDATE.md` 更新说明
 
 ## 如何使用
 * 苹果
   * 越狱，添加源 `cydia.touchelf.com` 安装触摸精灵正式版
-  * 导入lua文件到`/var/touchelf/scripts` 或 添加我的源 [brendonjkding.github.io](cydia://url/https://cydia.saurik.com/api/share#?source=http://brendonjkding.github.io) 直接安装，安装完勾选更新更新一下
+  * 导入lua文件到`/var/touchelf/scripts` 或 添加我的源 [brendonjkding.github.io](http://brendonjkding.github.io) 直接安装，安装完勾选更新更新一下
 * 安卓
   * 雷电模拟器，分辨率设为750*1334
   * [点我下载触摸精灵](https://pan.baidu.com/s/1JXOsnElUO_8SWeNYUT8RQQ)  提取码: 2qcc
   * 导入lua文件到`/mnt/sdcard/touchelf/scripts/`
 * 刷本
   * 点`main.lua`--手动播放--输入每回合放的宝具、技能等信息，按音量键运行后生成新文件，点右上角刷新后显示
-  * 进游戏把要打的本置于第一个，播放新文件，即可自动进本、打本、出本、吃苹果，再按可提前停止播放。
+  * 进游戏，home键朝右，把要打的本置于第一个，播放新文件，即可自动进本、打本、出本、吃苹果，再按可提前停止播放。
 * 搓丸子：同上，在游戏大厅/进迦勒底之门那里播放`maru.lua`
 
 ## 使用说明

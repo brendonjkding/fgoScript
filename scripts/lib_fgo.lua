@@ -4,8 +4,6 @@
     -------------------------------------------------------------------
 ]]--
 function init(d)
-    VERSION="## v1.4.2"
-
     init_arg()
     init_points()
     init_ob()
@@ -19,7 +17,7 @@ function init(d)
     check_miss_operate(message)
 
     save_conf()
-    if is_debug and toast then
+    if is_debug and ios then
         local oc = require "liboc"
         NSLog=oc.NSLog
     else
@@ -27,12 +25,14 @@ function init(d)
     end
 end
 function init_arg()
+    VERSION="## v1.4.3"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
     rotateScreen(0);
     if toast then
         path="/var/touchelf/scripts/"
+        ios=true
     else
         path="/mnt/sdcard/touchelf/scripts/"
         toast=notifyMessage
@@ -177,7 +177,7 @@ function init_points()
     apple_x={["彩"]=574,["金"]=418,["银"]=290}
     apple_y=700
     apple_scroll_slot_end={174,1058}
-    apple_window_points={{ 0xDA6888, -31, 24, 0x6E46E3, -9, 28, 0xF9F8F5, -1, 49, 0x5DD7B5, -168, 36, 0xFEFF9B, -344, 30, 0x414E57 }, 90, 231, 361, 575, 410}
+    apple_window_points={{ 0x38759B, -267, 209, 0x304C64, 305, 223, 0x2F4D80, -277, 371, 0xD6D7D7, -262, 531, 0xDDDDDD, 78, 841, 0xE2E7E7, 0, 909, 0x32769A }, 90, 97, 223, 679, 1132}
     close_apple_button={100,678}
     affirm_apple_button={165,863}
 
@@ -275,10 +275,16 @@ function init_points()
     --卡信息
     blue_color_points={ 0x357FFE, -2, 48, 0x56AFFE, 23, 20, 0xB0834A, 52, 13, 0xFEF9CA, 75, -31, 0x075CFE, 61, 69, 0x55C7FE }
     red_color_points={ 0xFE5612, -7, 33, 0xFD6F1A, 2, 71, 0xFF3A1E, 68, 11, 0xFEE13A, 76, 67, 0xFE6B1F }
-    guai_points={}
-    guai_points[1]={0xFEFEE6, -1, -16, 0x985598, -6, -28, 0xFEFEED, -5, -35, 0xDE1616, -10, -42, 0xFEFEED } 
-    guai_points[2]={ 0xFFCC77, 24, -3, 0x445555, 18, -17, 0xFFEEDD, 15, -26, 0xD5CCBB, 11, -29, 0xFFEEDD }
-    guai_points[3]={ 0xFEFEFE, -12, 11, 0xFEEDDC, -20, 8, 0xE09CA9, -26, 17, 0x32339D, -31, 17, 0xA955CB, -36, 17, 0xFEEDDC, -51, 17, 0xC7B2B2 }
+    --cba、孔明、梅林
+
+    cba_points={0xFEFEE6, -1, -16, 0x985598, -6, -28, 0xFEFEED, -5, -35, 0xDE1616, -10, -42, 0xFEFEED } 
+    zhuge_points={ 0xFFCC77, 24, -3, 0x445555, 18, -17, 0xFFEEDD, 15, -26, 0xD5CCBB, 11, -29, 0xFFEEDD }
+    merlin_points={ 0xFEFEFE, -12, 11, 0xFEEDDC, -20, 8, 0xE09CA9, -26, 17, 0x32339D, -31, 17, 0xA955CB, -36, 17, 0xFEEDDC, -51, 17, 0xC7B2B2 }
+    --nero_bride_points={ 0xDDAA55, -1, 18, 0xFFEEDD, 10, 24, 0xC5E45F, 43, 24, 0xFDE9A8, 49, 22, 0xA2F22A, 57, 10, 0x88DD22, 66, 5, 0xFFEEAA }
+    tamamo_points={ 0xA49483, 7, -3, 0xFFEEDD, 18, -1, 0xFFD077, 27, -6, 0x000000, 39, -9, 0xFFFBDC, 44, -24, 0xFE9988, 21, 26, 0xFFCC66 }
+    guai_points={cba_points,zhuge_points,merlin_points,tamamo_points}
+
+
     counter_points={ 0xC32823, 1, 13, 0xDD3B35, 0, 8, 0xC11816, 11, 11, 0xF2B16F, 10, 0, 0xF0AF6C, 16, 5, 0xF9E991, 13, 5, 0xF0C567 }
     weak_points={ 0x91F0FD, -1, 0, 0x46D4FC, -2, 0, 0x3CC7FA, -3, 0, 0x33B9F8, -4, 0, 0x29AAF5, -5, 0, 0x1F9BF2, -6, 0, 0x168CEF, -7, 0, 0x0D7FEC }
 
@@ -321,37 +327,15 @@ function init_points()
     round_tw_points[2]={{ 0xCCCCCC, 0, -7, 0xCDCDCD, 5, -4, 0x888888, 13, 2, 0xEAEAEA, 16, 0, 0xE5E5E5, 12, -6, 0xEFEFEF, 16, -6, 0x878787 }, 90, 715, 905, 731, 914}
     round_tw_points[3]={{ 0xE2E2E2, -4, 3, 0x959595, 1, 8, 0xF2F2F2, 6, 3, 0x636363, 6, 6, 0xEAEAEA, 10, 7, 0xD5D5D5, 11, -1, 0xCECECE }, 90, 714, 905, 729, 914}
 
-    --np
-    --3/8 4/1(53) 5/89 2/8 9/8 4/0
-    num={}
-    num[0]={ 0xF7F7F7, 0, 1, 0x5D5D5D, 0, -2, 0x676767, 0, -3, 0x302C25, 0, 2, 0x252119, -6, 4, 0xFDFEFD, -4, 7, 0xE1E1E1, 1, 8, 0xFEFFFE, 1, 6, 0x353029, 7, 8, 0xEBEBEB, 9, 4, 0xACACAC }
-    num[1]={ 0x333231, 1, 0, 0x32312F, 2, 0, 0x2F2F2E, 2, 1, 0xB8B8B8, 1, 1, 0xB8B8B8, 0, 1, 0xB8B8B8, 1, 2, 0xEFEFEF, -2, 2, 0xE8E8E8, 11, 2, 0xFDFEFD, 10, 0, 0xE3E3E3, 8, -2, 0xC2C2C2 }
-    num[2]={ 0xEFEFEF, 1, 4, 0xC7C7C7, -2, 8, 0xFDFEFD, -7, 4, 0xE7E7E7, -4, 4, 0x25221D, -5, 3, 0x1C1B17, -6, 2, 0x292826, -7, 7, 0x383838, -8, 6, 0x181818, -9, 5, 0x1F1E1E, -12, 0, 0xF5F5F5, -14, -1, 0x3B3B3B, -14, 4, 0x3B3B3A, -14, 8, 0x3B3B3B, -13, 7, 0xD9DAD9 }
-    num[3]={ 0x261709, -2, 0, 0x241A0F, -2, 1, 0x727171, -6, -1, 0x22221C, -2, 3, 0xE2E2E2, -2, 5, 0xF1F1F1, -7, 7, 0xD4D4D4, 2, 7, 0xEBEBEB, 4, 3, 0xC6C6C6, -10, 3, 0xF4F4F4 }
-    num[4]={ 0xEBEBEB, 3, 0, 0xFDFEFD, 3, 2, 0xEFEFEF, 9, 0, 0xF2F2F2, 12, 0, 0xFEFFFE, 9, -3, 0xAEAEAE, 7, -6, 0xBCBCBC, 3, -7, 0xFBFCFB, 3, -4, 0xEAEAEA, 5, -4, 0x242320, 5, -3, 0x211E1A, 6, -3, 0x211D17 }
-    num[5]={ 0x181717, -3, 2, 0xDADBDA, -4, 5, 0xF9F9F8, -2, 8, 0xF5F5F5, 0, 9, 0xE5E5E5, 3, 8, 0xF1F1F1, 5, -1, 0x171513, 11, -1, 0x1E1912, 7, 1, 0xEDEDED, 11, 6, 0x8F8F8F, 11, 10, 0x5A5A5A, 9, 10, 0x191714, 5, 9, 0x222221 }
-    num[6]={ 0xF8F8F7, 5, 4, 0xF3F3F3, 4, -5, 0xF9FAF9, 8, -5, 0xFBFCFB, 9, 0, 0xDCDDDC, 13, -4, 0xF9FAF9, 15, 0, 0xAEAEAE, 13, 3, 0xE3E3E3 }
-    num[7]={ 0xF5F5F5, 4, 1, 0xE8E8E8, 7, 3, 0xF9FAF9, 12, 5, 0xFCFDFC, 12, 0, 0xCECECE, 12, -3, 0xCECECE }
-    num[8]={ 0xFEFFFE, 3, 4, 0xF4F4F4, 4, -5, 0xEAEAEA, 8, 0, 0xEAEAEA, 10, 4, 0xD4D4D4, 11, -4, 0xF2F2F2, 14, 0, 0xC1C1C1 }
-    num[9]={ 0x191919, 0, -3, 0x2E2C2C, 1, -5, 0x100E0C, 3, -7, 0x23211E, 6, -5, 0xD3D3D3, 10, -1, 0xC5C5C5, 6, 3, 0xE9E9E9, 2, 3, 0xEAEAEA, -4, -1, 0xFCFDFC, -1, 3, 0xF5F5F5 }
-    np_start_x=44
-    np_start_y={225}
-    np_end_x=68
-    np_end_y={290}
-    for i=2,3 do
-        np_start_y[i]=np_start_y[i-1]+330
-        np_end_y[i]=np_end_y[i-1]+330
-    end
-
-
     --三、结束战斗
     kizuna_points={{ 0x48A9C3, -16, 0, 0x0209AF, -15, 35, 0x006402, -2, 33, 0x50E35B, -2, 39, 0x6BE670 }, 90, 291, 595, 307, 634}
+    kizuna_points2={{ 0x110F14, 1, 14, 0xE4B41F, -10, 22, 0x161314, 2, 34, 0xE8BA21, 5, 55, 0xD3A522 }, 90, 542, 75, 557, 130}
     kizuna_upgraded_points={{ 0x7642E0, 6, 3, 0x2E7AEE, 16, 10, 0x6FE29D, 17, -7, 0xF2AC9E }, 90, 223, 702, 240, 719}
-    kizuna_upgraded_points2={{ 0xEEBF28, -2, 20, 0xEABB25, 7, 78, 0xDFB627, -2, 114, 0xEFBD25, -3, 136, 0xEABB25, -10, 183, 0xE0A413, -8, 213, 0xEAAC1B }, 90, 383, 694, 400, 907}
+    kizuna_upgraded_points2={{ 0xEEBF28, -2, 20, 0xEABB25, 7, 78, 0xDFB627, -2, 114, 0xEFBD25, -3, 136, 0xEABB25, -10, 183, 0xE0A413, -8, 213, 0xEAAC1B }, 90, 340, 694, 420, 907}
     failed_points={{ 0x7632D8, 19, 9, 0x77E890, 26, 3, 0xF9EAC0, 15, -7, 0xE171A0, 13, 3, 0xF1F9F9 }, 90, 602, 963, 628, 979}
     disconnect_points={{ 0xD4D5D7, 0, -37, 0x000000, 0, -43, 0xD8D8D4, 0, -47, 0x000000, 0, -53, 0xD0D0D0, 0, -58, 0x000000, 0, -66, 0xDCDBDC, 3, -73, 0x000000 }, 90, 158, 866, 161, 939}
     reconnect_button={165, 859}
-    battle_ended_points={kizuna_points,kizuna_upgraded_points,failed_points,kizuna_upgraded_points2}
+    battle_ended_points={kizuna_points,kizuna_points2,kizuna_upgraded_points,failed_points,kizuna_upgraded_points2}
     drop_mc_points={{ 0x452C0E, 0, 1, 0x654115, 0, 3, 0x7D6E2A, 0, 4, 0x6C7A41, 0, 5, 0x5D7854, 0, 6, 0x4E7466, 0, 10, 0x552F63 }, 90, 724, 981, 724, 991}
 
     retreat_button={}
@@ -359,6 +343,7 @@ function init_points()
     retreat_button[2]={378,914}
     retreat_button[3]={165,667}
     lr_corner={42,1143}
+    apply_points={}
     not_apply_button={106,340}
 
     blank_region={680,900}
@@ -382,7 +367,7 @@ function get_color(i)
     return "green"
 end
 --卡信息变量初始化
-function info_init()
+function init_info()
     --卡对象
     cards={Card:new(1,10),Card:new(2,10),Card:new(3,10),Card:new(4,10),Card:new(5,10)}
     --本轮打手各色色卡
@@ -410,7 +395,6 @@ function get_card_info()
                     if cards[i].color=="red" then
                         has_sup_b=true
                     end
-
                     break
                 end
             end
@@ -539,7 +523,7 @@ function calculate_priority()
 end
 function get_info()
     keepScreen(true)
-    info_init()
+    init_info()
     get_card_info()
     calculate_priority()
     keepScreen(false)
@@ -552,36 +536,6 @@ function get_info()
             b_num,a_num,q_num,count,has_sup_b))
 
 end
---无用
-function get_np()
-
-    function _get_np(t)
-        np=0
-        start_y=np_start_y[t]
-        for _=1,3 do
-            min_y=1334
-            for i=0,9 do
-                x, y = findMultiColorInRegionFuzzy(num[i], 70, np_start_x,start_y,np_end_x,np_end_y[t]);
-                if x ~= -1 and y ~= -1 and y<min_y then  -- 如果找到了
-                    min_y=y
-                    unit=i
-                end
-            end
-            if unit then
-                np=np*10
-                np=np+unit
-            end
-            unit=false
-            start_y=min_y+2
-        end
-        return np
-    end
-    keepScreen(true)
-    a,b,c=_get_np(1),_get_np(2),_get_np(3)
-    keepScreen(false)
-    logDebug(string.format("np: %d,%d,%d",a,b,c))
-    return a,b,c
-end
 
 --[[
     -------------------------------------------------------------------
@@ -591,22 +545,20 @@ end
 
 --没决定第一张卡时考虑首红
 function choose_first()
-    if seleted_card[1].index~=0 then
+    if selected_card[1].index~=0 then
         return
     end
 
     local x=1
     for i=1,5 do
         if not cards[i].used and cards[i].color=="red" and not cards[i].is_dashou then
-            seleted_card[x]=cards[i]
-            cards[i].used=true
+            select_card(x,cards[i])
             return
         end
     end
     for i=1,5 do
         if not cards[i].used and cards[i].color=="red" then
-            seleted_card[x]=cards[i]
-            cards[i].used=true
+            select_card(x,cards[i])
             return
         end
     end
@@ -614,56 +566,67 @@ function choose_first()
 end
 --按优先级选第x张卡
 function choose_card_priority(x)
-    if seleted_card[x].index~=0 then
+    if selected_card[x].index~=0 then
         return 
     end
 
     for i=1,5 do
         if not cards[i].used then
-            seleted_card[x]=cards[i]
-            cards[i].used=true
+            select_card(x,cards[i])
             return
         end
     end
 end
+function select_card(pos,card)
+    selected_card[pos]=card
+    card.used=true
+    return card
+end
+
 
 --带宝具选第t面卡
 function select_np(t)
     get_info()
     np_card=Card:new(np_indexs[t],0)
+    --平a
     if np_card.index==5 then
         select_normal()
         return
     end
-
-    if t==2 and round_2_shuffle=="是" and count<0 and not shuffled then
+    --二面没打手
+    if t==2 and round_2_shuffle=="是" and count==0 and not shuffled then
         shuffle()
         select_np(t)
+        return
     end
 
-
-    seleted_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
+    
+    selected_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
+    --垫刀
     if t==2 and big_enemy_mode[t]~="后补刀" then
         if mode=="绿卡" then
+            --假定打手绿卡会打死
             if count-q_num==0 and not shuffled then
                 shuffle()
                 select_np(t)
                 return
             end
-
+            --降低绿卡优先级
             for i=1,q_num do
                 q_card[i].priority_bak=q_card[i].priority
                 q_card[i].priority=0
             end
             table.sort(cards)
-
+            --根据设定
             if (big_enemy_mode[t]=="垫一刀" and count-q_num>0)then--垫1张
-                seleted_card[2]=np_card
+                select_card(2,np_card)
+            --没打手非绿就两张拐
             else
-                seleted_card[3]=np_card--垫2张
+                select_card(3,np_card)--垫2张
             end
             choose_card_priority(2)
             choose_card_priority(1)
+            --还原绿卡
             for i=1,q_num do
                 q_card[i].priority=q_card[i].priority_bak
             end  
@@ -671,11 +634,12 @@ function select_np(t)
 
         end
     else
-        --优先打手首红
+        --首红与宝具
         if count>=2 then
-            --绿卡模式考虑首红
+            --主要是绿卡可优化下
             if b_num>=1 and mode=="绿卡" and t>=3 then--有红               
                 table.sort(b_card)
+                --忘了这是什么意思
                 for i=1,5 do
                     if cards[i].color~="red" and cards[i]<b_card[1] then
                         card=b_card[1]
@@ -685,11 +649,10 @@ function select_np(t)
                     end
                 end
                 b_num=b_num-1
-                card.used=true
-                seleted_card[2]=np_card
-                seleted_card[1]=card
+                select_card(2,np_card)
+                select_card(1,card)
             else
-                seleted_card[1]=np_card
+                select_card(1,np_card)
             end
             NSLog("test2")
         elseif count==1 then--1张打手
@@ -697,21 +660,20 @@ function select_np(t)
                 if not has_sup_b and mode=="绿卡" and t>=3 then--有红没拐红
                     card=b_card[b_num]
                     b_num=b_num-1
-                    card.used=true
-                    seleted_card[2]=np_card
-                    seleted_card[1]=card
+                    select_card(2,np_card)
+                    select_card(1,card)
                 else
-                    seleted_card[1]=np_card
+                    select_card(1,np_card)
                 end
             else
                 if has_sup_b and mode=="绿卡" and t>=3 then
-                    seleted_card[2]=np_card
+                    select_card(2,np_card)
                 else
-                    seleted_card[1]=np_card
+                    select_card(1,np_card)
                 end
             end
         else--0打手
-            seleted_card[1]=np_card
+            select_card(1,np_card)
             --绿卡队3t需洗牌
             if sp=="cba" and t==3 and not shuffled then
                 if is_debug then
@@ -737,16 +699,16 @@ function select_np(t)
         choose_card_priority(i)
     end
 
-    logDebug(string.format("select_np: %d %d %d\n",seleted_card[1].index,seleted_card[2].index,seleted_card[3].index))
+    logDebug(string.format("select_np: %d %d %d\n",selected_card[1].index,selected_card[2].index,selected_card[3].index))
 
     if is_debug then
         NSLog("test")
         os.exit(0)
     end
-    click_card(seleted_card[1].index,seleted_card[2].index,seleted_card[3].index)
+    click_card(selected_card[1].index,selected_card[2].index,selected_card[3].index)
 
     if is_select_fail() then
-        click_card(seleted_card[1].index,seleted_card[2].index,seleted_card[3].index)
+        click_card(selected_card[1].index,selected_card[2].index,selected_card[3].index)
         select_normal()
     end
 
@@ -755,38 +717,57 @@ end
 --不带宝具选第t面卡
 function select_normal(t)
     get_info()
-    seleted_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
-
-    --优先选打手首红
-    if count>=3 and b_num>0 then
-        if b_num==1 then--有红
-            seleted_card[1]=b_card[b_num]
-
-        elseif b_num==2 then
-            temp_card=b_card[1]
-
-            if b_card[2].priority<b_card[1].priority then--多打手情况不克制优先
-                temp_card=b_card[2]
+    selected_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
+    if t==1 and np_indexs[t]==5 then
+        for i=1,5 do
+            if cards[i].is_dashou then
+                cards[i].priority_bak=cards[i].priority
+                cards[i].priority=0
             end
-            seleted_card[1]=temp_card
         end
-        b_num=b_num-1
-        seleted_card[1].used=true
-    elseif count>=1 then--1 2
-        if b_num==1 and not has_sup_b then--有红没拐红
-            seleted_card[1]=b_card[b_num]
-            b_num=b_num-1
-            seleted_card[1].used=true
+        table.sort(cards)
+        choose_card_priority(2)
+        for i=1,5 do
+            if cards[i].is_dashou then
+                cards[i].priority=cards[i].priority_bak
+            end
         end
+        table.sort(cards)
+        if b_num>0 then
+            select_card(1,b_card[1])
+        end
+        
     else
-        if sp=="cba" and t==4 and not shuffled then
-            shuffle()
-            select_normal(t)
-            return
-        end
+        --优先选打手首红
+        if count>=3 and b_num>0 then
+            if b_num==1 then--有红
+                select_card(1,b_card[b_num])
 
+            elseif b_num==2 then
+                temp_card=b_card[1]
+
+                if b_card[2].priority<b_card[1].priority then--多打手情况不克制优先
+                    temp_card=b_card[2]
+                end
+                select_card(1,temp_card)
+            end
+            b_num=b_num-1
+        elseif count>=1 then--1 2
+            if b_num==1 and not has_sup_b then--有红没拐红
+                select_card(1,b_card[b_num])
+                b_num=b_num-1
+            end
+        else
+            if sp=="cba" and t==4 and not shuffled then
+                shuffle()
+                select_normal(t)
+                return
+            end
+
+        end
     end
-    if count<3 then
+    --打手三连不首拐红，首红在上方解决 
+    if (count<3 and t~=1) then
         choose_first()
     end
 
@@ -794,11 +775,11 @@ function select_normal(t)
     for i=3,1,-1 do
         choose_card_priority(i)
     end
-    logDebug(string.format("select_normal: %d %d %d\n",seleted_card[1].index,seleted_card[2].index,seleted_card[3].index))
+    logDebug(string.format("select_normal: %d %d %d\n",selected_card[1].index,selected_card[2].index,selected_card[3].index))
     if is_debug then
         os.exit(0)
     end
-    click_card(seleted_card[1].index,seleted_card[2].index,seleted_card[3].index)
+    click_card(selected_card[1].index,selected_card[2].index,selected_card[3].index)
     return false
 end
 --猝死等原因导致预设宝具放不了
@@ -823,7 +804,6 @@ function turn_1_2()
             --点技能
             click_enemy(big_enemy[i])  
             select_skill(i)
-            get_np()
             click_attack()
             select_np(i)
             if is_battle_ended() then
@@ -847,7 +827,6 @@ function turn_3()
     logDebug(string.format("current_turn:%d",current_round))
     click_enemy(big_enemy[3])
     select_skill(3)
-    get_np()
     click_attack()
 
     --选卡
@@ -858,19 +837,8 @@ end
 function turn_4()
     while not is_battle_ended() do
         logDebug(string.format("current_turn:%d",current_round))
-        --attack
-        np=table.pack(get_np())
-        for i=1,3 do
-            if np[i]>=100 then
-                np_indexs[current_round]=i+5
-            end
-        end
         click_attack()
-        if np_indexs[current_round] then
-            select_np(current_round)
-        else
-            select_normal(4)
-        end
+        select_normal(4)
         current_round=current_round+1
     end
 end
@@ -1050,6 +1018,7 @@ end
 --启动前检查防止误启动
 function check_miss_operate(m)
     if is_debug then return end
+    mSleep(2500)
     for i=1,#check_miss_operate_points do
         x, y = findMultiColorInRegionFuzzy(table.unpack(check_miss_operate_points[i]));
         if x ~= -1 and y ~= -1 then  -- 如果找到了
@@ -1062,6 +1031,7 @@ end
 
 
 function check_disconnected()
+    keepScreen(false)
     x, y = findMultiColorInRegionFuzzy(table.unpack(disconnect_points));
     if x ~= -1 and y ~= -1 then  -- 掉线
         click(table.unpack(reconnect_button))
@@ -1190,6 +1160,10 @@ function wait_quit_mission()
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 return
             end
+        end
+        x, y = findMultiColorInRegionFuzzy(table.unpack(apply_points));
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            click(table.unpack(not_apply_button))
         end
         click(table.unpack(blank_region))
         mSleep(5000)
@@ -1394,14 +1368,21 @@ end
 
 function update()
     data = httpGet("https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/autoupdate.lua")
-    file=io.open(path.."autoupdate.lua","w")
-    io.output(file)
-    io.write(data)
-    io.close(file)
+    if data=="" then
+        data=httpGet("https://raw.githubusercontent.com/brendonjkding/fgoScript/master/autoupdate.lua")
+    end
+    if data~="" then
+        file=io.open(path.."autoupdate.lua","w")
+        io.output(file)
+        io.write(data)
+        io.close(file)
 
-    dofile(path.."autoupdate.lua")
-    autoupdate()
-    os.remove(path.."autoupdate.lua");
+        dofile(path.."autoupdate.lua")
+        autoupdate()
+        os.remove(path.."autoupdate.lua");
+    else
+        os.exit()
+    end
 end
 
 function main()

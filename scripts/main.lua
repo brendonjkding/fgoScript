@@ -29,7 +29,6 @@ UI = {
     { 'DropList{后补刀|垫一刀|垫两刀}', 'big_enemy_mode_1', '一面大怪打法：' },
     { 'DropList{1|2|3}', 'big_enemy_2', '二面大怪序号：' },
     { 'DropList{后补刀|垫一刀|垫两刀}', 'big_enemy_mode_2', '二面大怪打法：' },
-    
     { 'DropList{1|2|3}', 'big_enemy_3', '三面大怪序号：' },
     { 'DropList{红卡|绿卡|蓝卡|XJBD}', 'mode', '队伍性质：' },
     { 'DropList{否|是|}', 'shuffle_cloth', '是否洗牌衣服：' },
@@ -41,7 +40,7 @@ UI = {
 
 function main()
     if toast then dofile("/var/touchelf/scripts/lib_fgo.lua")
-else dofile("/mnt/sdcard/touchelf/scripts/lib_fgo.lua") end
+    else dofile("/mnt/sdcard/touchelf/scripts/lib_fgo.lua") end
     init_arg()
     init_input_info()
     save_conf()
