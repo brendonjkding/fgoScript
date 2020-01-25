@@ -31,11 +31,15 @@ UI = {
     { 'DropList{后补刀|垫一刀|垫两刀}', 'big_enemy_mode_2', '二面大怪打法：' },
     { 'DropList{1|2|3}', 'big_enemy_3', '三面大怪序号：' },
     { 'DropList{红卡|绿卡|蓝卡|XJBD}', 'mode', '队伍性质：' },
-    { 'DropList{否|是|}', 'shuffle_cloth', '是否洗牌衣服：' },
+    { 'DropList{否|是}', 'shuffle_cloth', '是否洗牌衣服：' },
     { 'DropList{否|是}', 'round_2_shuffle', '二面没打手是否洗牌：'},
     { 'DropList{当前|1|2|3|4|5|6|7|8|9|10}', 'party_index', '游戏中的编队序号：' },
     { 'DropList{当前|全|剑|弓|枪|骑|术|杀|狂|EXT|MIX}', 'sp_class_index', '指定助战职介：' },
-    { 'DropList{停止|继续}', 'after_failed', '如翻车：' }
+    { 'DropList{停止|继续}', 'after_failed', '如翻车：' },
+    
+    { 'DropList{否|是}', 'always_np', '始终尝试放宝具：' },
+    { 'TextView{(适用np不一定能满的情况，开启}' },
+    { 'TextView{后选卡慢几秒，无其它影响)}' }
 }
 
 function main()

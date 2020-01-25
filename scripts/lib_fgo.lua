@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION="## v1.4.3"
+    VERSION="## v1.4.4"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -84,6 +84,7 @@ round_2_shuffle="%s"--二面是否洗牌
 party_index="%s"--队伍序号
 sp_class_index="%s"--助战职介
 after_failed="%s"--如失败
+always_np="%s"--
 conf_name="%s"--文件名
 skill_mode="自定义"--队伍信息
 --%s
@@ -107,10 +108,14 @@ end
 ]]
 
 
-    t=string.format(t,sp_mode,mc,sp,skill_serial_1,skill_serial_2,skill_serial_3,
-        np_index_1,np_index_2,np_index_3,big_enemy_1,big_enemy_mode_1,big_enemy_2,
-        big_enemy_mode_2,big_enemy_3,mode,shuffle_cloth,round_2_shuffle,
-        party_index,sp_class_index,after_failed,conf_name,conf_name,path)
+    t=string.format(t,sp_mode,mc,sp,
+        skill_serial_1,skill_serial_2,skill_serial_3,
+        np_index_1,np_index_2,np_index_3,
+        big_enemy_1,big_enemy_mode_1,
+        big_enemy_2,big_enemy_mode_2,big_enemy_3,
+        mode,shuffle_cloth,round_2_shuffle,
+        party_index,sp_class_index,after_failed,always_np,
+        conf_name,conf_name,path)
 
     file=io.open(path..conf_name..".lua","w")
     io.output(file)
@@ -148,6 +153,7 @@ function init_input_info()
     sp_class_index=sp_class_index or "当前"
     after_failed=after_failed or "停止"
     round_2_shuffle=round_2_shuffle or "否"
+    always_np=always_np or "否"
     conf_name=(conf_name=="" and {"默认"} or {conf_name})[1]
     shuffled=(shuffle_cloth=="是" and {false} or {true})[1]
     check_miss_operate_points=(sp_mode=="手动" and {{attack_points}} or {menu_points})[1]
@@ -250,6 +256,7 @@ function init_points()
     end
 
     previous_button={716, 100}
+    small_previous_button={716,46}
 
     --二、战斗中
     --卡色判断区域
@@ -337,13 +344,14 @@ function init_points()
     reconnect_button={165, 859}
     battle_ended_points={kizuna_points,kizuna_points2,kizuna_upgraded_points,failed_points,kizuna_upgraded_points2}
     drop_mc_points={{ 0x452C0E, 0, 1, 0x654115, 0, 3, 0x7D6E2A, 0, 4, 0x6C7A41, 0, 5, 0x5D7854, 0, 6, 0x4E7466, 0, 10, 0x552F63 }, 90, 724, 981, 724, 991}
+    drop_mc_interface_points={{ 0xF5F5F4, -44, 0, 0xDBDEDF, -284, -40, 0x084D9C, -272, -35, 0xF7F7FB, -274, -26, 0x0849AD, -270, -18, 0xD3E2F4 }, 90, 445, 9, 729, 49}
 
     retreat_button={}
     retreat_button[1]={416,338}
     retreat_button[2]={378,914}
     retreat_button[3]={165,667}
     lr_corner={42,1143}
-    apply_points={}
+    apply_interface_points={{ 0xD9D9DB, 18, 150, 0xDBDBDC, 17, 620, 0xDEFFBC, 11, 678, 0xD4D5D6, 15, 870, 0xD5D5D6 }, 90, 100, 251, 118, 1121}
     not_apply_button={106,340}
 
     blank_region={680,900}
@@ -600,7 +608,7 @@ function select_np(t)
         return
     end
 
-    
+
     selected_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
     --垫刀
     if t==2 and big_enemy_mode[t]~="后补刀" then
@@ -620,7 +628,7 @@ function select_np(t)
             --根据设定
             if (big_enemy_mode[t]=="垫一刀" and count-q_num>0)then--垫1张
                 select_card(2,np_card)
-            --没打手非绿就两张拐
+                --没打手非绿就两张拐
             else
                 select_card(3,np_card)--垫2张
             end
@@ -709,6 +717,7 @@ function select_np(t)
 
     if is_select_fail() then
         click_card(selected_card[1].index,selected_card[2].index,selected_card[3].index)
+        click_enemy(big_enemy[t])
         select_normal()
     end
 
@@ -736,18 +745,21 @@ function select_normal(t)
         if b_num>0 then
             select_card(1,b_card[1])
         end
-        
+
     else
         --优先选打手首红
         if count>=3 and b_num>0 then
             if b_num==1 then--有红
                 select_card(1,b_card[b_num])
 
-            elseif b_num==2 then
+            elseif b_num>=2 then
                 temp_card=b_card[1]
 
-                if b_card[2].priority<b_card[1].priority then--多打手情况不克制优先
+                if b_card[2]>temp_card then--多打手情况不克制优先
                     temp_card=b_card[2]
+                end
+                if b_card[3]>temp_card then--多打手情况不克制优先
+                    temp_card=b_card[3]
                 end
                 select_card(1,temp_card)
             end
@@ -812,7 +824,12 @@ function turn_1_2()
 
             while get_current_round() ==i do
                 click_attack()
-                select_normal(i)
+                if always_np=="是" then
+                    select_np(i)
+                else
+                    select_normal(i)
+                end
+
                 if is_battle_ended() then
                     return
                 end
@@ -838,7 +855,11 @@ function turn_4()
     while not is_battle_ended() do
         logDebug(string.format("current_turn:%d",current_round))
         click_attack()
-        select_normal(4)
+        if always_np=="是" then
+            select_np(3)
+        else
+            select_normal(4)
+        end
         current_round=current_round+1
     end
 end
@@ -1018,6 +1039,7 @@ end
 --启动前检查防止误启动
 function check_miss_operate(m)
     if is_debug then return end
+    toast("启动中...")
     mSleep(2500)
     for i=1,#check_miss_operate_points do
         x, y = findMultiColorInRegionFuzzy(table.unpack(check_miss_operate_points[i]));
@@ -1145,8 +1167,7 @@ function quit_mission()
         click(table.unpack(lr_corner))
     end
 
-    --不申请
-    click(table.unpack(not_apply_button))
+
     if times>=2 and sp_mode~="手动" then
         wait_quit_mission()
     end
@@ -1161,7 +1182,15 @@ function wait_quit_mission()
                 return
             end
         end
-        x, y = findMultiColorInRegionFuzzy(table.unpack(apply_points));
+
+        x, y = findMultiColorInRegionFuzzy(table.unpack(drop_mc_interface_points));
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            click(table.unpack(small_previous_button))
+            for _=1,2 do
+                click(table.unpack(lr_corner))
+            end
+        end
+        x, y = findMultiColorInRegionFuzzy(table.unpack(apply_interface_points));
         if x ~= -1 and y ~= -1 then  -- 如果找到了
             click(table.unpack(not_apply_button))
         end
