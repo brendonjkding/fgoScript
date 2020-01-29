@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION="## v1.4.4"
+    VERSION="## v1.4.5"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -755,11 +755,10 @@ function select_normal(t)
             elseif b_num>=2 then
                 temp_card=b_card[1]
 
-                if b_card[2]>temp_card then--多打手情况不克制优先
-                    temp_card=b_card[2]
-                end
-                if b_card[3]>temp_card then--多打手情况不克制优先
-                    temp_card=b_card[3]
+                for i=2,b_num do
+                    if b_card[i]>temp_card then--多打手情况不克制优先
+                        temp_card=b_card[i]
+                    end
                 end
                 select_card(1,temp_card)
             end

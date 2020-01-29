@@ -54,7 +54,7 @@ end
 function exp_points()
     silver_exp_points={{ 0xA1ABB4, 72, -704, 0x598A84, 18, -695, 0x7F60A0, 34, -726, 0xB7B7D4, 36, -768, 0x96684C },90, 7, 92, 587, 954}
     scroll_bar_arrived_end_points={{ 0xA8986D, 1, 0, 0xD9C595, 2, 0, 0xE6D1A8 }, 90, 1, 976, 3, 976}
-    check_miss_operate_points={{{ 0xFCF2B3, 36, -1, 0x743BDC, 49, 1, 0xFFFDF7, 49, 9, 0x56D7BD, 89, 4, 0x1A4A74, 140, 3, 0x770000, 198, 3, 0x979277 }, 90, 64, 1070, 262, 1080}}
+    check_miss_operate_points={{{ 0xFCF2B3, 36, -1, 0x743BDC, 49, 1, 0xFFFDF7, 49, 9, 0x56D7BD, 89, 4, 0x1A4A74, 140, 3, 0x770000, 198, 3, 0x979277 }, 80, 64, 1070, 262, 1080}}
 end
 
 

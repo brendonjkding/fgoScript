@@ -1,6 +1,9 @@
 # 更新内容
+## v1.4.5
+* bug fix: select_normal, exp_points
 ## v1.4.4
 * 退出战斗、抽池子优化
+* 始终尝试放宝具选项
 ## v1.4.3
 * 增加几个拐信息
 * bug fix:apple_window, select_np, battle_ended, check_miss_operate
