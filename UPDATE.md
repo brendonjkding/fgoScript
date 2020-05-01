@@ -1,4 +1,7 @@
 # 更新内容
+## v1.4.6
+* 新UI适配: not_apply, friend_summon
+* bug fix: make_maru
 ## v1.4.5
 * bug fix: select_normal, exp_points
 ## v1.4.4

@@ -11,7 +11,7 @@
 
 ## 如何使用
 * 苹果
-  * 越狱，添加源 `cydia.touchelf.com` 安装触摸精灵正式版
+  * 越狱，添加源 `cydia.touchelf.com` 安装触摸精灵3.7.4(之后版本未测试)
   * 导入lua文件到`/var/touchelf/scripts` 或 添加我的源 [brendonjkding.github.io](http://brendonjkding.github.io) 直接安装，安装完勾选更新更新一下
 * 安卓
   * 雷电模拟器，分辨率设为750*1334

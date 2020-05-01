@@ -1,5 +1,5 @@
 UI = {
-    { 'DropList{抽友情+搓丸子|抽友情|搓丸子|抽无限池|领银狗粮|刷助战|检查更新|测试|关闭}',      'mode',    '功能：' },
+    { 'DropList{抽友情+搓丸子|抽友情|搓丸子|搓丸子(觉醒)|抽无限池|领银狗粮|刷助战|检查更新|测试|关闭}',      'mode',    '功能：' },
 }
 
 function maru_points()
@@ -13,7 +13,7 @@ function maru_points()
     left_arrow={ 373,52  }
     friend_summon_interface_points={{ 0x1081D2, 1, -173, 0x0B7FE6, -77, -1, 0xE3FA8E, -83, -408, 0xACF14F }, 90, 93, 346, 177, 754}
     summor10_button={ 169,858 }
-    summor_again_points={{ 0x10ADE9, 2, 23, 0x1481C0, 2, 118, 0x1374BE, 3, 137, 0x169FE4, 24, 80, 0x005896, -22, 90, 0x054191 }, 90, 25, 725, 71, 862}
+    summor_again_points={{ 0x0DACE6, 48, 72, 0x1D66A9, 0, 128, 0x003787, 40, 142, 0x0670A4, 46, 190, 0x2980CA, 0, 204, 0x17ABE6 }, 90, 27, 688, 75, 892}
     summor_again_button={  54,795 }
     full_points={{ 0xD7D8D8, 0, 12, 0x000000, 1, 18, 0xD4D5D4, -1, 22, 0x000000, -1, 42, 0xDADADA, -88, -37, 0xD5D6D6, 0, -328, 0xD6D7D8, 5, 246, 0xD8D8D9 }, 90, 165, 297, 258, 871}
     close_full_button={ 157,670 }
@@ -21,7 +21,7 @@ function maru_points()
     slot={465,950}
     first_mc={523,145}
     second_mc={ 496,290 }
-    pos_start_x=414
+    pos_start_x=331
     pos_start_y={75,219}
     pos_end_x=559
     pos_end_y={213,348}
@@ -29,6 +29,8 @@ function maru_points()
     maru_slot_points={{ 0x414345, -95, -13, 0x525658, -112, -17, 0x343839, -166, -13, 0x525557 }, 90, 341, 203, 507, 220}
     mc_selected_points={{ 0xD3D4D4 }, 90, 50, 1110, 50, 1110}
     hungry_mc_points={ 0x641072, 2, 19, 0x281A21, 2, 47, 0xE387F7, 0, 71, 0x7A0A8B, 0, 83, 0xECD038 }
+    awaken_mc_points={ 0xFDFE3F, 12, 2, 0xF2BA0A, 19, 2, 0xFDFFD3, 21, 81, 0xFDF930, 13, 82, 0xF7BA00, 4, 82, 0xFDFDE2, -6, 48, 0xFAE300, 10, 47, 0xFFFFFF }
+    if mode == "搓丸子(觉醒)" then hungry_mc_points=awaken_mc_points end
     confirm_button={ 134,878 }
     blank={226,1155,500}
 
@@ -84,7 +86,7 @@ function friend_summon()
                 mSleep(3000)
                 x, y = findMultiColorInRegionFuzzy(table.unpack(summor_again_points));
             end
-            click(table.unpack(summor_again_button))
+            click(table.unpack(previous_button))
         else
             click(table.unpack(left_arrow))
             --notifyMessage("当前不是友情池")
@@ -130,9 +132,12 @@ function make_maru()
         x, y = findMultiColorInRegionFuzzy(hungry_mc_points, 90, pos_start_x, pos_start_y[2], pos_end_x, pos_end_y[2]);
         if x == -1 and y == -1 then -- 没同种丸子了
             notifyVibrate(3000)
+            click(table.unpack(previous_button))
+            click(table.unpack(previous_button))
+            logDebug("没同种丸子了")
             return true
         end
-
+        is_first=true
         while true do
             --跳过同种
             move_upward(10)
@@ -143,11 +148,17 @@ function make_maru()
                 if x ~= -1 and y ~= -1 then  -- 到底没素材了
                     click(table.unpack(previous_button))
                     click(table.unpack(previous_button))
+                    logDebug("到底没素材了")
                     return true
                 end
                 x, y = findMultiColorInRegionFuzzy(hungry_mc_points, 90, pos_start_x, pos_start_y[1], pos_end_x, pos_end_y[1]);
             end
-
+            
+            move_upward(10)
+            if not is_first then
+                move_upward(10)
+            end
+            
             select_mc()
 
             --选上了
@@ -155,6 +166,7 @@ function make_maru()
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 break
             end
+            is_first=false
         end
         --选底
         move_upward(5,497,1065)
@@ -163,12 +175,13 @@ function make_maru()
         click(table.unpack(lr_corner))
         click(table.unpack(lr_corner))
         click(table.unpack(confirm_button))
-        mSleep(2000)
+        mSleep(1000)
         for i=1,10 do
             click(table.unpack(blank))
         end
         x, y = findMultiColorInRegionFuzzy(table.unpack(maru_slot_points));
         if x ~= -1 and y ~= -1 then  -- 如果找到了
+            logDebug("满了一个丸子")
             return false
         end
 
@@ -258,13 +271,13 @@ function main()
     end
 
     init_points() 
-    if mode=="搓丸子" or mode=="抽友情" or mode=="抽友情+搓丸子" then
+    if mode=="搓丸子" or mode=="搓丸子(觉醒)" or mode=="抽友情" or mode=="抽友情+搓丸子" then
         maru_points()
         check_miss_operate("请在主界面启动")
         toast("提示：使用前请把其它礼装扔仓库里或锁住",4000)
         mSleep(2000)
 
-        if mode=="搓丸子" then
+        if mode=="搓丸子" or mode=="搓丸子(觉醒)" then
             make_maru()
         elseif mode=="抽友情" then
             friend_summon()

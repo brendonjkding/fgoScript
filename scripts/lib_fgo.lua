@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION="## v1.4.5"
+    VERSION="## v1.4.6"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -351,7 +351,7 @@ function init_points()
     retreat_button[2]={378,914}
     retreat_button[3]={165,667}
     lr_corner={42,1143}
-    apply_interface_points={{ 0xD9D9DB, 18, 150, 0xDBDBDC, 17, 620, 0xDEFFBC, 11, 678, 0xD4D5D6, 15, 870, 0xD5D5D6 }, 90, 100, 251, 118, 1121}
+    apply_interface_points={{ 0xD3D3D4, 18, 207, 0xE2E2E5, 538, -172, 0x92CB40, 542, -51, 0x0C2341, 566, 114, 0x005EA8 }, 90, 105, 69, 671, 448}
     not_apply_button={106,340}
 
     blank_region={680,900}
