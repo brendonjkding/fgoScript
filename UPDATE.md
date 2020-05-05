@@ -1,4 +1,8 @@
 # 更新内容
+## v1.4.7
+* 增加结束后锁屏选项
+* 增加新qp礼装
+* bug fix: menu_point, scroll_bar_slot_points
 ## v1.4.6
 * 新UI适配: not_apply, friend_summon
 * bug fix: make_maru

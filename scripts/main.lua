@@ -7,7 +7,7 @@ UI = {
     { 'TextView{}' },
     { 'DropList{手动|自动|图片}', 'sp_mode', '助战选择：' },
     { 'TextView{如手动选助战，则无视接下来两项}' },
-    { 'DropList{新午餐|所长|新所长|擦汗|午餐|qp|任意}', 'mc', '礼装：' },
+    { 'DropList{新午餐|新qp|新所长|擦汗|午餐|qp|所长|任意}', 'mc', '礼装：' },
     { 'DropList{孔明|310cba|cba|梅林|狐狸|任意}', 'sp', '从者：' },
     { 'TextView{}' },
     

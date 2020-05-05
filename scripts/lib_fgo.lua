@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION="## v1.4.6"
+    VERSION="## v1.4.7"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -91,7 +91,8 @@ skill_mode="自定义"--队伍信息
 
 UI = {
     { 'InputBox{1}',             'times',    '打本次数：' },
-    { 'DropList{不吃|金|银|铜|彩}',             'apple',    '吃苹果：' }
+    { 'DropList{不吃|金|银|铜|彩}',             'apple',    '吃苹果：' },
+    { 'DropList{否|是}',             'sleep_button',    '完成后锁屏(需安装activator)' }
 }
 dofile("%slib_fgo.lua")
 
@@ -101,7 +102,12 @@ function main()
     for i=1,times do
         start_one_mission(i)
     end
-
+    
+    if sleep_button=="是" then
+        os.execute("activator send libactivator.system.sleepbutton")
+    end
+    
+    
     notifyMessage("感谢使用")
     notifyVibrate(3000)
 end
@@ -178,6 +184,7 @@ function init_points()
     menu_points={}
     menu_points[1]={{ 0xE8C17B, 18, 0, 0xFBF8F4, 17, -6, 0xF5E9DC, 17, 8, 0xF7E7D3, 26, 8, 0xF0EDA0, 27, 1005, 0xD6D6D8, 29, 1129, 0xD0D2D3 }, 90, 9, 166, 38, 1301}
     menu_points[2]={{ 0xD6D6D6, 0, -18, 0x10172D, -1, -25, 0xAEB6C3, -1, -29, 0x192245, -1, -34, 0xAEB6C7, -1, -47, 0xCFD2D6, 19, -1029, 0xD4D5D5 }, 90, 36, 257, 56, 1286}
+    menu_points[3]={{ 0xD0D4D4, -7, -116, 0xDADBDB, 30, -64, 0x40AEE7, -5, -1139, 0xE8DBA2, -12, -1132, 0xF2F1E6, -22, -1134, 0xD0A36A, -20, -1126, 0xEFDA93 }, 90, 16, 159, 68, 1298}
 
     mission_entry={563,999}
     apple_x={["彩"]=574,["金"]=418,["银"]=290}
@@ -200,7 +207,7 @@ function init_points()
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     scroll_bar_arrived_end_points={{ 0xF5E4C3 }, 90, 14, 1291, 14, 1291}
-    scroll_bar_slot_points={{ 0x56656D, 3, 0, 0x0A1A22, 6, 0, 0x0B1A22 }, 90, 11, 1292, 17, 1292}
+    scroll_bar_slot_points={{ 0x56656D }, 80, 11, 1292, 17, 1292}
     refresh_too_fast_warning={{ 0xEDEEEA, 43, -2, 0xEFEFEF }, 90, 138, 666, 181, 668}
     refresh_warning_close_button={171,673}
     refresh_button={612,881}
@@ -218,6 +225,7 @@ function init_points()
     mc_points["无限池"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F }
     mc_points["无限池(满破)"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F, -5, 120, 0xFBFC77, -8, 120, 0xC7DA7E, -12, 120, 0xA6E2BA }
     mc_points["新午餐"]={ 0x688EC6, 0, 33, 0xF7CDD2, 7, 71, 0xECC4C7, -6, 85, 0xFDEDDB, 6, 96, 0x5F3743, 7, 128, 0xE5D7D2 }
+    mc_points["新qp"]={ 0x183851, 2, 32, 0xF9FDFD, -13, 51, 0x49343C, -4, 63, 0x698C9F, -19, 74, 0xFBCFBD, 8, 70, 0x8C6A5F, -24, 102, 0x302C26, -12, 114, 0xE8FCFD, 9, 134, 0x928B96, -18, 137, 0xFDFE80, -20, 137, 0xE5F491, -24, 138, 0x94C393 }
     --助战从者特征
     support_points={}
     support_points["孔明"]={ 0xFAF4D6, -6, 4, 0x716256, -3, 15, 0xFBF5D5, -31, 11, 0xDEC4A2, -33, -59, 0xBFEFD6, 36, -15, 0x4C5D59 }
@@ -1070,6 +1078,9 @@ function enter_mission()
             if apple=="不吃" then
                 click(table.unpack(close_apple_button))
                 notifyVibrate(1500)
+                if sleep_button=="是" then
+                    os.execute("activator send libactivator.system.sleepbutton")
+                end
                 os.exit()
             end
             if apple=="铜" then
@@ -1156,6 +1167,9 @@ function quit_mission()
             click(table.unpack(retreat_button[i]))
         end
         if after_failed=="停止" then
+            if sleep_button=="是" then
+                os.execute("activator send libactivator.system.sleepbutton")
+            end
             os.exit()
         end
         return

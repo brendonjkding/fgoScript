@@ -137,7 +137,7 @@ function make_maru()
             logDebug("没同种丸子了")
             return true
         end
-        is_first=true
+        times=0
         while true do
             --跳过同种
             move_upward(10)
@@ -155,7 +155,7 @@ function make_maru()
             end
             
             move_upward(10)
-            if not is_first then
+            if times>0 then
                 move_upward(10)
             end
             
@@ -166,7 +166,11 @@ function make_maru()
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 break
             end
-            is_first=false
+            times=times+1
+            if times>3 then
+                os.exit()
+            end
+            
         end
         --选底
         move_upward(5,497,1065)
