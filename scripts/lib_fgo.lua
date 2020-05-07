@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION="## v1.4.7"
+    VERSION="## v1.4.8"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -190,7 +190,7 @@ function init_points()
     apple_x={["彩"]=574,["金"]=418,["银"]=290}
     apple_y=700
     apple_scroll_slot_end={174,1058}
-    apple_window_points={{ 0x38759B, -267, 209, 0x304C64, 305, 223, 0x2F4D80, -277, 371, 0xD6D7D7, -262, 531, 0xDDDDDD, 78, 841, 0xE2E7E7, 0, 909, 0x32769A }, 90, 97, 223, 679, 1132}
+    apple_window_points={{ 0xF3F4F7, -34, 0, 0xEFF2F6, -70, 0, 0xE8ECEF, -133, -6, 0xEAEFEF, -166, -6, 0xE6E9EF, -217, 2, 0xDFE5ED, -259, 2, 0xE8ECF4, -325, 2, 0xEDF3FB, -518, -305, 0xD5D6D9, -513, -341, 0xD2D2D2 }, 90, 95, 717, 613, 1060}
     close_apple_button={100,678}
     affirm_apple_button={165,863}
 
@@ -300,7 +300,7 @@ function init_points()
     guai_points={cba_points,zhuge_points,merlin_points,tamamo_points}
 
 
-    counter_points={ 0xC32823, 1, 13, 0xDD3B35, 0, 8, 0xC11816, 11, 11, 0xF2B16F, 10, 0, 0xF0AF6C, 16, 5, 0xF9E991, 13, 5, 0xF0C567 }
+    counter_points={ 0xE01E1E, 0, 8, 0xA10000, 0, 20, 0x910000, 5, 18, 0xD80000, 5, 9, 0xE90000, 10, 13, 0xFE5220, 13, 13, 0xFCDD7E }
     weak_points={ 0x91F0FD, -1, 0, 0x46D4FC, -2, 0, 0x3CC7FA, -3, 0, 0x33B9F8, -4, 0, 0x29AAF5, -5, 0, 0x1F9BF2, -6, 0, 0x168CEF, -7, 0, 0x0D7FEC }
 
     --切换敌人坐标
@@ -439,9 +439,6 @@ end
 --计算卡优先级
 function calculate_priority()
     if mode=="XJBD" then
-        for i=1,5 do
-            cards[i].is_dashou=true
-        end
         return
     end
 
@@ -848,7 +845,7 @@ function turn_1_2()
 end
 --3面第一次操作
 function turn_3()
-    logDebug(string.format("current_turn:%d",current_round))
+    logDebug(string.format("current_round:%d",current_round))
     click_enemy(big_enemy[3])
     select_skill(3)
     click_attack()
@@ -860,7 +857,7 @@ end
 --3面之后操作
 function turn_4()
     while not is_battle_ended() do
-        logDebug(string.format("current_turn:%d",current_round))
+        logDebug(string.format("current_round:%d",current_round))
         click_attack()
         if always_np=="是" then
             select_np(3)
