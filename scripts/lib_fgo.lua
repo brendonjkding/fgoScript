@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION="## v1.4.8"
+    VERSION="## v1.4.9"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -133,7 +133,8 @@ function init_input_info()
     if dashou=="狂兰" then color_points={ 0x181830, 6, -5, 0x504477, 13, -11, 0xFD0051, 25, -13, 0x444477, 20, -22, 0xF9004C }
     elseif dashou=="阿塔" then color_points={ 0xFEEDCB, -2, 10, 0xFEECD5, 8, 4, 0x339D00, 19, -1, 0xE3D9B7, 20, 17, 0x1F7A5D }
     else dashou="通用" end
-
+    if mode=="XJBD" then mode="红卡" end
+    
     --初始化队伍信息
     local _=skill_mode=="从文件导入" and init_conf()
 
@@ -297,7 +298,8 @@ function init_points()
     merlin_points={ 0xFEFEFE, -12, 11, 0xFEEDDC, -20, 8, 0xE09CA9, -26, 17, 0x32339D, -31, 17, 0xA955CB, -36, 17, 0xFEEDDC, -51, 17, 0xC7B2B2 }
     --nero_bride_points={ 0xDDAA55, -1, 18, 0xFFEEDD, 10, 24, 0xC5E45F, 43, 24, 0xFDE9A8, 49, 22, 0xA2F22A, 57, 10, 0x88DD22, 66, 5, 0xFFEEAA }
     tamamo_points={ 0xA49483, 7, -3, 0xFFEEDD, 18, -1, 0xFFD077, 27, -6, 0x000000, 39, -9, 0xFFFBDC, 44, -24, 0xFE9988, 21, 26, 0xFFCC66 }
-    guai_points={cba_points,zhuge_points,merlin_points,tamamo_points}
+    merlin2_points={ 0xEEFDFF, -21, 19, 0xA550C7, -28, 19, 0xFFEEDD, -42, 19, 0xBBAAA2, -45, 19, 0xFFEEDD, -46, 45, 0xBBCCFF, -48, 55, 0xFFC7DD, -41, 64, 0x8888CC, -32, 66, 0xFFEEFF }
+    guai_points={cba_points,zhuge_points,merlin_points,tamamo_points,merlin2_points}
 
 
     counter_points={ 0xE01E1E, 0, 8, 0xA10000, 0, 20, 0x910000, 5, 18, 0xD80000, 5, 9, 0xE90000, 10, 13, 0xFE5220, 13, 13, 0xFCDD7E }
@@ -438,10 +440,6 @@ end
 
 --计算卡优先级
 function calculate_priority()
-    if mode=="XJBD" then
-        return
-    end
-
     --色卡权重
     p={["green"]={2,1,3},["blue"]={2,3,1},["red"]={3,2,1}}--baq
     if mode=="绿卡" and current_round<=3 then
@@ -1308,7 +1306,7 @@ function select_support()
     while true do
         keepScreen(true)
         if sp_mode=="图片" then
-            x, y = findImageFuzzy(path.."sp.bmp"); -- 
+            x, y = findImageFuzzy(path.."sp.bmp",60); -- 
             if x ~= -1 and y ~= -1 then            -- 如果找到了
                 click(x,y)
                 return
@@ -1322,20 +1320,20 @@ function select_support()
             if is_find then
                 return
             end
-
-            x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_slot_points));
-            if x ~= -1 and y ~= -1 then  -- 如果找到了
-                x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_arrived_end_points));
-                if x ~= -1 and y ~= -1 then  -- 如果到底了
-                    refresh_support()
-                end
-                move_upward(5)
-            else
+        end
+        x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_slot_points));
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            x, y = findMultiColorInRegionFuzzy(table.unpack(scroll_bar_arrived_end_points));
+            if x ~= -1 and y ~= -1 then  -- 如果到底了
                 refresh_support()
             end
-
-            keepScreen(false)
+            move_upward(6)
+        else
+            refresh_support()
         end
+
+        keepScreen(false)
+        
     end
 end
 
@@ -1391,7 +1389,7 @@ end
 ]]--
 
 function check_version()
-    data = httpGet('https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/UPDATE.md')
+    data = httpGet('https://raw.githubusercontent.com/brendonjkding/fgoScript/master/UPDATE.md')
     if data=="" then
         return
     end
@@ -1406,10 +1404,7 @@ function check_version()
 end
 
 function update()
-    data = httpGet("https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/autoupdate.lua")
-    if data=="" then
-        data=httpGet("https://raw.githubusercontent.com/brendonjkding/fgoScript/master/autoupdate.lua")
-    end
+    data=httpGet("https://raw.githubusercontent.com/brendonjkding/fgoScript/master/autoupdate.lua")
     if data~="" then
         file=io.open(path.."autoupdate.lua","w")
         io.output(file)

@@ -5,7 +5,7 @@ UI = {
     { 'TextView{接运行生成的新文件。}' },
 
     { 'TextView{}' },
-    { 'DropList{手动|自动|图片}', 'sp_mode', '助战选择：' },
+    { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
     { 'TextView{如手动选助战，则无视接下来两项}' },
     { 'DropList{新午餐|新qp|新所长|擦汗|午餐|qp|所长|任意}', 'mc', '礼装：' },
     { 'DropList{孔明|310cba|cba|梅林|狐狸|任意}', 'sp', '从者：' },
@@ -30,7 +30,7 @@ UI = {
     { 'DropList{1|2|3}', 'big_enemy_2', '二面大怪序号：' },
     { 'DropList{后补刀|垫一刀|垫两刀}', 'big_enemy_mode_2', '二面大怪打法：' },
     { 'DropList{1|2|3}', 'big_enemy_3', '三面大怪序号：' },
-    { 'DropList{红卡|绿卡|蓝卡|XJBD}', 'mode', '队伍性质：' },
+    { 'DropList{红卡|绿卡|蓝卡}', 'mode', '队伍性质：' },
     { 'DropList{否|是}', 'shuffle_cloth', '是否洗牌衣服：' },
     { 'DropList{否|是}', 'round_2_shuffle', '二面没打手是否洗牌：'},
     { 'DropList{当前|1|2|3|4|5|6|7|8|9|10}', 'party_index', '游戏中的编队序号：' },

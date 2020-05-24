@@ -1,7 +1,7 @@
 function autoupdate()
     if ios then path="/var/touchelf/scripts/"
     else path="/mnt/sdcard/touchelf/scripts/" end
-    local path_r="https://raw.githubusercontent.com/brendonjkding/fgo_lua_test/master/scripts/"
+    local path_r="https://raw.githubusercontent.com/brendonjkding/fgoScript/master/scripts/"
     filenames={"lib_fgo.lua","main.lua","maru.lua"}
 
     for i=1,#filenames do

@@ -1,4 +1,4 @@
 *.bak
-test.lua
+*test.lua
 *.zip
 lib_mem.lua

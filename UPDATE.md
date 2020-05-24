@@ -1,4 +1,6 @@
 # 更新内容
+## v1.4.9
+* bug fix: autoupdate
 ## v1.4.8
 * bug fix: apple_window_points(与melior冲突) counter_points(tw) is_dashou(XJBD)
 ## v1.4.7

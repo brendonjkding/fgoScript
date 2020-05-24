@@ -11,7 +11,7 @@
 * 苹果
   * 只支持750x1334(iphone 8/7/6s/6等)分辨率
   * 越狱，添加源 `cydia.touchelf.com` 安装触摸精灵3.7.4(之后版本未测试)
-  * 导入lua文件到`/var/touchelf/scripts` 或 添加我的源 [brendonjkding.github.io](http://brendonjkding.github.io) 直接安装，安装完勾选更新更新一下
+  * 导入lua文件到`/var/touchelf/scripts` 或 添加我的源 [brendonjkding.github.io](http://brendonjkding.github.io) 直接安装
 * 安卓
   * 雷电模拟器，分辨率设为750*1334
   * 导入lua文件到`/mnt/sdcard/touchelf/scripts/`
@@ -26,8 +26,8 @@
   * 绿卡队带洗牌服三面没打手卡会自动洗牌
 
 * 可自动选礼装/助战。
-  * 内置常用礼装/助战信息。默认选满破礼装，三破头像，cba满充能
-
+  * 内置常用礼装/助战信息。默认选满破礼装，cba满充能
+  * 只支持三破头像，注意在设置里关闭
 
 * 抽友情/搓丸子。
   * 抽友情：如爆仓，根据设置会停止或切换搓丸子。
