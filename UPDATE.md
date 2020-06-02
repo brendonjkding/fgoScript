@@ -1,6 +1,13 @@
 # 更新内容
+## v1.5.0
+* always_np优化
+* 一面本优化
+* 判断苹果优化
+* bug fix: need_apple 台服apply_interface_points
 ## v1.4.9
 * bug fix: autoupdate
+* 增加梅林改模的特征
+* 移除XJBD
 ## v1.4.8
 * bug fix: apple_window_points(与melior冲突) counter_points(tw) is_dashou(XJBD)
 ## v1.4.7

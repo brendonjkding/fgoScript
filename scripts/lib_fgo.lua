@@ -17,7 +17,7 @@ function init(d)
     check_miss_operate(message)
 
     save_conf()
-    if is_debug and ios then
+    if is_debug and ios and not broken then
         local oc = require "liboc"
         NSLog=oc.NSLog
     else
@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION="## v1.4.9"
+    VERSION="## v1.5.0"
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -105,6 +105,7 @@ function main()
     
     if sleep_button=="是" then
         os.execute("activator send libactivator.system.sleepbutton")
+        return
     end
     
     
@@ -134,7 +135,7 @@ function init_input_info()
     elseif dashou=="阿塔" then color_points={ 0xFEEDCB, -2, 10, 0xFEECD5, 8, 4, 0x339D00, 19, -1, 0xE3D9B7, 20, 17, 0x1F7A5D }
     else dashou="通用" end
     if mode=="XJBD" then mode="红卡" end
-    
+
     --初始化队伍信息
     local _=skill_mode=="从文件导入" and init_conf()
 
@@ -361,7 +362,9 @@ function init_points()
     retreat_button[2]={378,914}
     retreat_button[3]={165,667}
     lr_corner={42,1143}
-    apply_interface_points={{ 0xD3D3D4, 18, 207, 0xE2E2E5, 538, -172, 0x92CB40, 542, -51, 0x0C2341, 566, 114, 0x005EA8 }, 90, 105, 69, 671, 448}
+    apply_interface_points={}
+    apply_interface_points[1]={{ 0xD3D3D4, 18, 207, 0xE2E2E5, 538, -172, 0x92CB40, 542, -51, 0x0C2341, 566, 114, 0x005EA8 }, 90, 105, 69, 671, 448}
+    apply_interface_points[2]={{ 0xD5D5D5, 3, -177, 0xDDDDDA, 510, -61, 0x1F6EDC, 518, -62, 0x809FD7, 554, -62, 0x005FA5, 532, -56, 0xFAFBFD, 532, -50, 0x0E3763 }, 90, 115, 241, 669, 418}
     not_apply_button={106,340}
 
     blank_region={680,900}
@@ -451,7 +454,8 @@ function calculate_priority()
     end
 
     for i=1,5 do
-        if (current_round==2 or current_round==3) and (mode=="绿卡" or mode=="红卡") then
+        --柱子
+        if ((current_round==2 or current_round==3) and (mode=="绿卡" or mode=="红卡")) or (np_indexs[2]==5 and np_indexs[3]==5) then
             --克制打手200 打手100 克制拐20 拐10 被克打手5 被克拐1
             if cards[i].is_dashou then
                 if not cards[i].weak then
@@ -793,6 +797,10 @@ function select_normal(t)
     if is_debug then
         os.exit(0)
     end
+    if always_np=="是" then
+        click_card(6,7,8)
+    end
+    
     click_card(selected_card[1].index,selected_card[2].index,selected_card[3].index)
     return false
 end
@@ -857,11 +865,7 @@ function turn_4()
     while not is_battle_ended() do
         logDebug(string.format("current_round:%d",current_round))
         click_attack()
-        if always_np=="是" then
-            select_np(3)
-        else
-            select_normal(4)
-        end
+        select_normal(4)
         current_round=current_round+1
     end
 end
@@ -1069,8 +1073,10 @@ end
 function enter_mission()
     if sp_mode=="自动" or sp_mode=="图片" then
         click(table.unpack(mission_entry))
+        logDebug("检查苹果")
         if need_apple() then
             if apple=="不吃" then
+                logDebug("不吃苹果")
                 click(table.unpack(close_apple_button))
                 notifyVibrate(1500)
                 if sleep_button=="是" then
@@ -1086,11 +1092,13 @@ function enter_mission()
             end
             click(table.unpack(affirm_apple_button))
         end
+        logDebug("检查助战界面")
         check_sp_interface()
 
         select_support()
         keepScreen(false)
         if party_index~="当前" then
+            logDebug("选择队伍")
             click(party_x,party_y[tonumber(party_index)%10+1])
             click(party_x,party_y[tonumber(party_index)])
         end
@@ -1098,6 +1106,7 @@ function enter_mission()
         mSleep(2000)
         click(table.unpack(start_mission_button))
     end
+    logDebug("等待进入关卡")
     wait_battle_start()
 end
 --等待进入一面
@@ -1198,9 +1207,12 @@ function wait_quit_mission()
                 click(table.unpack(lr_corner))
             end
         end
-        x, y = findMultiColorInRegionFuzzy(table.unpack(apply_interface_points));
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            click(table.unpack(not_apply_button))
+        for i=1,#apply_interface_points do
+            x, y = findMultiColorInRegionFuzzy(table.unpack(apply_interface_points[i]));
+            if x ~= -1 and y ~= -1 then  -- 如果找到了
+                click(table.unpack(not_apply_button))
+                break
+            end
         end
         click(table.unpack(blank_region))
         mSleep(5000)
@@ -1228,6 +1240,7 @@ end
 function check_sp_interface()
     mSleep(3000)
     x, y = findMultiColorInRegionFuzzy(table.unpack(sp_interface_points));
+    logDebug("未识别到助战界面")
     local c=0
     while x == -1 and y == -1 do  -- attack
         c=c+1
@@ -1293,6 +1306,7 @@ end
 
 --自动选助战
 function select_support()
+    logDebug("选择助战")
     mSleep(2000)
     if sp_class_index and sp_class_index~="当前" then
         click(sp_class_button_x,sp_class_button_y[sp_class_index])
@@ -1318,6 +1332,7 @@ function select_support()
                 is_find, new_start_x=find_support(new_start_x)
             end
             if is_find then
+                logDebug("找到助战")
                 return
             end
         end
@@ -1333,7 +1348,7 @@ function select_support()
         end
 
         keepScreen(false)
-        
+
     end
 end
 
@@ -1375,11 +1390,14 @@ end
 
 --需要吃苹果
 function need_apple()
-    x, y = findMultiColorInRegionFuzzy(table.unpack(apple_window_points));
-    if x ~= -1 and y ~= -1 then  -- 如果找到了
+    x, y = findMultiColorInRegionFuzzy(table.unpack(sp_interface_points));
+    logDebug("未识别到助战界面")
+    local c=0
+    if x == -1 and y == -1 then 
         return true
     end
     return false
+    
 end
 
 --[[
