@@ -1,4 +1,8 @@
 # 更新内容
+## v1.5.1
+* 更换区分ios/安卓的方法
+* 改进判断自身版本的方法
+* bug fix: 新午餐可能不准确 台服apply_interface_points？
 ## v1.5.0
 * always_np优化
 * 一面本优化

@@ -259,9 +259,10 @@ end
 
 
 function main()
-    if mode=="空" then return end
-
-    if toast then dofile("/var/touchelf/scripts/lib_fgo.lua")
+    if mode=="关闭" then return end
+    kernelVersion=io.popen("uname -s")
+    kernelVersion=kernelVersion:read("*all")
+    if kernelVersion=="Darwin\n" then dofile("/var/touchelf/scripts/lib_fgo.lua")
     else dofile("/mnt/sdcard/touchelf/scripts/lib_fgo.lua") end
 
     init_arg()
@@ -270,7 +271,7 @@ function main()
     end
     if mode=="测试" then 
         rotateScreen(-90)
-        move_upward(30)
+        move_upward(30,500,500)
         return
     end
 

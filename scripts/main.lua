@@ -43,7 +43,9 @@ UI = {
 }
 
 function main()
-    if toast then dofile("/var/touchelf/scripts/lib_fgo.lua")
+    kernelVersion=io.popen("uname -s")
+    kernelVersion=kernelVersion:read("*all")
+    if kernelVersion=="Darwin\n" then dofile("/var/touchelf/scripts/lib_fgo.lua")
     else dofile("/mnt/sdcard/touchelf/scripts/lib_fgo.lua") end
     init_arg()
     init_input_info()

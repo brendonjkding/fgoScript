@@ -25,19 +25,28 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION="## v1.5.0"
+    VERSION=151
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
     rotateScreen(0);
-    if toast then
+    
+
+    kernelVersion=io.popen("uname -s")
+    kernelVersion=kernelVersion:read("*all")
+    if kernelVersion=="Darwin\n" then ios=true
+    else ios=false end
+    
+    if ios then
         path="/var/touchelf/scripts/"
-        ios=true
     else
         path="/mnt/sdcard/touchelf/scripts/"
-        toast=notifyMessage
+        if not toast then toast=notifyMessage end
     end
 
+end
+function getNumVersion(version)
+    return tonumber(string.sub(version, 1, 1)..string.sub(version, 3,3)..string.sub(version, 5,5))
 end
 
 function init_conf()
@@ -226,7 +235,7 @@ function init_points()
     --闪闪祭
     mc_points["无限池"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F }
     mc_points["无限池(满破)"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F, -5, 120, 0xFBFC77, -8, 120, 0xC7DA7E, -12, 120, 0xA6E2BA }
-    mc_points["新午餐"]={ 0x688EC6, 0, 33, 0xF7CDD2, 7, 71, 0xECC4C7, -6, 85, 0xFDEDDB, 6, 96, 0x5F3743, 7, 128, 0xE5D7D2 }
+    mc_points["新午餐"]={ 0x3888BB, -21, 0, 0xF5F6F4, -5, 13, 0xFBD2D6, 4, 47, 0xFEF3E8, -7, 47, 0xA8749D, -18, 71, 0xFFF2EA, -26, 71, 0xE2B4AD, 1, 85, 0xB9639B, -23, 118, 0xFCFB66, -31, 118, 0xADE1B5 }
     mc_points["新qp"]={ 0x183851, 2, 32, 0xF9FDFD, -13, 51, 0x49343C, -4, 63, 0x698C9F, -19, 74, 0xFBCFBD, 8, 70, 0x8C6A5F, -24, 102, 0x302C26, -12, 114, 0xE8FCFD, 9, 134, 0x928B96, -18, 137, 0xFDFE80, -20, 137, 0xE5F491, -24, 138, 0x94C393 }
     --助战从者特征
     support_points={}
@@ -364,7 +373,7 @@ function init_points()
     lr_corner={42,1143}
     apply_interface_points={}
     apply_interface_points[1]={{ 0xD3D3D4, 18, 207, 0xE2E2E5, 538, -172, 0x92CB40, 542, -51, 0x0C2341, 566, 114, 0x005EA8 }, 90, 105, 69, 671, 448}
-    apply_interface_points[2]={{ 0xD5D5D5, 3, -177, 0xDDDDDA, 510, -61, 0x1F6EDC, 518, -62, 0x809FD7, 554, -62, 0x005FA5, 532, -56, 0xFAFBFD, 532, -50, 0x0E3763 }, 90, 115, 241, 669, 418}
+    apply_interface_points[2]={{0xD2D2D1, -4, -181, 0xD3D3D3, 563, -58, 0x005EBB, 521, -59, 0x80A2D6, 536, -52, 0xF0F3FB, 536, -46, 0x123B68, 536, -40, 0xE2ECF2}, 90, 107, 234, 674, 415}
     not_apply_button={106,340}
 
     blank_region={680,900}
@@ -1412,7 +1421,9 @@ function check_version()
         return
     end
     local latest_version=Split(data,'\n')[2]
-    if latest_version==VERSION then
+    latest_version=string.sub(latest_version,5,9)
+    latest_version=getNumVersion(latest_version)
+    if latest_version<=VERSION then
         return
     end
     notifyMessage("存在新版本,准备更新,请勿中止运行",3000)
