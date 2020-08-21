@@ -17,7 +17,7 @@ function init(d)
     check_miss_operate(message)
 
     save_conf()
-    if is_debug and ios and not broken then
+    if is_debug and ios then
         local oc = require "liboc"
         NSLog=oc.NSLog
     else
@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION=151
+    VERSION=153
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -160,7 +160,10 @@ function init_input_info()
     np_indexs={}
     np_indexs[1]=tonumber(np_index_1)+5
     np_indexs[2]=tonumber(np_index_2)+5
-    np_indexs[3]=tonumber(np_index_3)+5
+    if np_index_3~="2+1" then
+        np_indexs[3]=tonumber(np_index_3)+5 
+    end
+    
 
     big_enemy={big_enemy_1,big_enemy_2,big_enemy_3}
     big_enemy_mode={big_enemy_mode_1,big_enemy_mode_2,"后补刀"}
@@ -299,7 +302,8 @@ function init_points()
         feature_extract_y[i]=feature_extract_y[i-1]+268
     end
     --卡信息
-    blue_color_points={ 0x357FFE, -2, 48, 0x56AFFE, 23, 20, 0xB0834A, 52, 13, 0xFEF9CA, 75, -31, 0x075CFE, 61, 69, 0x55C7FE }
+    -- blue_color_points={ 0x357FFE, -2, 48, 0x56AFFE, 23, 20, 0xB0834A, 52, 13, 0xFEF9CA, 75, -31, 0x075CFE, 61, 69, 0x55C7FE }
+    blue_color_points={ 0x4CA2FD, 1, -63, 0x2576FC, 96, -105, 0x004CE2, 109, 4, 0x0F69FD, 84, -18, 0x4DC9FF, 92, 53, 0x0047DE, 24, 57, 0x0D4EE4 }
     red_color_points={ 0xFE5612, -7, 33, 0xFD6F1A, 2, 71, 0xFF3A1E, 68, 11, 0xFEE13A, 76, 67, 0xFE6B1F }
     --cba、孔明、梅林
 
@@ -313,11 +317,16 @@ function init_points()
 
 
     counter_points={ 0xE01E1E, 0, 8, 0xA10000, 0, 20, 0x910000, 5, 18, 0xD80000, 5, 9, 0xE90000, 10, 13, 0xFE5220, 13, 13, 0xFCDD7E }
-    weak_points={ 0x91F0FD, -1, 0, 0x46D4FC, -2, 0, 0x3CC7FA, -3, 0, 0x33B9F8, -4, 0, 0x29AAF5, -5, 0, 0x1F9BF2, -6, 0, 0x168CEF, -7, 0, 0x0D7FEC }
+--    weak_points={ 0x91F0FD, -1, 0, 0x46D4FC, -2, 0, 0x3CC7FA, -3, 0, 0x33B9F8, -4, 0, 0x29AAF5, -5, 0, 0x1F9BF2, -6, 0, 0x168CEF, -7, 0, 0x0D7FEC }
+    weak_points={0x62EAFF, 1, 6, 0xA7FAFF, 1, 21, 0x9BF5FF, -2, 23, 0x23A2F5, -1, 15, 0x3AC5FB, -6, 14, 0x0D7DED, -10, 14, 0x0150D4, -12, 13, 0x0141C3}
 
     --切换敌人坐标
     enemy_x=526
     enemy_y={155,318,483}
+    
+    enemy_brand_x=707
+    enemy_brand_y={40,300,550}
+    
     --指令卡选择坐标
     card_x={222,222,222,222,222,542,542,542}--1,2,3,4,5,np
     card_y={150,400,680,940,1200,454,689,951}--266
@@ -340,7 +349,8 @@ function init_points()
     --按钮
     back_points={{ 0x00B7E6, 1, 4, 0x00B2E0, 0, 87, 0x009FD6, 1, 94, 0x00B7E2 }, 90, 37, 1200, 38, 1294}
     back_button={35,1253}
-    attack_points={{ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213}
+--    attack_points={{ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213}
+    attack_points={{ 0x00E8F9, 1, -34, 0x00DAF5, -94, -4, 0x0067CB, -87, -38, 0x007ED4, -115, 47, 0xAA9980, -138, -26, 0xC0AE94, -140, -185, 0xFC9B27, -129, -190, 0xF8CB59 }, 90, 26, 1011, 167, 1248}
     attack_button={88,1164}
     switch_confirm_button={100,664}
 
@@ -365,7 +375,9 @@ function init_points()
     battle_ended_points={kizuna_points,kizuna_points2,kizuna_upgraded_points,failed_points,kizuna_upgraded_points2}
     drop_mc_points={{ 0x452C0E, 0, 1, 0x654115, 0, 3, 0x7D6E2A, 0, 4, 0x6C7A41, 0, 5, 0x5D7854, 0, 6, 0x4E7466, 0, 10, 0x552F63 }, 90, 724, 981, 724, 991}
     drop_mc_interface_points={{ 0xF5F5F4, -44, 0, 0xDBDEDF, -284, -40, 0x084D9C, -272, -35, 0xF7F7FB, -274, -26, 0x0849AD, -270, -18, 0xD3E2F4 }, 90, 445, 9, 729, 49}
-
+    
+    rennzoku_syutugeki_points={{ 0xD4D6D9, 3, 168, 0xD4D4D7, 3, 392, 0xD2D3D3, 5, 601, 0xCFCFD1, 249, 722, 0x244990, 286, 706, 0x2A52AA, 314, 653, 0x2E5FAB }, 90, 153, 381, 467, 1103}
+    rennzoku_syutugeki_cancel_button={166,475}
     retreat_button={}
     retreat_button[1]={416,338}
     retreat_button[2]={378,914}
@@ -617,6 +629,7 @@ function select_np(t)
         select_normal()
         return
     end
+    
     --二面没打手
     if t==2 and round_2_shuffle=="是" and count==0 and not shuffled then
         shuffle()
@@ -626,6 +639,7 @@ function select_np(t)
 
 
     selected_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
+    
     --垫刀
     if t==2 and big_enemy_mode[t]~="后补刀" then
         if mode=="绿卡" then
@@ -655,7 +669,8 @@ function select_np(t)
                 q_card[i].priority=q_card[i].priority_bak
             end  
             table.sort(cards)
-
+        else
+            select_card(3,np_card)
         end
     else
         --首红与宝具
@@ -678,7 +693,6 @@ function select_np(t)
             else
                 select_card(1,np_card)
             end
-            NSLog("test2")
         elseif count==1 then--1张打手
             if b_num==1 then
                 if not has_sup_b and mode=="绿卡" and t>=3 then--有红没拐红
@@ -710,10 +724,12 @@ function select_np(t)
         end
     end
 
-    NSLog("test3")
     table.sort(cards)
-    NSLog("test4")
-
+    
+    if t==3 and np_index_3=="2+1" then
+        selected_card={Card:new(7,0),Card:new(6,0),Card:new(0,0)}
+    end
+    
     if count<2 then
         choose_first()
     end
@@ -733,8 +749,8 @@ function select_np(t)
 
     if is_select_fail() then
         click_card(selected_card[1].index,selected_card[2].index,selected_card[3].index)
-        click_enemy(big_enemy[t])
-        select_normal()
+        -- click_enemy(big_enemy[t])
+        select_normal(t)
     end
 
     return false
@@ -743,6 +759,7 @@ end
 function select_normal(t)
     get_info()
     selected_card={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
+    --一面平a
     if t==1 and np_indexs[t]==5 then
         for i=1,5 do
             if cards[i].is_dashou then
@@ -808,6 +825,7 @@ function select_normal(t)
     end
     if always_np=="是" then
         click_card(6,7,8)
+        click_enemy(big_enemy[(t<=3 and {t} or {3})[1]],true)
     end
     
     click_card(selected_card[1].index,selected_card[2].index,selected_card[3].index)
@@ -977,9 +995,14 @@ function click_attack()
 end
 
 --选择敌人
-function click_enemy(index)
+function click_enemy(index,is_brand)
     index=tonumber(index)  
-    click(enemy_x, enemy_y[index])
+    if not is_brand then
+        click(enemy_x, enemy_y[index])
+    else
+        click(enemy_brand_x,enemy_brand_y[index])
+    end
+    
 end
 --点坐标
 function click(x,y,d,h)
@@ -1192,8 +1215,13 @@ function quit_mission()
     for _=1,4 do
         click(table.unpack(lr_corner))
     end
-
-
+    
+    mSleep(1000)
+    x, y = findMultiColorInRegionFuzzy(table.unpack(rennzoku_syutugeki_points));
+    if x ~= -1 and y ~= -1 then
+        click(table.unpack(rennzoku_syutugeki_cancel_button))
+    end
+    
     if times>=2 and sp_mode~="手动" then
         wait_quit_mission()
     end

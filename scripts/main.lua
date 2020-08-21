@@ -23,7 +23,7 @@ UI = {
     { 'TextView{每t释放的宝具(0代表平a)：}' },
     { 'DropList{1|2|3|0}', 'np_index_1','1t宝具：'},
     { 'DropList{1|2|3|0}', 'np_index_2','2t宝具：'},
-    { 'DropList{1|2|3|0}', 'np_index_3','3t宝具：'},
+    { 'DropList{1|2|3|2+1|0}', 'np_index_3','3t宝具：'},
     { 'TextView{}' },
     { 'DropList{1|2|3}', 'big_enemy_1', '一面大怪序号：' },
     { 'DropList{后补刀|垫一刀|垫两刀}', 'big_enemy_mode_1', '一面大怪打法：' },

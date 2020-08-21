@@ -1,4 +1,10 @@
 # 更新内容
+## v1.5.3
+* 忽略连续出击
+* bug fix: big_enemy(always_np) attack_points always_np blue_color_points
+## v1.5.2
+* 增加3面双宝具选项
+* bug fix: 
 ## v1.5.1
 * 更换区分ios/安卓的方法
 * 改进判断自身版本的方法

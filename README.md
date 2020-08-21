@@ -10,7 +10,7 @@
 ## 如何使用
 * 苹果
   * 只支持750x1334(iphone 8/7/6s/6等)分辨率
-  * 越狱，添加源 `cydia.touchelf.com` 安装触摸精灵3.7.4(之后版本未测试)
+  * 越狱，添加源 `cydia.touchelf.com` 安装触摸精灵
   * 导入lua文件到`/var/touchelf/scripts` 或 添加我的源 [brendonjkding.github.io](http://brendonjkding.github.io) 直接安装
 * 安卓
   * 雷电模拟器，分辨率设为750*1334
