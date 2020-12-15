@@ -174,6 +174,7 @@ function init_input_info()
     after_failed=after_failed or "停止"
     round_2_shuffle=round_2_shuffle or "否"
     always_np=always_np or "否"
+    after_drop_mc=after_drop_mc or "继续"
     conf_name=(conf_name=="" and {"默认"} or {conf_name})[1]
     shuffled=(shuffle_cloth=="是" and {false} or {true})[1]
     check_miss_operate_points=(sp_mode=="手动" and {{attack_points}} or {menu_points})[1]
@@ -247,7 +248,8 @@ function init_points()
     support_points["cba"]={ 0xD099F5, 44, -4, 0xDEC9F4, 45, 26, 0x793561, 45, 41, 0xAF0E19, 28, 51, 0xFEFFE1, 45, 86, 0xB10B12 }
     support_points["310cba"]=support_points["cba"]
     support_points["狐狸"]={ 0xB18B34, 2, 26, 0xE28875, 8, 49, 0xF7C268, 8, 70, 0xF6E4C4, 13, 98, 0xF9CD76, 13, 111, 0xD07765, 13, 152, 0xFEFFF2 }
-
+    support_points["花嫁"]={ 0xF4E1A9, 4, 28, 0x171304, -4, 32, 0x83B132, -4, 53, 0xFCF3DB, 12, 74, 0xAFD85A, 18, 74, 0x10170D, 18, 93, 0xF6DC93, 18, 119, 0x957B49, 18, 126, 0xDEE0D7 }
+    
     mc_start_x={288,4}
     mc_start_y={23,32}
     mc_end_x={588,292}
@@ -824,7 +826,12 @@ function select_normal(t)
         os.exit(0)
     end
     if always_np=="是" then
-        click_card(6,7,8)
+        --仅3面后尝试放宝具
+        if t>=3 then
+            click_card(6,7,8)
+        else
+            click_card(big_enemy[t])
+        end
         click_enemy(big_enemy[(t<=3 and {t} or {3})[1]],true)
     end
     
@@ -1150,10 +1157,18 @@ function wait_battle_start(t)
         if x ~= -1 and y ~= -1 then  -- attack
             return 
         end
-        if sp_mode=="手动" and t==5000 then
-            toast("请选择助战并进入关卡",3000)
-            if c%25==0 then
-                notifyVibrate(1000)
+        if t~=5000 then -- is waiting skill cast
+        else-- is waiting battle start
+            if sp_mode=="手动" then
+                toast("请选择助战并进入关卡",3000)
+                if c%5==0 then
+                    notifyVibrate(1000)
+                end
+            else
+                if c%3==0 then
+                    logDebug("click start_mission_button")
+                    click(table.unpack(start_mission_button))
+                end
             end
             c=c+1
         end
@@ -1182,7 +1197,10 @@ function is_battle_ended()
             if x ~= -1 and y ~= -1 then  -- 
                 x, y = findMultiColorInRegionFuzzy(table.unpack(drop_mc_points));
                 if x ~= -1 and y ~= -1 then  -- 如果找到了
-                    notifyVibrate(3000)
+                    notifyVibrate(5000)
+                    if after_drop_mc=="停止" then
+                        os.exit(0)
+                    end
                 end
                 keepScreen(false)
                 return true
@@ -1243,6 +1261,10 @@ function wait_quit_mission()
             for _=1,2 do
                 click(table.unpack(lr_corner))
             end
+        end
+        x, y = findMultiColorInRegionFuzzy(table.unpack(rennzoku_syutugeki_points));
+        if x ~= -1 and y ~= -1 then
+            click(table.unpack(rennzoku_syutugeki_cancel_button))
         end
         for i=1,#apply_interface_points do
             x, y = findMultiColorInRegionFuzzy(table.unpack(apply_interface_points[i]));

@@ -1,4 +1,8 @@
 # 更新内容
+## v1.5.4
+* 助战增加花嫁
+* 增加掉礼装停止选项
+* bug fix: 
 ## v1.5.3
 * 忽略连续出击
 * bug fix: big_enemy(always_np) attack_points always_np blue_color_points

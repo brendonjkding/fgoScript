@@ -8,7 +8,7 @@ UI = {
     { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
     { 'TextView{如手动选助战，则无视接下来两项}' },
     { 'DropList{新午餐|新qp|新所长|擦汗|午餐|qp|所长|任意}', 'mc', '礼装：' },
-    { 'DropList{孔明|310cba|cba|梅林|狐狸|任意}', 'sp', '从者：' },
+    { 'DropList{孔明|310cba|cba|梅林|狐狸|花嫁|任意}', 'sp', '从者：' },
     { 'TextView{}' },
     
     { 'TextView{}' },
@@ -36,6 +36,7 @@ UI = {
     { 'DropList{当前|1|2|3|4|5|6|7|8|9|10}', 'party_index', '游戏中的编队序号：' },
     { 'DropList{当前|全|剑|弓|枪|骑|术|杀|狂|EXT|MIX}', 'sp_class_index', '指定助战职介：' },
     { 'DropList{停止|继续}', 'after_failed', '如翻车：' },
+    { 'DropList{继续|停止}', 'after_drop_mc', '掉礼装' },
     
     { 'DropList{否|是}', 'always_np', '始终尝试放宝具：' },
     { 'TextView{(适用np不一定能满的情况，开启}' },
