@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION=153
+    VERSION=155
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;

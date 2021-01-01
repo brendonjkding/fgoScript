@@ -4,8 +4,8 @@ UI = {
 
 function maru_points()
     menu_button={38,1237}
-    summor_button={  77,560 }
-    strength_button={  86,366 }
+    summor_button={  77,669 }
+    strength_button={  86,494 }
     strength_mc_button={ 260,983 }
     strength_mc_interface_points={{ 0x6D6E6E, -8, -187, 0x6B6C6E, -19, -825, 0x1090CE, 534, -817, 0xFE3B95, 522, -817, 0xFF4AD6 }, 90, 30, 425, 583, 1250}
     scroll_bar_arrived_end_points={{ 0xFAF3DE }, 90, 28, 1062, 28, 1062}
