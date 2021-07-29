@@ -1,4 +1,7 @@
 # 更新内容
+## v1.5.6
+* 增加caber助战选项
+* fix: menu_points, round_cn_points[2:4]
 ## v1.5.5
 * 适配增加了终端按钮的菜单栏
 ## v1.5.4

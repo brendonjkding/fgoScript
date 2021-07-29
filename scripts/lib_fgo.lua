@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION=155
+    VERSION=156
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -200,6 +200,7 @@ function init_points()
     menu_points[1]={{ 0xE8C17B, 18, 0, 0xFBF8F4, 17, -6, 0xF5E9DC, 17, 8, 0xF7E7D3, 26, 8, 0xF0EDA0, 27, 1005, 0xD6D6D8, 29, 1129, 0xD0D2D3 }, 90, 9, 166, 38, 1301}
     menu_points[2]={{ 0xD6D6D6, 0, -18, 0x10172D, -1, -25, 0xAEB6C3, -1, -29, 0x192245, -1, -34, 0xAEB6C7, -1, -47, 0xCFD2D6, 19, -1029, 0xD4D5D5 }, 90, 36, 257, 56, 1286}
     menu_points[3]={{ 0xD0D4D4, -7, -116, 0xDADBDB, 30, -64, 0x40AEE7, -5, -1139, 0xE8DBA2, -12, -1132, 0xF2F1E6, -22, -1134, 0xD0A36A, -20, -1126, 0xEFDA93 }, 90, 16, 159, 68, 1298}
+    menu_points[4]={{ 0xD3D4D5, -1, -33, 0x1C2449, 1, -54, 0xCED5D9, -6, -72, 0x0E1127, 2, -105, 0xD6D6D5, 8, -1119, 0xFCFACF, -25, -1120, 0xFAD381, -22, -1132, 0x62625F }, 90, 9, 159, 42, 1291, 34, 1291}
 
     mission_entry={563,999}
     apple_x={["彩"]=574,["金"]=418,["银"]=290}
@@ -249,6 +250,7 @@ function init_points()
     support_points["310cba"]=support_points["cba"]
     support_points["狐狸"]={ 0xB18B34, 2, 26, 0xE28875, 8, 49, 0xF7C268, 8, 70, 0xF6E4C4, 13, 98, 0xF9CD76, 13, 111, 0xD07765, 13, 152, 0xFEFFF2 }
     support_points["花嫁"]={ 0xF4E1A9, 4, 28, 0x171304, -4, 32, 0x83B132, -4, 53, 0xFCF3DB, 12, 74, 0xAFD85A, 18, 74, 0x10170D, 18, 93, 0xF6DC93, 18, 119, 0x957B49, 18, 126, 0xDEE0D7 }
+    support_points["C呆"]={ 0xFDFFFB, -16, 0, 0xAF4451, -29, -7, 0xFCFC53, -38, -7, 0xAAF7D1, -45, -13, 0xFBFCF1, -7, -36, 0x65403B, -3, -56, 0xFEF6EC, -33, -57, 0xE1C3B5, 2, -78, 0xE2EEB3, 8, -78, 0x88403F }
     
     mc_start_x={288,4}
     mc_start_y={23,32}
@@ -315,7 +317,8 @@ function init_points()
     --nero_bride_points={ 0xDDAA55, -1, 18, 0xFFEEDD, 10, 24, 0xC5E45F, 43, 24, 0xFDE9A8, 49, 22, 0xA2F22A, 57, 10, 0x88DD22, 66, 5, 0xFFEEAA }
     tamamo_points={ 0xA49483, 7, -3, 0xFFEEDD, 18, -1, 0xFFD077, 27, -6, 0x000000, 39, -9, 0xFFFBDC, 44, -24, 0xFE9988, 21, 26, 0xFFCC66 }
     merlin2_points={ 0xEEFDFF, -21, 19, 0xA550C7, -28, 19, 0xFFEEDD, -42, 19, 0xBBAAA2, -45, 19, 0xFFEEDD, -46, 45, 0xBBCCFF, -48, 55, 0xFFC7DD, -41, 64, 0x8888CC, -32, 66, 0xFFEEFF }
-    guai_points={cba_points,zhuge_points,merlin_points,tamamo_points,merlin2_points}
+    caber_points={ 0x9A7433, -1, -12, 0xFFF599, -4, -46, 0xFFF2CC, -23, -16, 0xFFEECC, -65, -13, 0x184347, -81, -12, 0xFFEEDD, -88, -13, 0xB7AD9C, -91, 36, 0xCCBBDD, -101, 30, 0xFFFFFF }
+    guai_points={cba_points, zhuge_points, merlin_points, tamamo_points, merlin2_points, caber_points}
 
 
     counter_points={ 0xE01E1E, 0, 8, 0xA10000, 0, 20, 0x910000, 5, 18, 0xD80000, 5, 9, 0xE90000, 10, 13, 0xFE5220, 13, 13, 0xFCDD7E }
@@ -359,8 +362,8 @@ function init_points()
     --面
     round_cn_points={}
     round_cn_points[1]={{ 0xE1E1E1, 2, 3, 0xF9F9F8, 3, 5, 0xFEFFFE, -1, 5, 0xEFEFEF, -6, 5, 0xEFEFEF, -11, 5, 0xEFEFEF }, 90, 716, 908, 730, 913}
-    round_cn_points[2]={{ 0xE9E9E9, 1, 5, 0xF5F5F5, 1, 8, 0xF3F3F3, -3, 10, 0xF8F8F7, -8, 6, 0xFDFEFD, -15, 0, 0xF7F7F7, -16, 7, 0xE6E6E6 }, 90, 714, 905, 731, 915}
-    round_cn_points[3]={{ 0xEFEFEF, 1, 5, 0xF4F4F4, -1, 9, 0xF8F8F7, -7, 4, 0xE8E8E8, -12, 10, 0xF9FAF9, -16, 4, 0xE9E9E9, -14, 0, 0xD7D7D7 }, 90, 714, 905, 731, 915}
+    round_cn_points[2]={{ 0xF0F0F0, 1, 2, 0xEEEEEE, 1, 5, 0xEAEAEA, 0, 8, 0xF7F7F7, -3, 9, 0xFFFFFF, -7, 7, 0xEEEEEE, -13, -1, 0xEFEFEF, -15, -1, 0xFDFDFD, -15, 4, 0xCACACA, -15, 8, 0xCACACA }, 80, 715, 905, 731, 915, 730, 906};
+    round_cn_points[3]={{ 0xECECEC, 1, 4, 0xE7E7E7, -3, 9, 0xF9F9F9, -7, 3, 0xE7E7E7, -7, 5, 0xF2F2F2, -12, 9, 0xFEFEFE, -15, 5, 0xF1F1F1, -15, 2, 0xF0F0F0, -14, -1, 0xD8D8D8 }, 80, 715, 905, 731, 915, 730, 906};
     round_tw_points={}
     round_tw_points[1]={{ 0xDDDDDD, 4, 0, 0xDDDDDD, 11, 0, 0xDDDDDD, 13, 0, 0xDBDBDB, 13, -3, 0x818181 }, 90, 717, 907, 730, 910}
     round_tw_points[2]={{ 0xCCCCCC, 0, -7, 0xCDCDCD, 5, -4, 0x888888, 13, 2, 0xEAEAEA, 16, 0, 0xE5E5E5, 12, -6, 0xEFEFEF, 16, -6, 0x878787 }, 90, 715, 905, 731, 914}
