@@ -1,4 +1,6 @@
 # 更新内容
+## v1.5.7
+* 尝试改进打手识别
 ## v1.5.6
 * 增加caber助战选项
 * fix: menu_points, round_cn_points[2:4]

@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION=156
+    VERSION=157
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -311,14 +311,12 @@ function init_points()
     red_color_points={ 0xFE5612, -7, 33, 0xFD6F1A, 2, 71, 0xFF3A1E, 68, 11, 0xFEE13A, 76, 67, 0xFE6B1F }
     --cba、孔明、梅林
 
-    cba_points={0xFEFEE6, -1, -16, 0x985598, -6, -28, 0xFEFEED, -5, -35, 0xDE1616, -10, -42, 0xFEFEED } 
-    zhuge_points={ 0xFFCC77, 24, -3, 0x445555, 18, -17, 0xFFEEDD, 15, -26, 0xD5CCBB, 11, -29, 0xFFEEDD }
-    merlin_points={ 0xFEFEFE, -12, 11, 0xFEEDDC, -20, 8, 0xE09CA9, -26, 17, 0x32339D, -31, 17, 0xA955CB, -36, 17, 0xFEEDDC, -51, 17, 0xC7B2B2 }
-    --nero_bride_points={ 0xDDAA55, -1, 18, 0xFFEEDD, 10, 24, 0xC5E45F, 43, 24, 0xFDE9A8, 49, 22, 0xA2F22A, 57, 10, 0x88DD22, 66, 5, 0xFFEEAA }
-    tamamo_points={ 0xA49483, 7, -3, 0xFFEEDD, 18, -1, 0xFFD077, 27, -6, 0x000000, 39, -9, 0xFFFBDC, 44, -24, 0xFE9988, 21, 26, 0xFFCC66 }
-    merlin2_points={ 0xEEFDFF, -21, 19, 0xA550C7, -28, 19, 0xFFEEDD, -42, 19, 0xBBAAA2, -45, 19, 0xFFEEDD, -46, 45, 0xBBCCFF, -48, 55, 0xFFC7DD, -41, 64, 0x8888CC, -32, 66, 0xFFEEFF }
-    caber_points={ 0x9A7433, -1, -12, 0xFFF599, -4, -46, 0xFFF2CC, -23, -16, 0xFFEECC, -65, -13, 0x184347, -81, -12, 0xFFEEDD, -88, -13, 0xB7AD9C, -91, 36, 0xCCBBDD, -101, 30, 0xFFFFFF }
-    guai_points={cba_points, zhuge_points, merlin_points, tamamo_points, merlin2_points, caber_points}
+    cba_points={ 0x442255, 4, -8, 0x44224D, -25, -18, 0x442255, -11, -21, 0xFFFEEC, 19, -41, 0x9955A7, -35, -42, 0x874F8C, -25, -49, 0xFFFFEE, -44, -60, 0xFFFFEE, -27, -68, 0xFFFFEE, -17, -58, 0xEC0505, 13, -55, 0xA259A2, 8, -73, 0xC470C5, -24, -81, 0x442255, -37, -81, 0x442255 }
+    zhuge_points={ 0xCC8844, -1, -5, 0xCC8844, 0, -18, 0xFFCC77, 1, -32, 0xFFCC77, 3, -42, 0x445555, 3, -54, 0x445555, 3, -64, 0xFFEEDD, 4, -80, 0xFFEEDD, 15, -92, 0x243535, 32, -78, 0xFFEEDD, 41, -66, 0x445553, 37, -29, 0x3F5050 }
+    merlin_points={ 0xFFDAEE, -15, 1, 0xFFB0D2, -12, -5, 0xFFEFFF, -20, -6, 0x8888CC, -30, -16, 0xFFBBDD, -26, -23, 0xBBCCFF, 2, -18, 0xAAAAEE, 4, -30, 0xDDCCEE, -30, -51, 0xFFEEDD, -1, -42, 0xFFEEDD, -15, -62, 0xFFEEDD, -1, -52, 0x8E49A8, 22, -70, 0xF4F8FF, 3, -77, 0xDFCAFC }
+    caber_points={ 0xCCAA66, -18, -10, 0xCCAA66, 6, -16, 0xFFEECC, -23, -34, 0xFFEECC, -40, -36, 0xFFEECC, -31, -51, 0xFFEEDD, -25, -65, 0xFFEEDD, -44, -73, 0xCCAA66, -30, -80, 0xFFEECC, 0, -81, 0xFFEECC, 6, -69, 0xFFFFDD, 3, -54, 0xFFEECC, 2, -43, 0xFFEECC }
+    caber_stage2_points={ 0xFFEECC, -12, -2, 0xFFEECC, -29, -12, 0xEEBB99, -33, -26, 0x660022, -33, -39, 0x871032, -22, -50, 0xFFEECC, -4, -54, 0xFFEDCA, -25, -32, 0xFFEEDD, -2, -19, 0xFFEEDD, -9, -41, 0xFFEEDD, 1, -28, 0xC3E5D2, 23, -47, 0xFFEECC, 25, -20, 0xFFEECC }
+    guai_points={cba_points, zhuge_points, merlin_points, caber_points, caber_stage2_points}
 
 
     counter_points={ 0xE01E1E, 0, 8, 0xA10000, 0, 20, 0x910000, 5, 18, 0xD80000, 5, 9, 0xE90000, 10, 13, 0xFE5220, 13, 13, 0xFCDD7E }
@@ -436,8 +434,9 @@ function get_card_info()
         for i=1,5 do
             cards[i].color=get_color(i)
             for j=1,#guai_points do
-                x, y = findMultiColorInRegionFuzzy(guai_points[j],90, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
-                if x ~= -1 and y ~= -1 then  
+                x, y = findMultiColorInRegionFuzzy(guai_points[j],75, feature_start_x, feature_start_y[i], feature_end_x, feature_end_y[i]);
+                if x ~= -1 and y ~= -1 then
+                    --logDebug(string.format("guai %d %d %d",j,x,y))
                     cards[i].is_dashou=false
                     if cards[i].color=="red" then
                         has_sup_b=true
