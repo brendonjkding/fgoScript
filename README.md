@@ -1,9 +1,8 @@
+# 【iOS/安卓】 fgo 打本/搓丸子
 
-# 【ios/安卓】 fgo 打本/搓丸子
-
-## 文件
-* `lib_fgo.lua` 所需文件
-* `main.lua` 填入队伍信息运行后会生成新的单独脚本文件
+## 文件说明
+* `lib_fgo.lua` 核心文件
+* `main.lua` 脚本生成器，运行后根据填入的队伍信息会生成实际的脚本文件(这样设计主要是因为早期触摸的UI过于简朴，不太好在UI里二次修改配置，因此把配置存储到不同的脚本里直接编辑更方便)
 * `maru.lua` 抽友情池/搓丸子/抽无限池等辅助功能
 * `UPDATE.md` 更新说明
 
@@ -11,17 +10,20 @@
 * 苹果
   * 只支持750x1334(iphone 8/7/6s/6等)分辨率
   * 越狱，添加源 `cydia.touchelf.com` 安装触摸精灵
-  * 导入lua文件到`/var/touchelf/scripts` 或 添加我的源 [brendonjkding.github.io](http://brendonjkding.github.io) 直接安装
+  * 导入lua文件到 `/var/touchelf/scripts`
 * 安卓
-  * 雷电模拟器，分辨率设为750*1334
-  * 导入lua文件到`/mnt/sdcard/touchelf/scripts/`
+  * 雷电模拟器，分辨率设为750\*1334
+  * 导入lua文件到 `/mnt/sdcard/touchelf/scripts/`
 * 刷本
   * `main.lua`--手动播放--输入每回合放的宝具、技能等信息，按音量键运行后生成新文件，点击右上角刷新后显示
   * 进游戏，home键朝右，把要打的本置于第一个，播放新文件，即可自动进本、打本、出本、吃苹果，再按可提前停止播放。
 * 搓丸子：同上，在游戏大厅/进迦勒底之门那里播放`maru.lua`
 
 ## 功能简介
-  * 可以应付一些简单的情况，如一面平a、一二面无脑补/垫刀、三面补刀，也兼容只有一/二面、一面两批怪等副本，兼容台服。
+* **2021年08月09日补充说明**
+  * 目前脚本完整跑完一次关卡流程没问题，但是不能保证非关键功能(如战斗中选卡时识别打手/拐)没有年久失修
+
+* 可以应付一些简单的情况，如一面平a、一二面无脑补/垫刀、三面补刀，也兼容只有一/二面、一面两批怪等副本。
   * 出卡优先级大致为：红字打手、白字打手、红字拐、白字拐、蓝字打手、蓝字拐。每个级别再按队伍性质/回合数分三色卡优先级。
   * 绿卡队带洗牌服三面没打手卡会自动洗牌
 
@@ -39,8 +41,10 @@
 ![](https://github.com/brendonjkding/fgoScript/raw/master/pic/1.PNG) 
 ![](https://github.com/brendonjkding/fgoScript/raw/master/pic/2.PNG) 
 ![](https://github.com/brendonjkding/fgoScript/raw/master/pic/3.PNG) 
+
 ## 搓丸子效果视频演示
 * https://www.bilibili.com/video/av67121512/
+
 ## 目前的不足
 * 打着打着充满的宝具不会释放，只会释放预先设定好的
 * 尽量优化选卡，但非最优
