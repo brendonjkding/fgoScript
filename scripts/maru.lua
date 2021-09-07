@@ -1,5 +1,5 @@
 UI = {
-    { 'DropList{抽友情+搓丸子|抽友情|搓丸子|搓丸子(觉醒)|抽无限池|领银狗粮|刷助战|检查更新|测试|关闭}',      'mode',    '功能：' }
+    { 'DropList{抽友情|搓丸子|搓丸子(觉醒)|抽无限池|领银狗粮|刷助战|检查更新|测试|关闭}',      'mode',    '功能：' }
 }
 
 function maru_points()
@@ -7,7 +7,7 @@ function maru_points()
     summor_button={  77,669 }
     strength_button={  86,494 }
     strength_mc_button={ 260,983 }
-    strength_mc_interface_points={{ 0x6D6E6E, -8, -187, 0x6B6C6E, -19, -825, 0x1090CE, 534, -817, 0xFE3B95, 522, -817, 0xFF4AD6 }, 90, 30, 425, 583, 1250}
+    strength_mc_interface_points={{ 0xD3D4D4, -2, 91, 0xD6D8D8, -672, 363, 0x1088C4, -672, 446, 0x0AA2EC, -393, 371, 0x72EFFE, -120, 366, 0xFE49AA }, 90, 30, 65, 702, 511}
     scroll_bar_arrived_end_points={{ 0xFAF3DE }, 90, 28, 1062, 28, 1062}
 
     left_arrow={ 373,52  }
@@ -276,7 +276,7 @@ function main()
     end
 
     init_points() 
-    if mode=="搓丸子" or mode=="搓丸子(觉醒)" or mode=="抽友情" or mode=="抽友情+搓丸子" then
+    if mode=="搓丸子" or mode=="搓丸子(觉醒)" or mode=="抽友情" then
         maru_points()
         check_miss_operate("请在主界面启动")
         toast("提示：使用前请把其它礼装扔仓库里或锁住",4000)
@@ -286,14 +286,6 @@ function main()
             make_maru()
         elseif mode=="抽友情" then
             friend_summon()
-        else
-            while true do
-                friend_summon()
-                r=make_maru()
-                if not r then
-                    return
-                end
-            end
         end
     end
     if mode=="抽无限池" then

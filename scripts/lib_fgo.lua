@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION=157
+    VERSION=158
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -201,6 +201,8 @@ function init_points()
     menu_points[2]={{ 0xD6D6D6, 0, -18, 0x10172D, -1, -25, 0xAEB6C3, -1, -29, 0x192245, -1, -34, 0xAEB6C7, -1, -47, 0xCFD2D6, 19, -1029, 0xD4D5D5 }, 90, 36, 257, 56, 1286}
     menu_points[3]={{ 0xD0D4D4, -7, -116, 0xDADBDB, 30, -64, 0x40AEE7, -5, -1139, 0xE8DBA2, -12, -1132, 0xF2F1E6, -22, -1134, 0xD0A36A, -20, -1126, 0xEFDA93 }, 90, 16, 159, 68, 1298}
     menu_points[4]={{ 0xD3D4D5, -1, -33, 0x1C2449, 1, -54, 0xCED5D9, -6, -72, 0x0E1127, 2, -105, 0xD6D6D5, 8, -1119, 0xFCFACF, -25, -1120, 0xFAD381, -22, -1132, 0x62625F }, 90, 9, 159, 42, 1291, 34, 1291}
+    menu_points[5]={{ 0xFAD186, 17, 0, 0xFDF6EC, 34, 0, 0xFCFAD2, 44, 0, 0x29231A, 49, 0, 0xFCED1C, 121, 69, 0x774AE3 }, 90, 9, 172, 130, 241}
+    menu_points[6]={{ 0xFAD186, 40, 77, 0xD4D6D8, 47, 248, 0xD1D2D1, 45, 148, 0x101334, 45, 191, 0x05050A, 45, 202, 0xD3D3D4 }, 90, 9, 172, 56, 420}
 
     mission_entry={563,999}
     apple_x={["彩"]=574,["金"]=418,["银"]=290}
@@ -214,7 +216,7 @@ function init_points()
     start_mission_points={{ 0x08BBE8, -23, -9, 0x007AD5, -20, -52, 0x05387C, -2, -188, 0x0F99C0, -9, -111, 0xD2D9DE }, 90, 2, 1139, 25, 1327}
 
     --助战
-    sp_interface_points={{ 0x00609A, -23, -4, 0x3E70B1, -17, 6, 0xEEF1FB, -16, 12, 0x133B6A, -16, 26, 0x0066F2 }, 90, 609, 14, 632, 44}
+    sp_interface_points={{ 0x136C9F, -7, 8, 0xEFF7FE, -7, 14, 0x093055, -7, 29, 0x0066F4, -22, 75, 0xFEFEFE, -23, 82, 0x686F72 }, 90, 600, 15, 623, 97}
 
     sp_class_button_x=616
     sp_class_button_y={["全"]=94,["剑"]=164,["弓"]=234,["枪"]=304,["骑"]=374,
@@ -223,7 +225,7 @@ function init_points()
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     scroll_bar_arrived_end_points={{ 0xF5E4C3 }, 90, 14, 1291, 14, 1291}
-    scroll_bar_slot_points={{ 0x56656D }, 80, 11, 1292, 17, 1292}
+    scroll_bar_slot_points={{ 0x55636B }, 90, 11, 1308, 11, 1308}
     refresh_too_fast_warning={{ 0xEDEEEA, 43, -2, 0xEFEFEF }, 90, 138, 666, 181, 668}
     refresh_warning_close_button={171,673}
     refresh_button={612,881}
@@ -359,9 +361,11 @@ function init_points()
 
     --面
     round_cn_points={}
-    round_cn_points[1]={{ 0xE1E1E1, 2, 3, 0xF9F9F8, 3, 5, 0xFEFFFE, -1, 5, 0xEFEFEF, -6, 5, 0xEFEFEF, -11, 5, 0xEFEFEF }, 90, 716, 908, 730, 913}
-    round_cn_points[2]={{ 0xF0F0F0, 1, 2, 0xEEEEEE, 1, 5, 0xEAEAEA, 0, 8, 0xF7F7F7, -3, 9, 0xFFFFFF, -7, 7, 0xEEEEEE, -13, -1, 0xEFEFEF, -15, -1, 0xFDFDFD, -15, 4, 0xCACACA, -15, 8, 0xCACACA }, 80, 715, 905, 731, 915, 730, 906};
-    round_cn_points[3]={{ 0xECECEC, 1, 4, 0xE7E7E7, -3, 9, 0xF9F9F9, -7, 3, 0xE7E7E7, -7, 5, 0xF2F2F2, -12, 9, 0xFEFEFE, -15, 5, 0xF1F1F1, -15, 2, 0xF0F0F0, -14, -1, 0xD8D8D8 }, 80, 715, 905, 731, 915, 730, 906};
+    round_cn_points[1]={{ 0xC1C1C1, 1, 2, 0xDFDFDF, 2, 4, 0xFEFEFE, 3, 6, 0xFDFDFD, 0, 6, 0xFBFBFB, -6, 6, 0xFBFBFB, -10, 6, 0xFBFBFB }, 90, 717, 926, 730, 932}
+    round_cn_points[2]={{ 0xF4F4F4, 2, 2, 0xEDEDED, 2, 5, 0xE8E8E8, 2, 8, 0xEEEEEE, 0, 10, 0xF6F6F6, -3, 10, 0xFEFEFE, -6, 7, 0xF1F1F1, -14, 0, 0xFDFDFD, -15, 5, 0xE8E8E8, -15, 9, 0xE8E8E8 }, 90, 714, 923, 731, 933}
+    round_cn_points[3]={{ 0xDEDEDE, 1, 2, 0xEFEFEF, 1, 4, 0xE7E7E7, -2, 9, 0xF6F6F6, -7, 4, 0xE8E8E8, -7, 6, 0xF3F3F3, -12, 10, 0xFEFEFE, -15, 6, 0xF3F3F3, -15, 2, 0xECECEC }, 90, 715, 923, 731, 933}
+
+
     round_tw_points={}
     round_tw_points[1]={{ 0xDDDDDD, 4, 0, 0xDDDDDD, 11, 0, 0xDDDDDD, 13, 0, 0xDBDBDB, 13, -3, 0x818181 }, 90, 717, 907, 730, 910}
     round_tw_points[2]={{ 0xCCCCCC, 0, -7, 0xCDCDCD, 5, -4, 0x888888, 13, 2, 0xEAEAEA, 16, 0, 0xE5E5E5, 12, -6, 0xEFEFEF, 16, -6, 0x878787 }, 90, 715, 905, 731, 914}
