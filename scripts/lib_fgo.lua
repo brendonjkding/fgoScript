@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION=158
+    VERSION=159
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -225,7 +225,7 @@ function init_points()
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     scroll_bar_arrived_end_points={{ 0xF5E4C3 }, 90, 14, 1291, 14, 1291}
-    scroll_bar_slot_points={{ 0x55636B }, 90, 11, 1308, 11, 1308}
+    scroll_bar_slot_points={{ 0x55636B }, 90, 11, 1308, 12, 1308}
     refresh_too_fast_warning={{ 0xEDEEEA, 43, -2, 0xEFEFEF }, 90, 138, 666, 181, 668}
     refresh_warning_close_button={171,673}
     refresh_button={612,881}
@@ -361,15 +361,9 @@ function init_points()
 
     --面
     round_cn_points={}
-    round_cn_points[1]={{ 0xC1C1C1, 1, 2, 0xDFDFDF, 2, 4, 0xFEFEFE, 3, 6, 0xFDFDFD, 0, 6, 0xFBFBFB, -6, 6, 0xFBFBFB, -10, 6, 0xFBFBFB }, 90, 717, 926, 730, 932}
-    round_cn_points[2]={{ 0xF4F4F4, 2, 2, 0xEDEDED, 2, 5, 0xE8E8E8, 2, 8, 0xEEEEEE, 0, 10, 0xF6F6F6, -3, 10, 0xFEFEFE, -6, 7, 0xF1F1F1, -14, 0, 0xFDFDFD, -15, 5, 0xE8E8E8, -15, 9, 0xE8E8E8 }, 90, 714, 923, 731, 933}
-    round_cn_points[3]={{ 0xDEDEDE, 1, 2, 0xEFEFEF, 1, 4, 0xE7E7E7, -2, 9, 0xF6F6F6, -7, 4, 0xE8E8E8, -7, 6, 0xF3F3F3, -12, 10, 0xFEFEFE, -15, 6, 0xF3F3F3, -15, 2, 0xECECEC }, 90, 715, 923, 731, 933}
-
-
-    round_tw_points={}
-    round_tw_points[1]={{ 0xDDDDDD, 4, 0, 0xDDDDDD, 11, 0, 0xDDDDDD, 13, 0, 0xDBDBDB, 13, -3, 0x818181 }, 90, 717, 907, 730, 910}
-    round_tw_points[2]={{ 0xCCCCCC, 0, -7, 0xCDCDCD, 5, -4, 0x888888, 13, 2, 0xEAEAEA, 16, 0, 0xE5E5E5, 12, -6, 0xEFEFEF, 16, -6, 0x878787 }, 90, 715, 905, 731, 914}
-    round_tw_points[3]={{ 0xE2E2E2, -4, 3, 0x959595, 1, 8, 0xF2F2F2, 6, 3, 0x636363, 6, 6, 0xEAEAEA, 10, 7, 0xD5D5D5, 11, -1, 0xCECECE }, 90, 714, 905, 729, 914}
+    round_cn_points[1]={{ 0xC1C1C1, 1, 2, 0xDFDFDF, 2, 4, 0xFEFEFE, 3, 6, 0xFDFDFD, 0, 6, 0xFBFBFB, -6, 6, 0xFBFBFB, -10, 6, 0xFBFBFB }, 80, 717, 926, 730, 932}
+    round_cn_points[2]={{ 0xF4F4F4, 2, 2, 0xEDEDED, 2, 5, 0xE8E8E8, 2, 8, 0xEEEEEE, 0, 10, 0xF6F6F6, -3, 10, 0xFEFEFE, -6, 7, 0xF1F1F1, -14, 0, 0xFDFDFD, -15, 5, 0xE8E8E8, -15, 9, 0xE8E8E8 }, 80, 714, 923, 731, 933}
+    round_cn_points[3]={{ 0xDEDEDE, 1, 2, 0xEFEFEF, 1, 4, 0xE7E7E7, -2, 9, 0xF6F6F6, -7, 4, 0xE8E8E8, -7, 6, 0xF3F3F3, -12, 10, 0xFEFEFE, -15, 6, 0xF3F3F3, -15, 2, 0xECECEC }, 80, 715, 923, 731, 933}
 
     --三、结束战斗
     kizuna_points={{ 0x48A9C3, -16, 0, 0x0209AF, -15, 35, 0x006402, -2, 33, 0x50E35B, -2, 39, 0x6BE670 }, 90, 291, 595, 307, 634}
@@ -857,34 +851,33 @@ end
 --1t 2t
 function turn_1_2()
     for i=1,2 do
-        repeat
-            if get_current_round()>current_round then
-                break
+        if get_current_round()>current_round then
+            goto con_turn_1_2
+        end
+
+        logDebug(string.format("current_round:%d",current_round))
+        --点技能
+        click_enemy(big_enemy[i])
+        select_skill(i)
+        click_attack()
+        select_np(i)
+        if is_battle_ended() then
+            return
+        end
+
+        while get_current_round()==i do
+            click_attack()
+            if always_np=="是" then
+                select_np(i)
+            else
+                select_normal(i)
             end
 
-            logDebug(string.format("current_round:%d",current_round))
-            --点技能
-            click_enemy(big_enemy[i])  
-            select_skill(i)
-            click_attack()
-            select_np(i)
             if is_battle_ended() then
                 return
             end
-
-            while get_current_round() ==i do
-                click_attack()
-                if always_np=="是" then
-                    select_np(i)
-                else
-                    select_normal(i)
-                end
-
-                if is_battle_ended() then
-                    return
-                end
-            end
-        until true
+        end
+        ::con_turn_1_2::
         current_round=current_round+1
     end
 
@@ -1065,27 +1058,22 @@ end
 ]]--
 --当前回合(面) 1-3
 function get_current_round()
-    while true do
-        keepScreen(true)
-        for i=1,3 do
-            x, y = findMultiColorInRegionFuzzy(table.unpack(round_cn_points[i]));
-            if x ~= -1 and y ~= -1 then  -- 如果找到了
-                keepScreen(false)
-                return i
-            end
+    keepScreen(true)
+    for i=1,3 do
+        x, y = findMultiColorInRegionFuzzy(table.unpack(round_cn_points[i]));
+        if x ~= -1 and y ~= -1 then  -- 如果找到了
+            keepScreen(false)
+            return i
         end
-
-        for i=1,3 do
-            x, y = findMultiColorInRegionFuzzy(table.unpack(round_tw_points[i]));
-            if x ~= -1 and y ~= -1 then  -- 如果找到了
-                keepScreen(false)
-                return i
-            end
-        end
-        keepScreen(false)
-        mSleep(8000)
     end
+
+    keepScreen(false)
     logDebug("error get_current_round")
+    toast("无法识别回合数")
+    if is_debug then
+        os.exit(0)
+    end
+    return current_round+1
 end
 --启动前检查防止误启动
 function check_miss_operate(m)
