@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION=160
+    VERSION=161
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -268,14 +268,6 @@ function init_points()
     sp_start_dy=-60
     sp_end_dx=174
     sp_end_dy=155
-    cba_skill_points={ 0xFEFFFE, -1, 2, 0xFEFFFE, -9, 3, 0xFEFFFE, -11, 15, 0xFEFFFE, -5, 11, 0xFEFFFE, -3, 19, 0xFEFFFE, 3, 15, 0xFEFFFE }
-    cba_skill_start_dx=-70
-    cba_skill_start_y=1021
-    cba_skill_end_dx=-36
-    cba_skill_end_y=1082
-    cba_310skill_points={ 0xFFFFFF, 4, 0, 0xFFFFFF, 10, 0, 0xFFFFFF, 9, -2, 0xFFFFFF, 5, 9, 0xFFFFFF, -2, 12, 0xFFFFFF, 5, 16, 0xFFFFFF, 12, 13, 0xFFFFFF, 9, 79, 0xFFFFFF, 9, 81, 0xFFFFFF, 5, 81, 0xFFFFFF, 0, 81, 0xFFFFFF, -1, 94, 0xFFFFFF, 5, 89, 0xFFFFFF, 5, 98, 0xFFFFFF, 12, 93, 0xFFFFFF, 9, 160, 0xFFFFFF, 9, 162, 0xFFFFFF, 5, 162, 0xFFFFFF, 0, 162, 0xFFFFFF, -1, 174, 0xFFFFFF, 5, 170, 0xFFFFFF, 11, 174, 0xFFFFFF, 6, 178, 0xFFFFFF }
-    cba_310skill_start_y=858
-    cba_310skill_end_y=cba_skill_end_y
 
     party_x=698
     party_y={549}
@@ -362,7 +354,7 @@ function init_points()
     --面
     round_cn_points={}
     round_cn_points[1]={{ 0xC1C1C1, 1, 2, 0xDFDFDF, 2, 4, 0xFEFEFE, 3, 6, 0xFDFDFD, 0, 6, 0xFBFBFB, -6, 6, 0xFBFBFB, -10, 6, 0xFBFBFB }, 80, 717, 926, 730, 932}
-    round_cn_points[2]={{ 0xF4F4F4, 2, 2, 0xEDEDED, 2, 5, 0xE8E8E8, 2, 8, 0xEEEEEE, 0, 10, 0xF6F6F6, -3, 10, 0xFEFEFE, -6, 7, 0xF1F1F1, -14, 0, 0xFDFDFD, -15, 5, 0xE8E8E8, -15, 9, 0xE8E8E8 }, 80, 714, 923, 731, 933}
+    round_cn_points[2]={{ 0xE7E7E7, 2, 2, 0xEBEBEB, 3, 5, 0xDADADA, 2, 9, 0xE6E6E6, -2, 10, 0xFFFFFF, -7, 5, 0xE6E6E6, -9, 3, 0xEDEDED, -10, 2, 0xECECEC, -11, 1, 0xF1F1F1, -14, -1, 0xFCFCFC }, 70, 714, 922, 731, 933}
     round_cn_points[3]={{ 0xDEDEDE, 1, 2, 0xEFEFEF, 1, 4, 0xE7E7E7, -2, 9, 0xF6F6F6, -7, 4, 0xE8E8E8, -7, 6, 0xF3F3F3, -12, 10, 0xFEFEFE, -15, 6, 0xF3F3F3, -15, 2, 0xECECEC }, 80, 715, 923, 731, 933}
 
     --三、结束战斗
@@ -1330,23 +1322,8 @@ function find_support(new_start_x)
         end
 
         if x ~= -1 and y ~= -1 then  -- 如果找到了英灵
-            if sp=="cba" then --cba技能是否满了
-                xx, yy = findMultiColorInRegionFuzzy(cba_skill_points, 90, x+cba_skill_start_dx, cba_skill_start_y, x+cba_skill_end_dx, cba_skill_end_y);
-                if xx~=-1 and yy~=-1 then  -- 如果找到了
-                    click(x,y)
-                    return true
-                end
-            elseif sp=="310cba" then
-                xx, yy = findMultiColorInRegionFuzzy(cba_310skill_points, 90, x+cba_skill_start_dx, cba_310skill_start_y, x+cba_skill_end_dx, cba_310skill_end_y);
-                if xx~=-1 and yy~=-1 then  -- 如果找到了
-                    click(x,y)
-                    return true
-                end
-            else--其它直接选
-                click(x,y)
-                return true
-            end
-
+            click(x,y)
+            return true
         end
     end
     if x~=-1 and y ~= -1 then

@@ -1,6 +1,5 @@
 UI = {
-    { 'DropList{自定义(在下方输入)|从文件导入}', 'skill_mode', '队伍信息：' },
-    { 'InputBox{}',             'conf_name',    '保存/导入文件名：' },
+    { 'InputBox{}',             'conf_name',    '保存文件名：' },
     { 'TextView{输入信息运行后会生成新文件，再去直}' },
     { 'TextView{接运行生成的新文件。}' },
 
@@ -8,7 +7,7 @@ UI = {
     { 'DropList{手动|自动}', 'sp_mode', '助战选择：' },
     { 'TextView{如手动选助战，则无视接下来两项}' },
     { 'DropList{新午餐|新qp|新所长|擦汗|午餐|qp|所长|任意}', 'mc', '礼装：' },
-    { 'DropList{C呆|孔明|310cba|cba|梅林|狐狸|花嫁|任意}', 'sp', '从者：' },
+    { 'DropList{C呆|孔明|cba|梅林|狐狸|花嫁|任意}', 'sp', '从者：' },
     { 'TextView{}' },
     
     { 'TextView{}' },
