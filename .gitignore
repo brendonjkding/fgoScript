@@ -1,5 +1,2 @@
-*.bak
-*test.lua
-*.zip
-lib_mem.lua
-sync*
+test*
+*.sh
