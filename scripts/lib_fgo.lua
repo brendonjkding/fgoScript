@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION=161
+    VERSION=162
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -225,7 +225,7 @@ function init_points()
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     scroll_bar_arrived_end_points={{ 0xF5E4C3 }, 90, 14, 1291, 14, 1291}
-    scroll_bar_slot_points={{ 0x55636B }, 90, 11, 1308, 13, 1308}
+    scroll_bar_slot_points={{ 0x55636B }, 80, 11, 1308, 14, 1308}
     refresh_too_fast_warning={{ 0xEDEEEA, 43, -2, 0xEFEFEF }, 90, 138, 666, 181, 668}
     refresh_warning_close_button={171,673}
     refresh_button={612,881}
@@ -347,7 +347,7 @@ function init_points()
     back_points={{ 0x00B7E6, 1, 4, 0x00B2E0, 0, 87, 0x009FD6, 1, 94, 0x00B7E2 }, 90, 37, 1200, 38, 1294}
     back_button={35,1253}
 --    attack_points={{ 0xFEDF6A, 0, 25, 0xEAEAEA, 39, 103, 0x0061C1, 30, 112, 0x998974, 23, 121, 0x0E49A3 }, 90, 3, 980, 180 , 1213}
-    attack_points={{ 0x00E8F9, 1, -34, 0x00DAF5, -94, -4, 0x0067CB, -87, -38, 0x007ED4, -115, 47, 0xAA9980, -138, -26, 0xC0AE94, -140, -185, 0xFC9B27, -129, -190, 0xF8CB59 }, 90, 26, 1011, 167, 1248}
+    attack_points={{ 0x00E8F9, 1, -34, 0x00DAF5, -94, -4, 0x0067CB, -87, -38, 0x007ED4, -115, 47, 0xAA9980, -138, -26, 0xC0AE94, -140, -185, 0xFC9B27, -129, -190, 0xF8CB59 }, 80, 26, 1011, 167, 1248}
     attack_button={88,1164}
     switch_confirm_button={100,664}
 
@@ -1061,11 +1061,10 @@ function get_current_round()
 
     keepScreen(false)
     logDebug("error get_current_round")
-    toast("无法识别回合数")
-    if is_debug then
-        os.exit(0)
+    while true do
+        toast("无法识别回合数")
+        mSleep(5000)
     end
-    return current_round+1
 end
 --启动前检查防止误启动
 function check_miss_operate(m)
