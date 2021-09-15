@@ -25,7 +25,7 @@ function init(d)
     end
 end
 function init_arg()
-    VERSION=163
+    VERSION=164
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -225,7 +225,7 @@ function init_points()
     refresh_button={612,881}
     refresh_confirm_button={162,870}
     scroll_bar_arrived_end_points={{ 0xF5E4C3 }, 90, 14, 1291, 14, 1291}
-    scroll_bar_slot_points={{ 0x55636B }, 80, 11, 1308, 15, 1308}
+    scroll_bar_slot_points={{ 0x55636B }, 80, 11, 1308, 17, 1308}
     refresh_too_fast_warning={{ 0xEDEEEA, 43, -2, 0xEFEFEF }, 90, 138, 666, 181, 668}
     refresh_warning_close_button={171,673}
     refresh_button={612,881}
