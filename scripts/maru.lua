@@ -38,16 +38,17 @@ function maru_points()
 end
 
 function infinity_points()
-    refresh_points={{ 0x5283B8, 13, 0, 0x7C9ED6, 13, 26, 0x799FD5, 0, 26, 0x4D80B2, 0, 161, 0x4B7DB0, 0, 143, 0x4A7CB1, 13, 143, 0x7A9ED5, 14, 160, 0x7499CC }, 90, 486, 1093, 500, 1254}
+    refresh_points={{ 0x47679D, -8, -2, 0x79A0D3, -19, -2, 0x467CB3, 1, -157, 0x44649D, -9, -157, 0x80A6DA, -19, -158, 0x4880B6 }, 90, 488, 1105, 508, 1263}
     refresh_button={488,1180}
     refresh_confirm_button={164,879}
-    refresh_conplete_points={{ 0xD9D9D9, -8, 164, 0xD5D5D6 }, 90, 161, 586, 169, 750}
+    refresh_complete_points={{ 0xD9D9D9, -8, 164, 0xD5D5D6 }, 90, 161, 586, 169, 750}
     close_button={164,652}
-    draw_button={326,409,888}
-    draw_points={{ 0x02C8FA, 6, 143, 0x1F7CAC }, 90, 258, 347, 264, 490}
     bag_full_points={{ 0xD3D4D4, -1, 161, 0xD5D5D5, 0, 457, 0xD4D4D4, 1, 636, 0xD5D5D6, -1, 68, 0x000000, -8, 80, 0xDADADB, 5, 80, 0xDBDBDB }, 90, 157, 349, 170, 985}
-    no_ticket_points={{ 0x075E76, 0, 182, 0x04687E }, 90, 253, 230, 253, 412}
-    check_miss_operate_points={draw_points,no_ticket_points}
+    pool_drained_points={{ 0x636363, 2, 0, 0x636363, 7, 1, 0x666666, 10, 3, 0x606060, 11, 6, 0x5E5E5E, 10, 9, 0x5E5E5E, 8, 11, 0x666666, 4, 12, 0x636363, 0, 12, 0x636363, -4, 11, 0x646464, -7, 9, 0x616161, -8, 6, 0x5C5C5C, -7, 3, 0x626262, -5, 1, 0x626262 }, 90, 339, 817, 358, 829}
+
+    draw_button={326,409,888}
+    draw_unavailable_points={{ 0x066579, 53, 0, 0x0D6577, 30, -34, 0x10516A, 71, -32, 0x114262, 68, -110, 0x052C45, 23, -108, 0x062848, 22, -217, 0x056078, 62, -210, 0x0A5575 }, 90, 239, 191, 310, 408}
+    check_miss_operate_points={draw_points,draw_unavailable_points}
 end
 function sp_points()
     check_miss_operate_points={sp_interface_points}
@@ -193,34 +194,36 @@ function make_maru()
     end
 end
 function draw()
+    if os.date("%Y")>2021 or os.date("%m")>10 then
+        toast("待适配")
+    end
+
     while true do
         keepScreen(true)
         x, y = findMultiColorInRegionFuzzy(table.unpack(bag_full_points));
         if x ~= -1 and y ~= -1 then  -- 如果找到了
             return
         end
-        x, y = findMultiColorInRegionFuzzy(table.unpack(no_ticket_points));
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            x, y = findMultiColorInRegionFuzzy(table.unpack(refresh_points));
-            if x == -1 and y == -1 then  -- 如果找到了
-                return
-            end
 
-        end
-        x, y = findMultiColorInRegionFuzzy(table.unpack(draw_points));
-        if x == -1 and y == -1 then  -- 如果找到了
+        x, y = findMultiColorInRegionFuzzy(table.unpack(draw_unavailable_points));
+        if x ~= -1 and y ~= -1 then  -- 按钮灰色
             x, y = findMultiColorInRegionFuzzy(table.unpack(refresh_points));
-            if x ~= -1 and y ~= -1 then  -- 如果找到了
-                click(table.unpack(refresh_button))
-                click(table.unpack(refresh_confirm_button))
-                mSleep(3000)
-                x, y = findMultiColorInRegionFuzzy(table.unpack(refresh_conplete_points));
-                while x == -1 and y == -1 do  -- 如果找到了
-                    check_disconnected()
+            if x ~= -1 and y ~= -1 then  --有刷新按钮
+                x, y = findMultiColorInRegionFuzzy(table.unpack(pool_drained_points));
+                if x ~= -1 and y ~= -1 then  --尺子已抽干
+                    click(table.unpack(refresh_button))
+                    click(table.unpack(refresh_confirm_button))
                     mSleep(3000)
-                    x, y = findMultiColorInRegionFuzzy(table.unpack(refresh_conplete_points));
+                    x, y = findMultiColorInRegionFuzzy(table.unpack(refresh_complete_points));
+                    while x == -1 and y == -1 do  -- 没找到刷新完成按钮
+                        check_disconnected()
+                        mSleep(3000)
+                        x, y = findMultiColorInRegionFuzzy(table.unpack(refresh_complete_points));
+                    end
+                    click(table.unpack(close_button))
                 end
-                click(table.unpack(close_button))
+            else  -- 无刷新按钮
+                return
             end
         end
 
@@ -239,7 +242,7 @@ function select_sp()
             break
         end
         refresh_support()
-
+        mSleep(3000)
     end
 end
 function get_silver_exp()
