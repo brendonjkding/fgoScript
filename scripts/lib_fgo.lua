@@ -25,7 +25,7 @@ function init(is_debug)
     end
 end
 function init_basic_variables()
-    VERSION=166
+    VERSION=167
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -347,7 +347,7 @@ function init_points()
     rainbow_trophy_points={{ 0x452C0E, 0, 1, 0x654115, 0, 3, 0x7D6E2A, 0, 4, 0x6C7A41, 0, 5, 0x5D7854, 0, 6, 0x4E7466, 0, 10, 0x552F63 }, 90, 724, 981, 724, 991}
     ce_detail_points={{ 0xF5F5F4, -44, 0, 0xDBDEDF, -284, -40, 0x084D9C, -272, -35, 0xF7F7FB, -274, -26, 0x0849AD, -270, -18, 0xD3E2F4 }, 90, 445, 9, 729, 49}
     
-    repeat_quest_points={{ 0xD4D6D9, 3, 168, 0xD4D4D7, 3, 392, 0xD2D3D3, 5, 601, 0xCFCFD1, 249, 722, 0x244990, 286, 706, 0x2A52AA, 314, 653, 0x2E5FAB }, 90, 153, 381, 467, 1103}
+    repeat_quest_points={{ 0xDADADA, -6, -203, 0xD1D2D2, -8, -432, 0xD4D4D4, -2, -594, 0xD6D6D7 }, 90, 159, 379, 167, 973}
     repeat_quest_close_button={166,475}
     withdraw_actions={}
     withdraw_actions[1]={416,338}
