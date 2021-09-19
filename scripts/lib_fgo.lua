@@ -50,6 +50,7 @@ function getNumVersion(version)
 end
 
 function read_configuration_from_file()
+    init_basic_variables()
     file=io.open(path..conf_file_name..".lua","r")
     io.input(file)
     text=io.read("*a")
@@ -141,22 +142,18 @@ function init_configuration()
     fruit=(apple and {apple} or {fruit})[1]
     conf_file_name=(conf_name and {conf_name} or {conf_file_name})[1]
     lock_screen_after_finished=(sleep_button and {sleep_button} or {lock_screen_after_finished})[1]
-
-    --输入信息处理
-    skills={}
-    skills[1]=Split(skill_serial_1," ")
-    skills[2]=Split(skill_serial_2," ")
-    skills[3]=Split(skill_serial_3," ")
-    np_indexs={}
-    np_indexs[1]=tonumber(np_index_1)+5
-    np_indexs[2]=tonumber(np_index_2)+5
-    if np_index_3~="2+1" then
-        np_indexs[3]=tonumber(np_index_3)+5 
-    end
     
 
     big_enemy={big_enemy_1,big_enemy_2,big_enemy_3}
     big_enemy_mode={big_enemy_mode_1,big_enemy_mode_2,"后补刀"}
+
+
+    skill_serial_1=skill_serial_1 or ""
+    skill_serial_2=skill_serial_2 or ""
+    skill_serial_3=skill_serial_3 or ""
+    np_index_1=np_index_1 or "1"
+    np_index_2=np_index_2 or "1"
+    np_index_3=np_index_3 or "1"
 
     times=tonumber(times)
     party_index=party_index or "当前"
@@ -169,6 +166,18 @@ function init_configuration()
     shuffled=(shuffle_cloth=="是" and {false} or {true})[1]
     check_misoperation_points=(sp_mode=="手动" and {{attack_points}} or {possible_menu_points})[1]
     message=(sp_mode=="手动" and {"请进入副本再启动"} or {"请把关卡放在第一个再启动"})[1]
+
+    --输入信息处理
+    skills={}
+    skills[1]=Split(skill_serial_1," ")
+    skills[2]=Split(skill_serial_2," ")
+    skills[3]=Split(skill_serial_3," ")
+    np_indexs={}
+    np_indexs[1]=tonumber(np_index_1)+5
+    np_indexs[2]=tonumber(np_index_2)+5
+    if np_index_3~="2+1" then
+        np_indexs[3]=tonumber(np_index_3)+5
+    end
 end
 
 --卡对象
