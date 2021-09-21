@@ -25,7 +25,7 @@ function init(is_debug)
     end
 end
 function init_basic_variables()
-    VERSION=167
+    VERSION=168
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;

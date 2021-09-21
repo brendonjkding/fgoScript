@@ -21,10 +21,10 @@ function init_summon_and_bomb_points()
     ce_fodder_slot={465,950}
     first_ce_fodder={523,145}
     second_ce_fodder={ 496,290 }
-    ce_table_pos_start_x=331
-    ce_table_pos_start_y={75,219}
-    ce_table_pos_end_x=559
-    ce_table_pos_end_y={213,348}
+    ce_fodders_pos_start_x=331
+    ce_fodders_pos_start_y={75,219}
+    ce_fodders_pos_end_x=559
+    ce_fodders_pos_end_y={213,348}
     ce_base_slot={ 357,214 }
     ce_base_slot_points={{ 0x414345, -95, -13, 0x525658, -112, -17, 0x343839, -166, -13, 0x525557 }, 90, 341, 203, 507, 220}
     ce_fodder_selected_points={{ 0xD3D4D4 }, 90, 50, 1110, 50, 1110}
@@ -42,8 +42,8 @@ function init_lottery_points()
     reset_points={{ 0x47679D, -8, -2, 0x79A0D3, -19, -2, 0x467CB3, 1, -157, 0x44649D, -9, -157, 0x80A6DA, -19, -158, 0x4880B6 }, 90, 488, 1105, 508, 1263}
     reset_button={488,1180}
     reset_ok_button={164,879}
-    reset_completed_points={{ 0xD9D9D9, -8, 164, 0xD5D5D6 }, 90, 161, 586, 169, 750}
-    reset_close_button={164,652}
+    reset_finished_popup_points={{ 0xD9D9D9, -8, 164, 0xD5D5D6 }, 90, 161, 586, 169, 750}
+    reset_finished_popup_close_button={164,652}
     gift_box_full_points={{ 0xD3D4D4, -1, 161, 0xD5D5D5, 0, 457, 0xD4D4D4, 1, 636, 0xD5D5D6, -1, 68, 0x000000, -8, 80, 0xDADADB, 5, 80, 0xDBDBDB }, 90, 157, 349, 170, 985}
     pool_drained_points={{ 0x636363, 2, 0, 0x636363, 7, 1, 0x666666, 10, 3, 0x606060, 11, 6, 0x5E5E5E, 10, 9, 0x5E5E5E, 8, 11, 0x666666, 4, 12, 0x636363, 0, 12, 0x636363, -4, 11, 0x646464, -7, 9, 0x616161, -8, 6, 0x5C5C5C, -7, 3, 0x626262, -5, 1, 0x626262 }, 90, 339, 817, 358, 829}
 
@@ -125,7 +125,7 @@ function make_bomb()
         tap(table.unpack(second_ce_fodder))
         tap(table.unpack(ce_fodder_slot))
 
-        x, y = findMultiColorInRegionFuzzy(fodder_ce_points, 90, ce_table_pos_start_x, ce_table_pos_start_y[2], ce_table_pos_end_x, ce_table_pos_end_y[2]);
+        x, y = findMultiColorInRegionFuzzy(fodder_ce_points, 90, ce_fodders_pos_start_x, ce_fodders_pos_start_y[2], ce_fodders_pos_end_x, ce_fodders_pos_end_y[2]);
         if x == -1 and y == -1 then -- 没同种丸子了
             notifyVibrate(3000)
             tap(table.unpack(return_button))
@@ -137,7 +137,7 @@ function make_bomb()
         while true do
             --跳过同种
             press_and_move_upward(10)
-            x, y = findMultiColorInRegionFuzzy(fodder_ce_points, 90, ce_table_pos_start_x, ce_table_pos_start_y[1], ce_table_pos_end_x, ce_table_pos_end_y[1]);
+            x, y = findMultiColorInRegionFuzzy(fodder_ce_points, 90, ce_fodders_pos_start_x, ce_fodders_pos_start_y[1], ce_fodders_pos_end_x, ce_fodders_pos_end_y[1]);
             while x ~= -1 and y ~= -1 do  -- 如果找到了
                 press_and_move_upward(10)
                 x, y = findMultiColorInRegionFuzzy(table.unpack(ce_fodder_scroll_bar_arrived_bottom_points));
@@ -147,7 +147,7 @@ function make_bomb()
                     logDebug("到底没素材了")
                     return true
                 end
-                x, y = findMultiColorInRegionFuzzy(fodder_ce_points, 90, ce_table_pos_start_x, ce_table_pos_start_y[1], ce_table_pos_end_x, ce_table_pos_end_y[1]);
+                x, y = findMultiColorInRegionFuzzy(fodder_ce_points, 90, ce_fodders_pos_start_x, ce_fodders_pos_start_y[1], ce_fodders_pos_end_x, ce_fodders_pos_end_y[1]);
             end
             
             press_and_move_upward(10)
@@ -209,13 +209,13 @@ function spin_lottery()
                     tap(table.unpack(reset_button))
                     tap(table.unpack(reset_ok_button))
                     mSleep(3000)
-                    x, y = findMultiColorInRegionFuzzy(table.unpack(reset_completed_points));
+                    x, y = findMultiColorInRegionFuzzy(table.unpack(reset_finished_popup_points));
                     while x == -1 and y == -1 do  -- 没找到刷新完成按钮
-                        check_disconnected()
+                        retry_connection_if_needed()
                         mSleep(3000)
-                        x, y = findMultiColorInRegionFuzzy(table.unpack(reset_completed_points));
+                        x, y = findMultiColorInRegionFuzzy(table.unpack(reset_finished_popup_points));
                     end
-                    tap(table.unpack(reset_close_button))
+                    tap(table.unpack(reset_finished_popup_close_button))
                 else
                     return
                 end
