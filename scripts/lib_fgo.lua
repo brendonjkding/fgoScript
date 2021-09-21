@@ -49,7 +49,8 @@ function getNumVersion(version)
     return tonumber(string.sub(version, 1, 1)..string.sub(version, 3,3)..string.sub(version, 5,5))
 end
 
-function read_configuration_from_file()
+function read_configuration_from_file_(file_name)
+    conf_file_name=file_name
     init_basic_variables()
     file=io.open(path..conf_file_name..".lua","r")
     io.input(file)
@@ -154,6 +155,10 @@ function init_configuration()
     np_index_1=np_index_1 or "1"
     np_index_2=np_index_2 or "1"
     np_index_3=np_index_3 or "1"
+
+    times=times or "1"
+    fruit=fruit or "不吃"
+    lock_screen_after_finished=lock_screen_after_finished or "否"
 
     times=tonumber(times)
     party_index=party_index or "当前"
