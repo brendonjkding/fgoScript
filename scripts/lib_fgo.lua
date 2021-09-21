@@ -25,7 +25,7 @@ function init(is_debug)
     end
 end
 function init_basic_variables()
-    VERSION=168
+    VERSION=169
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -358,7 +358,7 @@ function init_points()
     lost_connection_points={{ 0xD4D5D7, 0, -37, 0x000000, 0, -43, 0xD8D8D4, 0, -47, 0x000000, 0, -53, 0xD0D0D0, 0, -58, 0x000000, 0, -66, 0xDCDBDC, 3, -73, 0x000000 }, 90, 158, 866, 161, 939}
     connection_retry_button={165, 859}
     battle_finished_points={bond_points,bond_points2,bond_upgraded_points,all_servants_incapacitated_points,bond_upgraded_points2}
-    rainbow_trophy_points={{ 0x452C0E, 0, 1, 0x654115, 0, 3, 0x7D6E2A, 0, 4, 0x6C7A41, 0, 5, 0x5D7854, 0, 6, 0x4E7466, 0, 10, 0x552F63 }, 90, 724, 981, 724, 991}
+    rainbow_trophy_points={{ 0x67431B, 2, 1, 0x7A5E24, 2, 2, 0x736333, 3, 3, 0x577254, 5, 3, 0x4A7265, 8, 4, 0x4A616E, 8, 5, 0x5B4871 }, 90, 712, 1003, 720, 1008}
     ce_detail_points={{ 0xF5F5F4, -44, 0, 0xDBDEDF, -284, -40, 0x084D9C, -272, -35, 0xF7F7FB, -274, -26, 0x0849AD, -270, -18, 0xD3E2F4 }, 90, 445, 9, 729, 49}
     
     repeat_quest_points={{ 0xDADADA, -6, -203, 0xD1D2D2, -8, -432, 0xD4D4D4, -2, -594, 0xD6D6D7 }, 90, 159, 379, 167, 973}
