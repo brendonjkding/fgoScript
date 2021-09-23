@@ -25,7 +25,7 @@ function init(is_debug)
     end
 end
 function init_basic_variables()
-    VERSION=169
+    VERSION=170
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -296,13 +296,13 @@ function init_points()
     end
     --卡信息
     card_blue_points={ 0x4CA2FD, 1, -63, 0x2576FC, 96, -105, 0x004CE2, 109, 4, 0x0F69FD, 84, -18, 0x4DC9FF, 92, 53, 0x0047DE, 24, 57, 0x0D4EE4 }
-    card_red_points={ 0xFE5612, -7, 33, 0xFD6F1A, 2, 71, 0xFF3A1E, 68, 11, 0xFEE13A, 76, 67, 0xFE6B1F }
+    card_red_points={ 0xCA0101, 1, 14, 0xFF1200, 65, -2, 0xBD0101, 41, 28, 0xFF1801, 53, 60, 0xFB4F05, 39, 65, 0xFFB214, 58, 114, 0xFF300C, 51, 143, 0xF6150D, 33, 187, 0xC20402, -3, 179, 0xC80E0B, 2, 163, 0xE61D14, 25, 163, 0xD01209 }
 
     --cba、孔明、梅林
     cba_points={ 0x442255, 4, -8, 0x44224D, -25, -18, 0x442255, -11, -21, 0xFFFEEC, 19, -41, 0x9955A7, -35, -42, 0x874F8C, -25, -49, 0xFFFFEE, -44, -60, 0xFFFFEE, -27, -68, 0xFFFFEE, -17, -58, 0xEC0505, 13, -55, 0xA259A2, 8, -73, 0xC470C5, -24, -81, 0x442255, -37, -81, 0x442255 }
     zhuge_points={ 0xCC8844, -1, -5, 0xCC8844, 0, -18, 0xFFCC77, 1, -32, 0xFFCC77, 3, -42, 0x445555, 3, -54, 0x445555, 3, -64, 0xFFEEDD, 4, -80, 0xFFEEDD, 15, -92, 0x243535, 32, -78, 0xFFEEDD, 41, -66, 0x445553, 37, -29, 0x3F5050 }
     merlin_points={ 0xFFDAEE, -15, 1, 0xFFB0D2, -12, -5, 0xFFEFFF, -20, -6, 0x8888CC, -30, -16, 0xFFBBDD, -26, -23, 0xBBCCFF, 2, -18, 0xAAAAEE, 4, -30, 0xDDCCEE, -30, -51, 0xFFEEDD, -1, -42, 0xFFEEDD, -15, -62, 0xFFEEDD, -1, -52, 0x8E49A8, 22, -70, 0xF4F8FF, 3, -77, 0xDFCAFC }
-    caber_points={ 0xCCAA66, -18, -10, 0xCCAA66, 6, -16, 0xFFEECC, -23, -34, 0xFFEECC, -40, -36, 0xFFEECC, -31, -51, 0xFFEEDD, -25, -65, 0xFFEEDD, -44, -73, 0xCCAA66, -30, -80, 0xFFEECC, 0, -81, 0xFFEECC, 6, -69, 0xFFFFDD, 3, -54, 0xFFEECC, 2, -43, 0xFFEECC }
+    caber_points={ 0xFFFFFF, 10, -1, 0xCCBBDD, 3, -6, 0x080808, 0, -10, 0x060606, -3, -11, 0x0E0E0E, 9, -24, 0xFFEECC, 1, -33, 0x110D0A, 1, -41, 0xCCBFDD, 7, -44, 0xFFEEDD, 14, -59, 0xCCAA66, 14, -65, 0xFFEEC9, 35, -43, 0x70B58B, 58, -53, 0xFFEECC, 52, -45, 0xFFF1DE, 62, -40, 0xFFEECC, 40, -4, 0xFFF6DF, 64, -7, 0xFFEECC }
     caber_stage2_points={ 0xFFEECC, -12, -2, 0xFFEECC, -29, -12, 0xEEBB99, -33, -26, 0x660022, -33, -39, 0x871032, -22, -50, 0xFFEECC, -4, -54, 0xFFEDCA, -25, -32, 0xFFEEDD, -2, -19, 0xFFEEDD, -9, -41, 0xFFEEDD, 1, -28, 0xC3E5D2, 23, -47, 0xFFEECC, 25, -20, 0xFFEECC }
     guai_points={cba_points, zhuge_points, merlin_points, caber_points, caber_stage2_points}
 
