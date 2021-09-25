@@ -216,8 +216,6 @@ function spin_lottery()
                         x, y = findMultiColorInRegionFuzzy(table.unpack(reset_finished_popup_points));
                     end
                     tap(table.unpack(reset_finished_popup_close_button))
-                else
-                    return
                 end
             else  -- 无刷新按钮
                 return

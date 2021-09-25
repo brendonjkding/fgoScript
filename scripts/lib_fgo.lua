@@ -3,7 +3,7 @@
     初始化数据类函数
     -------------------------------------------------------------------
 ]]--
-function init(is_debug)
+function init(is_debug, skip_loading_liboc)
     init_basic_variables()
     init_points()
     init_object()
@@ -17,7 +17,7 @@ function init(is_debug)
     check_misoperation(message)
 
     save_configuration()
-    if _is_debug and is_ios then
+    if _is_debug and is_ios and not skip_loading_liboc then
         local oc = require "liboc"
         NSLog=oc.NSLog
     else
@@ -25,7 +25,7 @@ function init(is_debug)
     end
 end
 function init_basic_variables()
-    VERSION=170
+    VERSION=171
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -201,14 +201,10 @@ end
 function init_points()
     --一、开始战斗
     possible_menu_points={}
-    possible_menu_points[1]={{ 0xE8C17B, 18, 0, 0xFBF8F4, 17, -6, 0xF5E9DC, 17, 8, 0xF7E7D3, 26, 8, 0xF0EDA0, 27, 1005, 0xD6D6D8, 29, 1129, 0xD0D2D3 }, 90, 9, 166, 38, 1301}
-    possible_menu_points[2]={{ 0xD6D6D6, 0, -18, 0x10172D, -1, -25, 0xAEB6C3, -1, -29, 0x192245, -1, -34, 0xAEB6C7, -1, -47, 0xCFD2D6, 19, -1029, 0xD4D5D5 }, 90, 36, 257, 56, 1286}
-    possible_menu_points[3]={{ 0xD0D4D4, -7, -116, 0xDADBDB, 30, -64, 0x40AEE7, -5, -1139, 0xE8DBA2, -12, -1132, 0xF2F1E6, -22, -1134, 0xD0A36A, -20, -1126, 0xEFDA93 }, 90, 16, 159, 68, 1298}
-    possible_menu_points[4]={{ 0xD3D4D5, -1, -33, 0x1C2449, 1, -54, 0xCED5D9, -6, -72, 0x0E1127, 2, -105, 0xD6D6D5, 8, -1119, 0xFCFACF, -25, -1120, 0xFAD381, -22, -1132, 0x62625F }, 90, 9, 159, 42, 1291, 34, 1291}
-    possible_menu_points[5]={{ 0xFAD186, 17, 0, 0xFDF6EC, 34, 0, 0xFCFAD2, 44, 0, 0x29231A, 49, 0, 0xFCED1C, 121, 69, 0x774AE3 }, 90, 9, 172, 130, 241}
-    possible_menu_points[6]={{ 0xFAD186, 40, 77, 0xD4D6D8, 47, 248, 0xD1D2D1, 45, 148, 0x101334, 45, 191, 0x05050A, 45, 202, 0xD3D3D4 }, 90, 9, 172, 56, 420}
-    possible_menu_points[7]={{ 0xE0E2E2, -4, -114, 0xDADCDB, -72, -1119, 0xEBC681, -38, -1119, 0xE9ECCB, -23, -1119, 0xA3937C, 19, -1078, 0x857B68 }, 90, 9, 172, 100, 1291}
-    possible_menu_points[8]={{ 0xD5D9D7, 4, -114, 0xE2E2E1, -21, -870, 0xD0D0D0, -18, -1032, 0xD7D7D7, -70, -1117, 0xEDCB86 }, 90, 7, 172, 81, 1289}
+    possible_menu_points[1]={{ 0xFAD186, 17, 0, 0xFDF6EC, 34, 0, 0xFCFAD2, 44, 0, 0x29231A, 49, 0, 0xFCED1C, 121, 69, 0x774AE3 }, 90, 9, 172, 130, 241}
+    possible_menu_points[2]={{ 0xFAD186, 40, 77, 0xD4D6D8, 47, 248, 0xD1D2D1, 45, 148, 0x101334, 45, 191, 0x05050A, 45, 202, 0xD3D3D4 }, 90, 9, 172, 56, 420}
+    possible_menu_points[3]={{ 0xE0E2E2, -4, -114, 0xDADCDB, -72, -1119, 0xEBC681, -38, -1119, 0xE9ECCB, -23, -1119, 0xA3937C, 19, -1078, 0x857B68 }, 90, 9, 172, 100, 1291}
+    possible_menu_points[4]={{ 0xD5D9D7, 4, -114, 0xE2E2E1, -21, -870, 0xD0D0D0, -18, -1032, 0xD7D7D7, -70, -1117, 0xEDCB86 }, 90, 7, 172, 81, 1289}
 
     quest_button={563,999}
     fruit_x={["彩"]=574,["金"]=418,["银"]=290}
@@ -229,7 +225,7 @@ function init_points()
 
     support_update_list_button={612,881}
     support_update_list_yes_button={162,870}
-    support_scroll_bar_arrived_bottom_points={{ 0xF5E4C3 }, 90, 14, 1291, 14, 1291}
+    support_scroll_bar_arrived_bottom_points={{ 0xF7FCF4 }, 90, 19, 1308, 19, 1308}
     support_scroll_bar_slot_points={{ 0x55636B }, 80, 11, 1308, 17, 1308}
     support_updating_in_succession_warning={{ 0xEDEEEA, 43, -2, 0xEFEFEF }, 90, 138, 666, 181, 668}
     support_updating_in_succession_warning_close_button={171,673}
@@ -247,6 +243,8 @@ function init_points()
     ce_points["无限池(满破)"]={ 0xF09C9F, 9, 41, 0xFFEBD5, 14, 51, 0x685D96, 14, 78, 0xD7957D, 18, 109, 0x998C8C, 18, 118, 0xB82A2F, -5, 120, 0xFBFC77, -8, 120, 0xC7DA7E, -12, 120, 0xA6E2BA }
     ce_points["新午餐"]={ 0x3888BB, -21, 0, 0xF5F6F4, -5, 13, 0xFBD2D6, 4, 47, 0xFEF3E8, -7, 47, 0xA8749D, -18, 71, 0xFFF2EA, -26, 71, 0xE2B4AD, 1, 85, 0xB9639B, -23, 118, 0xFCFB66, -31, 118, 0xADE1B5 }
     ce_points["新qp"]={ 0x183851, 2, 32, 0xF9FDFD, -13, 51, 0x49343C, -4, 63, 0x698C9F, -19, 74, 0xFBCFBD, 8, 70, 0x8C6A5F, -24, 102, 0x302C26, -12, 114, 0xE8FCFD, 9, 134, 0x928B96, -18, 137, 0xFDFE80, -20, 137, 0xE5F491, -24, 138, 0x94C393 }
+    ce_points["满破宝石"]={0x020202, -24, 0, 0xD0D2EB, -2, 17, 0x866760, -20, 41, 0xF2CA6F, -26, 51, 0xEFC05F, -35, 65, 0x231514, -2, 75, 0xF0C72A, -16, 90, 0x0B0B0E, 0, 125, 0x0F1014, -9, 133, 0xE4D064, -33, 129, 0xAED992}
+
     --助战从者特征
     support_servant_points={}
     support_servant_points["孔明"]={ 0xFAF4D6, -6, 4, 0x716256, -3, 15, 0xFBF5D5, -31, 11, 0xDEC4A2, -33, -59, 0xBFEFD6, 36, -15, 0x4C5D59 }
