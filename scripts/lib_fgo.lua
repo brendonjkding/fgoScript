@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=171
+    VERSION=172
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -214,7 +214,6 @@ function init_points()
     use_fruit_ok_button={165,863}
 
     start_quest_button={39,1240}
-    start_quest_points={{ 0x0387F0, -21, -7, 0xF0F1F0, -66, -10, 0xC9D6DB, -80, 1, 0x0182F0, -79, -126, 0x0980BC, -69, -119, 0xCFD6DD, -18, -121, 0xF3F3F2, -1, -122, 0x0878D2 }, 90, 13, 1156, 93, 1283, 93, 1282}
 
     --助战
     support_selection_interface_points={{ 0x136C9F, -7, 8, 0xEFF7FE, -7, 14, 0x093055, -7, 29, 0x0066F4, -22, 75, 0xFEFEFE, -23, 82, 0x686F72 }, 90, 600, 15, 623, 97}
@@ -1392,13 +1391,7 @@ function update_support_list()
     tap(table.unpack(support_update_list_button))
     x, y = findMultiColorInRegionFuzzy(table.unpack(support_updating_in_succession_warning));
     if x ~= -1 and y ~= -1 then  -- 如果找到了
-        --解决奇怪的bug
-        x, y = findMultiColorInRegionFuzzy(table.unpack(start_quest_points));
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            tap(table.unpack(return_button))
-            return
-        end
-        mSleep(8000)
+        mSleep(3000)
         tap(table.unpack(support_updating_in_succession_warning_close_button))
         update_support_list()
         return
