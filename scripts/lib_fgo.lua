@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=172
+    VERSION=173
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -374,10 +374,7 @@ function init_points()
     blank_area={680,900}
 end
 function dealloc()
-    if lock_screen_after_finished=="是" then
-        os.execute("activator send libactivator.system.sleepbutton")
-        return
-    end
+    lock_screen_if_necessary()
 
     notifyMessage("感谢使用")
     notifyVibrate(3000)
@@ -1048,6 +1045,9 @@ function get_current_battle()
     keepScreen(false)
     logDebug("error get_current_battle")
     while true do
+        if is_battle_finished() then
+            return current_battle+1
+        end
         toast("无法识别回合数")
         mSleep(5000)
     end
@@ -1089,9 +1089,7 @@ function enter_quest()
                 logDebug("不吃苹果")
                 tap(table.unpack(restore_ap_close_button))
                 notifyVibrate(1500)
-                if lock_screen_after_finished=="是" then
-                    os.execute("activator send libactivator.system.sleepbutton")
-                end
+                lock_screen_if_necessary()
                 os.exit()
             end
             if fruit=="铜" then
@@ -1147,12 +1145,22 @@ function wait_battle_began(waiting_delay)
         mSleep(waiting_delay)
     end
 end
+function lock_screen_if_necessary()
+    if lock_screen_after_finished=="是" then
+        _, _, signal = os.execute("activator send libactivator.system.sleepbutton")
+        while signal and signal>0 do
+            logDebug('failed to lock screen')
+            mSleep(1000)
+            _, _, signal = os.execute("activator send libactivator.system.sleepbutton")
+        end
+    end
+end
 --战斗是否结束
 function is_battle_finished()
-    local dashou_card_count=0
+    local count=0
     while true do
-        dashou_card_count=dashou_card_count+1
-        if dashou_card_count>=10 then
+        count=count+1
+        if count>=10 then
             notifyVibrate(1500)
         end
 
@@ -1192,9 +1200,7 @@ function quit_quest()
             tap(table.unpack(withdraw_actions[i]))
         end
         if after_failed=="停止" then
-            if lock_screen_after_finished=="是" then
-                os.execute("activator send libactivator.system.sleepbutton")
-            end
+            lock_screen_if_necessary()
             os.exit()
         end
         return
