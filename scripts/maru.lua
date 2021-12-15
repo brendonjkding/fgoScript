@@ -53,6 +53,7 @@ function init_lottery_points()
     check_misoperation_points={spin_points,spin_unavailable_points}
 end
 function init_support_points()
+    start_quest_points={{ 0xC9D2D3, -23, 35, 0xCBD3D6, 28, 37, 0xF5F5F4, 28, 73, 0xF6F5F5, -26, 77, 0xE4ECEF, -22, 105, 0xDDE1E8, 29, 114, 0xF6F9F7, 0, 147, 0xCDD3D3 }, 90, 21, 1142, 76, 1289}
     check_misoperation_points={support_selection_interface_points}
 end
 
@@ -233,7 +234,7 @@ function select_support_and_repeat_until_success()
         tap(table.unpack(support_first_slot))
         x, y = findMultiColorInRegionFuzzy(table.unpack(start_quest_points));
         if x ~= -1 and y ~= -1 then  -- 如果找到了
-            notifyVibrate()
+            notifyVibrate(3000)
             break
         end
         update_support_list()

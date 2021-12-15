@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=173
+    VERSION=174
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
