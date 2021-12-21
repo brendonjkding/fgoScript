@@ -190,7 +190,7 @@ function make_bomb()
     end
 end
 function spin_lottery()
-    if tonumber(os.date("%Y"))>2021 or tonumber(os.date("%m"))>10 then
+    if tonumber(os.date("%Y"))>2022 and tonumber(os.date("%m"))>2 then
         toast("待适配", 3000)
     end
 
@@ -205,8 +205,8 @@ function spin_lottery()
         if x ~= -1 and y ~= -1 then  -- 按钮灰色
             x, y = findMultiColorInRegionFuzzy(table.unpack(reset_points));
             if x ~= -1 and y ~= -1 then  --有刷新按钮
-                x, y = findMultiColorInRegionFuzzy(table.unpack(pool_drained_points));
-                if x ~= -1 and y ~= -1 then  --尺子已抽干
+                -- x, y = findMultiColorInRegionFuzzy(table.unpack(pool_drained_points));
+                -- if x ~= -1 and y ~= -1 then  --尺子已抽干
                     tap(table.unpack(reset_button))
                     tap(table.unpack(reset_ok_button))
                     mSleep(3000)
@@ -217,7 +217,7 @@ function spin_lottery()
                         x, y = findMultiColorInRegionFuzzy(table.unpack(reset_finished_popup_points));
                     end
                     tap(table.unpack(reset_finished_popup_close_button))
-                end
+                -- end
             else  -- 无刷新按钮
                 return
             end
