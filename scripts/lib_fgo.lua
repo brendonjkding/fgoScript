@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=175
+    VERSION=176
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -75,6 +75,7 @@ function save_configuration()
     t=[[sp_mode="%s"--助战
 ce="%s"--礼装
 sp="%s"--从者
+require_support_from_friends="%s"--310
 skill_serial_1="%s"--1t技能
 skill_serial_2="%s"--2t技能
 skill_serial_3="%s"--3t技能
@@ -119,7 +120,7 @@ end
 ]]
 
 
-    t=string.format(t, sp_mode, ce, sp,
+    t=string.format(t, sp_mode, ce, sp, require_support_from_friends,
         skill_serial_1, skill_serial_2, skill_serial_3,
         np_index_1, np_index_2, np_index_3,
         big_enemy_1, big_enemy_mode_1,
@@ -161,6 +162,7 @@ function init_configuration()
     lock_screen_after_finished=lock_screen_after_finished or "否"
 
     times=tonumber(times)
+    require_support_from_friends=require_support_from_friends or "否"
     party_index=party_index or "当前"
     sp_class_index=sp_class_index or "当前"
     after_failed=after_failed or "停止"
@@ -264,6 +266,12 @@ function init_points()
     sp_icon_end_dx=174
     sp_icon_end_dy=155
 
+    sp_friend_icon_start_dx=-150
+    sp_friend_icon_start_y=1160
+    sp_friend_icon_end_dx=30
+    sp_friend_icon_end_y=1240
+    sp_friend_icon_points={ 0xAD8444, -2, 28, 0xBF9857, -1, 17, 0xBFF880, 29, 37, 0xF4E28E, 29, 26, 0xCCFD8E, 29, 2, 0x8BDD4F, 29, -8, 0xF1EEA4, 35, 15, 0xFCEE9B, 21, 15, 0x83A84C }
+
     formation_party_selection_button_x=698
     formation_party_selection_button_y={549}
     for i=2,10 do
@@ -344,7 +352,7 @@ function init_points()
     battle_cn_points={}
     battle_cn_points[1]={{ 0xC1C1C1, 1, 2, 0xDFDFDF, 2, 4, 0xFEFEFE, 3, 6, 0xFDFDFD, 0, 6, 0xFBFBFB, -6, 6, 0xFBFBFB, -10, 6, 0xFBFBFB }, 80, 717, 926, 730, 932}
     battle_cn_points[2]={{ 0xE7E7E7, 2, 2, 0xEBEBEB, 3, 5, 0xDADADA, 2, 9, 0xE6E6E6, -2, 10, 0xFFFFFF, -7, 5, 0xE6E6E6, -9, 3, 0xEDEDED, -10, 2, 0xECECEC, -11, 1, 0xF1F1F1, -14, -1, 0xFCFCFC }, 70, 714, 922, 731, 933}
-    battle_cn_points[3]={{ 0xDEDEDE, 1, 2, 0xEFEFEF, 1, 4, 0xE7E7E7, -2, 9, 0xF6F6F6, -7, 4, 0xE8E8E8, -7, 6, 0xF3F3F3, -12, 10, 0xFEFEFE, -15, 6, 0xF3F3F3, -15, 2, 0xECECEC }, 80, 715, 923, 731, 933}
+    battle_cn_points[3]={{ 0xDEDEDE, 1, 2, 0xEFEFEF, 1, 4, 0xE7E7E7, -2, 9, 0xF6F6F6, -7, 4, 0xE8E8E8, -7, 6, 0xF3F3F3, -12, 10, 0xFEFEFE, -15, 6, 0xF3F3F3, -15, 2, 0xECECEC }, 75, 715, 923, 731, 933}
 
     --三、结束战斗
     bond_points={{ 0x48A9C3, -16, 0, 0x0209AF, -15, 35, 0x006402, -2, 33, 0x50E35B, -2, 39, 0x6BE670 }, 90, 291, 595, 307, 634}
@@ -1297,30 +1305,40 @@ end
 function find_support_servant_starting_from_(new_start_x)
     --logDebug(new_start_x)
     --找礼装
-    x, y = findMultiColorInRegionFuzzy(ce_points[ce], 80, new_start_x, sp_icon_start_y, sp_icon_end_x, sp_icon_end_y);
-    if (x ~= -1 and y ~= -1) or ce=="任意" then  -- 如果找到了礼装
-
+    local ce_x, ce_y = findMultiColorInRegionFuzzy(ce_points[ce], 80, new_start_x, sp_icon_start_y, sp_icon_end_x, sp_icon_end_y);
+    local sp_x, sp_y = nil, nil
+    if (ce_x ~= -1 and ce_y ~= -1) or ce=="任意" then  -- 如果找到了礼装
         if sp=="任意" then --任意从者
             if ce=="任意" then
                 tap(table.unpack(support_first_slot))
             else
-                tap(x,y)
+                tap(ce_x,ce_y)
             end
             return true
         end
         if ce=="任意" then --找英灵
-            x, y = findMultiColorInRegionFuzzy(support_servant_points[sp], 90, new_start_x, sp_icon_start_y, sp_icon_end_x, sp_icon_end_y);
+            sp_x, sp_y = findMultiColorInRegionFuzzy(support_servant_points[sp], 90, new_start_x, sp_icon_start_y, sp_icon_end_x, sp_icon_end_y);
         else
-            x, y = findMultiColorInRegionFuzzy(support_servant_points[sp], 90, x+sp_icon_start_dx, y+sp_icon_start_dy , x+sp_icon_end_dx, y+sp_icon_end_dy);
+            sp_x, sp_y = findMultiColorInRegionFuzzy(support_servant_points[sp], 90, ce_x+sp_icon_start_dx, y+sp_icon_start_dy , ce_x+sp_icon_end_dx, y+sp_icon_end_dy);
         end
 
-        if x ~= -1 and y ~= -1 then  -- 如果找到了英灵
-            tap(x,y)
-            return true
+        if sp_x ~= -1 and sp_y ~= -1 then  -- 如果找到了英灵
+            if require_support_from_friends=="是" then
+                friend_icon_x, friend_icon_y = findMultiColorInRegionFuzzy(sp_friend_icon_points, 90, sp_x+sp_friend_icon_start_dx, sp_friend_icon_start_y, sp_x+sp_friend_icon_end_dx, sp_friend_icon_end_y);
+                if friend_icon_x~=-1 and friend_icon_y~=-1 then  -- 如果找到了
+                    tap(sp_x,sp_y)
+                    return true
+                end
+            else
+                tap(sp_x,sp_y)
+                return true
+            end
         end
     end
-    if x~=-1 and y ~= -1 then
-        return false,x+10 --继续找
+    if ce_x~=-1 and ce_y ~= -1 then
+        return false,ce_x+10 --继续找
+    elseif sp_x~=-1 and sp_y ~= -1 then
+        return false,sp_x+10 --继续找
     else
         return false --上滑
     end
@@ -1364,8 +1382,9 @@ function select_support_servant_automatically()
             x, y = findMultiColorInRegionFuzzy(table.unpack(support_scroll_bar_arrived_bottom_points));
             if x ~= -1 and y ~= -1 then  -- 如果到底了
                 update_support_list()
+            else
+                press_and_move_upward(6)
             end
-            press_and_move_upward(6)
         else
             update_support_list()
         end

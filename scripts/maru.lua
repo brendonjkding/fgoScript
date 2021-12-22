@@ -190,7 +190,7 @@ function make_bomb()
     end
 end
 function spin_lottery()
-    if tonumber(os.date("%Y"))>2022 and tonumber(os.date("%m"))>2 then
+    if tonumber(os.date("%Y"))>=2022 and tonumber(os.date("%m"))>=2 then
         toast("待适配", 3000)
     end
 

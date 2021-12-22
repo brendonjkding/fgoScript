@@ -8,6 +8,7 @@ UI = {
     { 'TextView{如手动选助战，则无视接下来两项}' },
     { 'DropList{新午餐|新qp|新所长|擦汗|满破宝石|任意}', 'ce', '礼装：' },
     { 'DropList{C呆|孔明|cba|梅林|狐狸|花嫁|任意}', 'sp', '从者：' },
+    { 'DropList{否|是}', 'require_support_from_friends', '仅选择好友：' },
     { 'TextView{}' },
     
     { 'TextView{}' },
