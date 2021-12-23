@@ -46,8 +46,9 @@ UI = {
 function main()
     kernelVersion=io.popen("uname -s")
     kernelVersion=kernelVersion:read("*all")
-    if kernelVersion=="Darwin\n" then dofile("/var/touchelf/scripts/lib_fgo.lua")
-    else dofile("/mnt/sdcard/touchelf/scripts/lib_fgo.lua") end
+    if kernelVersion=="Darwin\n" then _file=io.open("/var/touchelf/scripts/lib_fgo.lua","r")
+    else _file=io.open("/mnt/sdcard/touchelf/scripts/lib_fgo.lua","r") end
+    io.input(_file);_chunk=io.read("*a");io.close(_file);_f=load(_chunk);_f();
     init_basic_variables()
     init_configuration()
     save_configuration()

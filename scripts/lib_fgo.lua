@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=176
+    VERSION=177
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -48,6 +48,14 @@ end
 function getNumVersion(version)
     return tonumber(string.sub(version, 1, 1)..string.sub(version, 3,3)..string.sub(version, 5,5))
 end
+function myDofile(file_path)
+    local file=io.open(file_path,"r")
+    io.input(file)
+    local chunk=io.read("*a")
+    io.close(file)
+    local f=load(chunk)
+    f()
+end
 
 function read_configuration_from_file_(file_name)
     conf_file_name=file_name
@@ -59,7 +67,7 @@ function read_configuration_from_file_(file_name)
         notifyMessage("文件名有误",3000)
         os.exit()
     end
-    dofile(path..conf_file_name..".lua")
+    myDofile(path..conf_file_name..".lua")
     io.close(file)
     line=Split(text,'\n')
     for i=1,#line do
@@ -106,7 +114,7 @@ UI = {
     { 'DropList{不吃|金|银|铜|彩}',             'fruit',    '吃苹果：' },
     { 'DropList{否|是}',             'lock_screen_after_finished',    '完成后锁屏(需安装activator)' }
 }
-dofile("%slib_fgo.lua")
+_file=io.open("%slib_fgo.lua","r");io.input(_file);_chunk=io.read("*a");io.close(_file);_f=load(_chunk);_f();
 
 function main()
     init()
