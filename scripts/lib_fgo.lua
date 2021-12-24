@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=177
+    VERSION=178
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -211,10 +211,10 @@ end
 function init_points()
     --一、开始战斗
     possible_menu_points={}
-    possible_menu_points[1]={{ 0xFAD186, 17, 0, 0xFDF6EC, 34, 0, 0xFCFAD2, 44, 0, 0x29231A, 49, 0, 0xFCED1C, 121, 69, 0x774AE3 }, 90, 9, 172, 130, 241}
-    possible_menu_points[2]={{ 0xFAD186, 40, 77, 0xD4D6D8, 47, 248, 0xD1D2D1, 45, 148, 0x101334, 45, 191, 0x05050A, 45, 202, 0xD3D3D4 }, 90, 9, 172, 56, 420}
-    possible_menu_points[3]={{ 0xE0E2E2, -4, -114, 0xDADCDB, -72, -1119, 0xEBC681, -38, -1119, 0xE9ECCB, -23, -1119, 0xA3937C, 19, -1078, 0x857B68 }, 90, 9, 172, 100, 1291}
-    possible_menu_points[4]={{ 0xD5D9D7, 4, -114, 0xE2E2E1, -21, -870, 0xD0D0D0, -18, -1032, 0xD7D7D7, -70, -1117, 0xEDCB86 }, 90, 7, 172, 81, 1289}
+    possible_menu_points[1]={{ 0xFAD186, 17, 0, 0xFDF6EC, 34, 0, 0xFCFAD2, 44, 0, 0x29231A, 49, 0, 0xFCED1C, 121, 69, 0x774AE3 }, 80, 9, 172, 130, 241}
+    possible_menu_points[2]={{ 0xFAD186, 40, 77, 0xD4D6D8, 47, 248, 0xD1D2D1, 45, 148, 0x101334, 45, 191, 0x05050A, 45, 202, 0xD3D3D4 }, 80, 9, 172, 56, 420}
+    possible_menu_points[3]={{ 0xE0E2E2, -4, -114, 0xDADCDB, -72, -1119, 0xEBC681, -38, -1119, 0xE9ECCB, -23, -1119, 0xA3937C, 19, -1078, 0x857B68 }, 80, 9, 172, 100, 1291}
+    possible_menu_points[4]={{ 0xD5D9D7, 4, -114, 0xE2E2E1, -21, -870, 0xD0D0D0, -18, -1032, 0xD7D7D7, -70, -1117, 0xEDCB86 }, 80, 7, 172, 81, 1289}
 
     quest_button={563,999}
     fruit_x={["彩"]=574,["金"]=418,["银"]=290}
