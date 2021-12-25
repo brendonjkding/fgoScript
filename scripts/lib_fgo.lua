@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=178
+    VERSION=179
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -1314,7 +1314,7 @@ function find_support_servant_starting_from_(new_start_x)
     --logDebug(new_start_x)
     --找礼装
     local ce_x, ce_y = findMultiColorInRegionFuzzy(ce_points[ce], 80, new_start_x, sp_icon_start_y, sp_icon_end_x, sp_icon_end_y);
-    local sp_x, sp_y = nil, nil
+    local sp_x, sp_y = -1, -1
     if (ce_x ~= -1 and ce_y ~= -1) or ce=="任意" then  -- 如果找到了礼装
         if sp=="任意" then --任意从者
             if ce=="任意" then
@@ -1327,7 +1327,7 @@ function find_support_servant_starting_from_(new_start_x)
         if ce=="任意" then --找英灵
             sp_x, sp_y = findMultiColorInRegionFuzzy(support_servant_points[sp], 90, new_start_x, sp_icon_start_y, sp_icon_end_x, sp_icon_end_y);
         else
-            sp_x, sp_y = findMultiColorInRegionFuzzy(support_servant_points[sp], 90, ce_x+sp_icon_start_dx, y+sp_icon_start_dy , ce_x+sp_icon_end_dx, y+sp_icon_end_dy);
+            sp_x, sp_y = findMultiColorInRegionFuzzy(support_servant_points[sp], 90, ce_x+sp_icon_start_dx, ce_y+sp_icon_start_dy , ce_x+sp_icon_end_dx, ce_y+sp_icon_end_dy);
         end
 
         if sp_x ~= -1 and sp_y ~= -1 then  -- 如果找到了英灵
