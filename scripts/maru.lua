@@ -229,18 +229,6 @@ function spin_lottery()
         keepScreen(false)
     end
 end
-function select_support_and_repeat_until_success()
-    while true do
-        tap(table.unpack(support_first_slot))
-        x, y = findMultiColorInRegionFuzzy(table.unpack(start_quest_points));
-        if x ~= -1 and y ~= -1 then  -- 如果找到了
-            notifyVibrate(3000)
-            break
-        end
-        update_support_list()
-        mSleep(3000)
-    end
-end
 
 function main()
     if mode=="关闭" then return end
@@ -281,7 +269,9 @@ function main()
     if mode=="刷助战" then
         init_support_points()
         check_misoperation("请在助战界面启动")
-        select_support_and_repeat_until_success()
+        sp_mode="刷助战"
+        update_support_list()
+        select_support_servant_automatically()
     end
 end
 

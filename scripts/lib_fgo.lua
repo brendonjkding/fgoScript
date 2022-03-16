@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=179
+    VERSION=180
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -279,6 +279,8 @@ function init_points()
     sp_friend_icon_end_dx=30
     sp_friend_icon_end_y=1240
     sp_friend_icon_points={ 0xAD8444, -2, 28, 0xBF9857, -1, 17, 0xBFF880, 29, 37, 0xF4E28E, 29, 26, 0xCCFD8E, 29, 2, 0x8BDD4F, 29, -8, 0xF1EEA4, 35, 15, 0xFCEE9B, 21, 15, 0x83A84C }
+
+    sp_confirm_support_setup_points={{0x7492AD, 37, 307, 0x00C6FE, 51, 311, 0x09B5EE, 59, 320, 0x0D74B2, 56, 369, 0x2FB4E5, 58, 384, 0x1099E6, 38, 390, 0x0AB8FE}, 80, 0, 835, 570, 1225}
 
     formation_party_selection_button_x=698
     formation_party_selection_button_y={549}
@@ -1294,9 +1296,9 @@ end
 function check_support_selection_interface()
     mSleep(3000)
     x, y = findMultiColorInRegionFuzzy(table.unpack(support_selection_interface_points));
-    logDebug("未识别到助战界面")
     local c=0
     while x == -1 and y == -1 do  -- attack
+        logDebug("未识别到助战界面")
         c=c+1
         if c>5 then
             os.exit(0)
@@ -1305,8 +1307,7 @@ function check_support_selection_interface()
         mSleep(3000)
         x, y = findMultiColorInRegionFuzzy(table.unpack(support_selection_interface_points));
     end
-
-
+    logDebug("识别到助战界面")
 end
 
 --(is_find, new_start_x)找助战
@@ -1368,9 +1369,9 @@ function select_support_servant_automatically()
 
     while true do
         keepScreen(true)
-        if sp_mode=="图片" then
-            x, y = findImageFuzzy(path.."sp.bmp",60); -- 
-            if x ~= -1 and y ~= -1 then            -- 如果找到了
+        if sp_mode=="刷助战" then
+            x, y = findMultiColorInRegionFuzzy(table.unpack(sp_confirm_support_setup_points));
+            if x ~= -1 and y ~= -1 then  -- 如果找到了
                 tap(x,y)
                 return
             end
@@ -1430,6 +1431,7 @@ function update_support_list()
         return
     end
     tap(table.unpack(support_update_list_yes_button))
+    check_support_selection_interface()
 end
 
 --需要吃苹果
