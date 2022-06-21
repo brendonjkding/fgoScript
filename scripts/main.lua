@@ -37,6 +37,7 @@ UI = {
     { 'DropList{当前|全|剑|弓|枪|骑|术|杀|狂|EXT|MIX}', 'sp_class_index', '指定助战职介：' },
     { 'DropList{停止|继续}', 'after_failed', '如翻车：' },
     { 'DropList{继续|停止}', 'after_dropped_ce', '如掉礼装：' },
+    { 'DropList{否|是}', 'is_tw_server', '是台服：' },
     
     { 'DropList{否|是}', 'always_np', '始终尝试放宝具：' },
     { 'TextView{(适用np不一定能满的情况，开启}' },
@@ -52,5 +53,5 @@ function main()
     init_basic_variables()
     init_configuration()
     save_configuration()
-    notifyMessage("保存成功",3000)
+    notifyMessage("保存成功，刷新后显示新脚本文件",3000)
 end

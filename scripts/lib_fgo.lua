@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=180
+    VERSION=181
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -83,7 +83,7 @@ function save_configuration()
     t=[[sp_mode="%s"--助战
 ce="%s"--礼装
 sp="%s"--从者
-require_support_from_friends="%s"--310
+require_support_from_friends="%s"--仅选择好友
 skill_serial_1="%s"--1t技能
 skill_serial_2="%s"--2t技能
 skill_serial_3="%s"--3t技能
@@ -106,6 +106,7 @@ sp_class_index="%s"--助战职介
 after_failed="%s"--如失败
 after_dropped_ce="%s"--如掉礼装
 always_np="%s"--始终尝试放宝具
+is_tw_server="%s"--是台服
 conf_file_name="%s"--文件名
 --%s
 
@@ -134,7 +135,7 @@ end
         big_enemy_1, big_enemy_mode_1,
         big_enemy_2, big_enemy_mode_2, big_enemy_3,
         mode, shuffle_cloth, battle_2_shuffle,
-        party_index, sp_class_index, after_failed, after_dropped_ce, always_np,
+        party_index, sp_class_index, after_failed, after_dropped_ce, always_np, is_tw_server,
         conf_file_name, conf_file_name, path)
 
     file=io.open(path..conf_file_name..".lua","w")
@@ -176,6 +177,7 @@ function init_configuration()
     after_failed=after_failed or "停止"
     battle_2_shuffle=battle_2_shuffle or "否"
     always_np=always_np or "否"
+    is_tw_server=is_tw_server or "否"
     after_dropped_ce=after_dropped_ce or "继续"
     conf_file_name=(conf_file_name=="" and {"默认"} or {conf_file_name})[1]
     shuffled=(shuffle_cloth=="是" and {false} or {true})[1]
@@ -239,6 +241,9 @@ function init_points()
     support_updating_in_succession_warning={{ 0xEDEEEA, 43, -2, 0xEFEFEF }, 90, 138, 666, 181, 668}
     support_updating_in_succession_warning_close_button={171,673}
     support_first_slot={452,137}
+    if is_tw_server=="是" then
+        support_scroll_bar_slot_points={{ 0x55636B }, 80, 11, 1290, 17, 1290}
+    end
 
     --助战礼装特征
     ce_points={}
@@ -363,6 +368,15 @@ function init_points()
     battle_cn_points[1]={{ 0xC1C1C1, 1, 2, 0xDFDFDF, 2, 4, 0xFEFEFE, 3, 6, 0xFDFDFD, 0, 6, 0xFBFBFB, -6, 6, 0xFBFBFB, -10, 6, 0xFBFBFB }, 80, 717, 926, 730, 932}
     battle_cn_points[2]={{ 0xE7E7E7, 2, 2, 0xEBEBEB, 3, 5, 0xDADADA, 2, 9, 0xE6E6E6, -2, 10, 0xFFFFFF, -7, 5, 0xE6E6E6, -9, 3, 0xEDEDED, -10, 2, 0xECECEC, -11, 1, 0xF1F1F1, -14, -1, 0xFCFCFC }, 70, 714, 922, 731, 933}
     battle_cn_points[3]={{ 0xDEDEDE, 1, 2, 0xEFEFEF, 1, 4, 0xE7E7E7, -2, 9, 0xF6F6F6, -7, 4, 0xE8E8E8, -7, 6, 0xF3F3F3, -12, 10, 0xFEFEFE, -15, 6, 0xF3F3F3, -15, 2, 0xECECEC }, 75, 715, 923, 731, 933}
+    battle_tw_points={}
+    battle_tw_points[1]={{ 0xE2E2E2, 14, 0, 0xDADADA, 12, 0, 0xDCDCDC, 10, 0, 0xDBDBDB, 8, 0, 0xDBDBDB, 6, 0, 0xDBDBDB, 4, 0, 0xDBDBDB, 2, 0, 0xDBDBDB }, 70, 713, 928, 730, 928};
+    battle_tw_points[2]={{ 0xEDEDED, 4, 7, 0xD3D3D3, 1, 8, 0xDDDDDD, -3, 7, 0xE3E3E3, -5, 5, 0xC1C1C1, -12, -1, 0xB6B6B6, -12, 1, 0xCECECE, -12, 3, 0xCCCCCC, -12, 5, 0xCBCBCB, -12, 7, 0xCECECE }, 70, 715, 923, 731, 932};
+    battle_tw_points[3]={{ 0xFBFBFB, -4, 4, 0x979797, -2, 8, 0xD6D6D6, 1, 9, 0xF2F2F2, 4, 8, 0xF4F4F4, 5, 6, 0xD4D4D4, 8, 8, 0xEEEEEE, 12, 8, 0xE2E2E2, 10, 1, 0xF7F7F7 }, 80, 714, 923, 730, 932};
+    if is_tw_server=="是" then
+        battle_points=battle_tw_points
+    else
+        battle_points=battle_cn_points
+    end
 
     --三、结束战斗
     bond_points={{ 0x48A9C3, -16, 0, 0x0209AF, -15, 35, 0x006402, -2, 33, 0x50E35B, -2, 39, 0x6BE670 }, 90, 291, 595, 307, 634}
@@ -1053,7 +1067,7 @@ end
 function get_current_battle()
     keepScreen(true)
     for i=1,3 do
-        x, y = findMultiColorInRegionFuzzy(table.unpack(battle_cn_points[i]));
+        x, y = findMultiColorInRegionFuzzy(table.unpack(battle_points[i]));
         if x ~= -1 and y ~= -1 then  -- 如果找到了
             keepScreen(false)
             return i
