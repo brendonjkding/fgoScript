@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=181
+    VERSION=182
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -241,9 +241,6 @@ function init_points()
     support_updating_in_succession_warning={{ 0xEDEEEA, 43, -2, 0xEFEFEF }, 90, 138, 666, 181, 668}
     support_updating_in_succession_warning_close_button={171,673}
     support_first_slot={452,137}
-    if is_tw_server=="是" then
-        support_scroll_bar_slot_points={{ 0x55636B }, 80, 11, 1290, 17, 1290}
-    end
 
     --助战礼装特征
     ce_points={}
@@ -370,8 +367,8 @@ function init_points()
     battle_cn_points[3]={{ 0xDEDEDE, 1, 2, 0xEFEFEF, 1, 4, 0xE7E7E7, -2, 9, 0xF6F6F6, -7, 4, 0xE8E8E8, -7, 6, 0xF3F3F3, -12, 10, 0xFEFEFE, -15, 6, 0xF3F3F3, -15, 2, 0xECECEC }, 75, 715, 923, 731, 933}
     battle_tw_points={}
     battle_tw_points[1]={{ 0xE2E2E2, 14, 0, 0xDADADA, 12, 0, 0xDCDCDC, 10, 0, 0xDBDBDB, 8, 0, 0xDBDBDB, 6, 0, 0xDBDBDB, 4, 0, 0xDBDBDB, 2, 0, 0xDBDBDB }, 70, 713, 928, 730, 928};
-    battle_tw_points[2]={{ 0xEDEDED, 4, 7, 0xD3D3D3, 1, 8, 0xDDDDDD, -3, 7, 0xE3E3E3, -5, 5, 0xC1C1C1, -12, -1, 0xB6B6B6, -12, 1, 0xCECECE, -12, 3, 0xCCCCCC, -12, 5, 0xCBCBCB, -12, 7, 0xCECECE }, 70, 715, 923, 731, 932};
-    battle_tw_points[3]={{ 0xFBFBFB, -4, 4, 0x979797, -2, 8, 0xD6D6D6, 1, 9, 0xF2F2F2, 4, 8, 0xF4F4F4, 5, 6, 0xD4D4D4, 8, 8, 0xEEEEEE, 12, 8, 0xE2E2E2, 10, 1, 0xF7F7F7 }, 80, 714, 923, 730, 932};
+    battle_tw_points[2]={{ 0xEDEDED, 4, 7, 0xD3D3D3, 1, 8, 0xDDDDDD, -3, 7, 0xE3E3E3, -5, 5, 0xC1C1C1, -12, -1, 0xB6B6B6, -12, 1, 0xCECECE, -12, 3, 0xCCCCCC, -12, 5, 0xCBCBCB, -12, 7, 0xCECECE }, 75, 715, 923, 731, 932};
+    battle_tw_points[3]={{ 0xFBFBFB, -4, 4, 0x979797, -2, 8, 0xD6D6D6, 1, 9, 0xF2F2F2, 4, 8, 0xF4F4F4, 5, 6, 0xD4D4D4, 8, 8, 0xEEEEEE, 12, 8, 0xE2E2E2, 10, 1, 0xF7F7F7 }, 75, 714, 923, 730, 932};
     if is_tw_server=="是" then
         battle_points=battle_tw_points
     else
