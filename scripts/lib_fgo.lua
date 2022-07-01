@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=182
+    VERSION=183
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -44,6 +44,7 @@ function init_basic_variables()
         if not toast then toast=notifyMessage end
     end
 
+    is_relaunched=false
 end
 function getNumVersion(version)
     return tonumber(string.sub(version, 1, 1)..string.sub(version, 3,3)..string.sub(version, 5,5))
@@ -383,6 +384,8 @@ function init_points()
     all_servants_incapacitated_points={{ 0x7632D8, 19, 9, 0x77E890, 26, 3, 0xF9EAC0, 15, -7, 0xE171A0, 13, 3, 0xF1F9F9 }, 90, 602, 963, 628, 979}
     lost_connection_points={{ 0xD4D5D7, 0, -37, 0x000000, 0, -43, 0xD8D8D4, 0, -47, 0x000000, 0, -53, 0xD0D0D0, 0, -58, 0x000000, 0, -66, 0xDCDBDC, 3, -73, 0x000000 }, 90, 158, 866, 161, 939}
     connection_retry_button={165, 859}
+    restore_battle_points={{ 0xCECFD0, 21, -29, 0xF0F0F0, -1, -186, 0xD2D3D3, -10, -433, 0xDADDDD, 13, -433, 0xE0E0E0, 19, -601, 0xEDEDED, -7, -616, 0xD5D7D7 }, 90, 162, 368, 193, 984};
+    restore_battle_button=connection_retry_button
     battle_finished_points={bond_points,bond_points2,bond_upgraded_points,all_servants_incapacitated_points,bond_upgraded_points2}
     rainbow_trophy_points={{ 0x67431B, 2, 1, 0x7A5E24, 2, 2, 0x736333, 3, 3, 0x577254, 5, 3, 0x4A7265, 8, 4, 0x4A616E, 8, 5, 0x5B4871 }, 90, 712, 1003, 720, 1008}
     ce_detail_points={{ 0xF5F5F4, -44, 0, 0xDBDEDF, -284, -40, 0x084D9C, -272, -35, 0xF7F7FB, -274, -26, 0x0849AD, -270, -18, 0xD3E2F4 }, 90, 445, 9, 729, 49}
@@ -871,7 +874,8 @@ function turn_1_2()
 
         while get_current_battle()==i do
             tap_attack()
-            if always_np=="是" then
+            if always_np=="是" or is_relaunched then
+                is_relaunched=false
                 select_card_with_np_in_turn_(i)
             else
                 select_card_without_np_in_turn_(i)
@@ -902,7 +906,12 @@ function turn_4()
     while not is_battle_finished() do
         logDebug(string.format("current_battle:%d",current_battle))
         tap_attack()
-        select_card_without_np_in_turn_(4)
+        if is_relaunched then
+            is_relaunched=false
+            select_card_with_np_in_turn_(3)
+        else
+            select_card_without_np_in_turn_(4)
+        end
         current_battle=current_battle+1
     end
 end
@@ -1216,10 +1225,33 @@ function is_battle_finished()
         end
 
         retry_connection_if_needed()
+        if relaunch_fgo_if_needed() then
+            return is_battle_finished()
+        end
         keepScreen(false)
         mSleep(4000)
     end
 end
+function relaunch_fgo_if_needed()
+    bundleIdentifier=(is_tw_server=="是" and {"com.xiaomeng.fategrandorder"} or {"com.bilibili.fatego"})[1]
+    if appRunning(bundleIdentifier)==false then
+        logDebug("relaunching...")
+        appRun(bundleIdentifier)
+        is_relaunched=true
+        keepScreen(false)
+        while true do
+            tap(table.unpack(bottom_right))
+            x, y = findMultiColorInRegionFuzzy(table.unpack(restore_battle_points));
+            if x ~= -1 and y ~= -1 then  -- 重新进入关卡
+                tap(table.unpack(restore_battle_button))
+                return true
+            end
+            mSleep(1000)
+        end
+    end
+    return false
+end
+
 --退出战斗
 function quit_quest()
     x, y = findMultiColorInRegionFuzzy(table.unpack(all_servants_incapacitated_points));

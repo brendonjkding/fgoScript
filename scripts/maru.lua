@@ -190,10 +190,6 @@ function make_bomb()
     end
 end
 function spin_lottery()
-    if tonumber(os.date("%Y"))>=2022 and tonumber(os.date("%m"))>=2 then
-        toast("待适配", 3000)
-    end
-
     while true do
         keepScreen(true)
         x, y = findMultiColorInRegionFuzzy(table.unpack(gift_box_full_points));
