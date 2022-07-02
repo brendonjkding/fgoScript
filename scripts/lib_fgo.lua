@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=183
+    VERSION=184
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -85,12 +85,8 @@ function save_configuration()
 ce="%s"--礼装
 sp="%s"--从者
 require_support_from_friends="%s"--仅选择好友
-skill_serial_1="%s"--1t技能
-skill_serial_2="%s"--2t技能
-skill_serial_3="%s"--3t技能
-np_index_1="%s"--1t宝具
-np_index_2="%s"--2t宝具
-np_index_3="%s"--3t宝具
+skills=%s--技能
+np_indexes=%s--宝具
 
 big_enemy_1="%s"--一面大怪
 big_enemy_mode_1="%s"
@@ -128,11 +124,18 @@ function main()
     dealloc()
 end
 ]]
-
+    function string_from_string_table_(tbl)
+        ret="{"
+        for i=1,#tbl do
+            ret=ret.."\""..tbl[i].."\","
+        end
+        ret=ret.."}"
+        return ret
+    end
 
     t=string.format(t, sp_mode, ce, sp, require_support_from_friends,
-        skill_serial_1, skill_serial_2, skill_serial_3,
-        np_index_1, np_index_2, np_index_3,
+        string_from_string_table_(skills),
+        string_from_string_table_(np_indexes),
         big_enemy_1, big_enemy_mode_1,
         big_enemy_2, big_enemy_mode_2, big_enemy_3,
         mode, shuffle_cloth, battle_2_shuffle,
@@ -163,9 +166,11 @@ function init_configuration()
     skill_serial_1=skill_serial_1 or ""
     skill_serial_2=skill_serial_2 or ""
     skill_serial_3=skill_serial_3 or ""
+    skills=(skills and {skills} or {{skill_serial_1,skill_serial_2,skill_serial_3}})[1]
     np_index_1=np_index_1 or "1"
     np_index_2=np_index_2 or "1"
     np_index_3=np_index_3 or "1"
+    np_indexes=(np_indexes and {np_indexes} or {{np_index_1,np_index_2,np_index_3}})[1]
 
     times=times or "1"
     fruit=fruit or "不吃"
@@ -185,16 +190,20 @@ function init_configuration()
     check_misoperation_points=(sp_mode=="手动" and {{attack_points}} or {possible_menu_points})[1]
     message=(sp_mode=="手动" and {"请进入副本再启动"} or {"请把关卡放在第一个再启动"})[1]
 
-    --输入信息处理
-    skills={}
-    skills[1]=Split(skill_serial_1," ")
-    skills[2]=Split(skill_serial_2," ")
-    skills[3]=Split(skill_serial_3," ")
-    np_indexs={}
-    np_indexs[1]=tonumber(np_index_1)+5
-    np_indexs[2]=tonumber(np_index_2)+5
-    if np_index_3~="2+1" then
-        np_indexs[3]=tonumber(np_index_3)+5
+    --配置变量处理为内部变量
+    _skills={}
+    for i=1,#skills do
+        _skills[i]=Split(skills[i], " ")
+    end
+    _np_indexes={}
+    for i=1,#np_indexes do
+        indexes_in_turn_i={}
+        for j=1,#np_indexes[i] do
+            if j%2==1 then
+                table.insert(indexes_in_turn_i,tonumber(string.sub(np_indexes[i],j,j+1))+5)
+            end
+        end
+        _np_indexes[i]=indexes_in_turn_i
     end
 end
 
@@ -408,7 +417,7 @@ end
 function dealloc()
     lock_screen_if_necessary()
 
-    notifyMessage("感谢使用")
+    toast("感谢使用")
     notifyVibrate(3000)
 end
 
@@ -486,7 +495,7 @@ function calculate_card_priority()
 
     for i=1,5 do
         --柱子
-        if ((current_battle==2 or current_battle==3) and (mode=="绿卡" or mode=="红卡")) or (np_indexs[2]==5 and np_indexs[3]==5) then
+        if ((current_battle==2 or current_battle==3) and (mode=="绿卡" or mode=="红卡")) or (_np_indexes[2][1]==5 and _np_indexes[3][1]==5) then
             --克制打手200 打手100 克制拐20 拐10 被克打手5 被克拐1
             if cards[i].is_dashou then
                 if not cards[i].resist then
@@ -632,7 +641,7 @@ end
 --带宝具选第t面卡
 function select_card_with_np_in_turn_(t)
     get_card_info()
-    np_card=Card:new(np_indexs[t],0)
+    np_card=Card:new(_np_indexes[t][1],0)
     --平a
     if np_card.index==5 then
         select_card_without_np_in_turn_()
@@ -735,8 +744,10 @@ function select_card_with_np_in_turn_(t)
 
     table.sort(cards)
     
-    if t==3 and np_index_3=="2+1" then
-        card_to_be_selected={Card:new(7,0),Card:new(6,0),Card:new(0,0)}
+    if #_np_indexes[t]>1 then
+        for i=1,#_np_indexes[t] do
+            card_to_be_selected[i]=Card:new(_np_indexes[t][i])
+        end
     end
     
     if dashou_card_count<2 then
@@ -769,7 +780,7 @@ function select_card_without_np_in_turn_(t)
     get_card_info()
     card_to_be_selected={Card:new(0,0),Card:new(0,0),Card:new(0,0)}
     --一面平a
-    if t==1 and np_indexs[t]==5 then
+    if t==1 and _np_indexes[t][1]==5 then
         for i=1,5 do
             if cards[i].is_dashou then
                 cards[i].priority_bak=cards[i].priority
@@ -905,19 +916,26 @@ end
 function turn_4()
     while not is_battle_finished() do
         logDebug(string.format("current_battle:%d",current_battle))
-        tap_attack()
         if is_relaunched then
-            is_relaunched=false
-            select_card_with_np_in_turn_(3)
+            current_battle=current_battle-1
+        end
+        if skills[current_battle] and not is_relaunched then
+            use_skill_in_battle_(current_battle)
+        end
+        is_relaunched=false
+
+        tap_attack()
+        if np_indexes[current_battle] then
+            select_card_with_np_in_turn_(current_battle)
         else
-            select_card_without_np_in_turn_(4)
+            select_card_without_np_in_turn_(current_battle)
         end
         current_battle=current_battle+1
     end
 end
 --释放某一回合的技能
 function use_skill_in_battle_(battle)
-    for _,v in pairs(skills[battle]) do
+    for _,v in pairs(_skills[battle]) do
         local index=get_skill_index_from_string(v)
         local target=get_skill_target_from_string(v)
         if index==nil then
@@ -1257,12 +1275,13 @@ function quit_quest()
     x, y = findMultiColorInRegionFuzzy(table.unpack(all_servants_incapacitated_points));
     if x ~= -1 and y ~= -1 then  -- 撤退
         notifyVibrate(3000)
-        for i=1,#withdraw_actions do
-            tap(table.unpack(withdraw_actions[i]))
-        end
+        logDebug("failed...")
         if after_failed=="停止" then
             lock_screen_if_necessary()
             os.exit()
+        end
+        for i=1,#withdraw_actions do
+            tap(table.unpack(withdraw_actions[i]))
         end
         return
     end
