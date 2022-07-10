@@ -14,7 +14,7 @@ function init(is_debug, skip_loading_liboc)
     logDebug("------------------------------------------------------------")
     _is_debug=is_debug
 
-    check_misoperation(message)
+    check_misoperation("请把关卡放在第一个再启动")
 
     save_configuration()
     if _is_debug and is_ios and not skip_loading_liboc then
@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=184
+    VERSION=185
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -187,8 +187,6 @@ function init_configuration()
     after_dropped_ce=after_dropped_ce or "继续"
     conf_file_name=(conf_file_name=="" and {"默认"} or {conf_file_name})[1]
     shuffled=(shuffle_cloth=="是" and {false} or {true})[1]
-    check_misoperation_points=(sp_mode=="手动" and {{attack_points}} or {possible_menu_points})[1]
-    message=(sp_mode=="手动" and {"请进入副本再启动"} or {"请把关卡放在第一个再启动"})[1]
 
     --配置变量处理为内部变量
     _skills={}
@@ -200,7 +198,7 @@ function init_configuration()
         indexes_in_turn_i={}
         for j=1,#np_indexes[i] do
             if j%2==1 then
-                table.insert(indexes_in_turn_i,tonumber(string.sub(np_indexes[i],j,j+1))+5)
+                table.insert(indexes_in_turn_i,tonumber(string.sub(np_indexes[i],j,j))+5)
             end
         end
         _np_indexes[i]=indexes_in_turn_i
@@ -413,6 +411,9 @@ function init_points()
     friend_request_close_button={106,340}
 
     blank_area={680,900}
+
+    check_misoperation_points={table.unpack(possible_menu_points)}
+    table.insert(check_misoperation_points,attack_points)
 end
 function dealloc()
     lock_screen_if_necessary()
@@ -1111,8 +1112,10 @@ end
 --启动前检查防止误启动
 function check_misoperation(message)
     if _is_debug then return end
-    toast("启动中...")
-    mSleep(2500)
+    if tonumber(string.sub(getVersion(), 1, 1))<4 then
+        toast("启动中...")
+        mSleep(2500)
+    end
     for i=1,#check_misoperation_points do
         x, y = findMultiColorInRegionFuzzy(table.unpack(check_misoperation_points[i]));
         if x ~= -1 and y ~= -1 then  -- 如果找到了
@@ -1137,6 +1140,10 @@ end
 
 --进本
 function enter_quest()
+    x, y = findMultiColorInRegionFuzzy(table.unpack(attack_points));
+    if x ~= -1 and y ~= -1 then  -- attack
+        return
+    end
     if sp_mode=="自动" or sp_mode=="图片" then
         tap(table.unpack(quest_button))
         logDebug("检查苹果")
@@ -1257,6 +1264,7 @@ function relaunch_fgo_if_needed()
         appRun(bundleIdentifier)
         is_relaunched=true
         keepScreen(false)
+        mSleep(10000)
         while true do
             tap(table.unpack(bottom_right))
             x, y = findMultiColorInRegionFuzzy(table.unpack(restore_battle_points));
@@ -1425,8 +1433,10 @@ function select_support_servant_automatically()
     end
 
     if ce=="任意" and sp=="任意" then
-        tap(table.unpack(support_first_slot))
-        return
+        if require_support_from_friends~="是" then
+            tap(table.unpack(support_first_slot))
+            return
+        end
     end
 
     while true do
@@ -1435,6 +1445,13 @@ function select_support_servant_automatically()
             x, y = findMultiColorInRegionFuzzy(table.unpack(sp_confirm_support_setup_points));
             if x ~= -1 and y ~= -1 then  -- 如果找到了
                 tap(x,y)
+                return
+            end
+        elseif ce=="任意" and sp=="任意" and require_support_from_friends=="是" then
+            friend_icon_x, friend_icon_y = findMultiColorInRegionFuzzy(sp_friend_icon_points, 90, sp_icon_start_x, sp_friend_icon_start_y, sp_icon_end_x, sp_friend_icon_end_y);
+            if friend_icon_x~=-1 and friend_icon_y~=-1 then  -- 如果找到了
+                tap(friend_icon_x,friend_icon_y)
+                keepScreen(false)
                 return
             end
         else
@@ -1499,13 +1516,10 @@ end
 --需要吃苹果
 function need_restoring_ap()
     x, y = findMultiColorInRegionFuzzy(table.unpack(support_selection_interface_points));
-    logDebug("未识别到助战界面")
-    local c=0
     if x == -1 and y == -1 then 
         return true
     end
     return false
-    
 end
 
 --[[

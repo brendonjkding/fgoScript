@@ -248,7 +248,9 @@ function main()
     if mode=="搓丸子" or mode=="搓丸子(觉醒)" or mode=="抽友情" then
         init_summon_and_bomb_points()
         check_misoperation("请在主界面启动")
-        toast("提示：使用前请把其它礼装扔仓库里或锁住",4000)
+        if mode=="搓丸子" or mode=="搓丸子(觉醒)" then
+            toast("提示：使用前请把其它礼装扔仓库里或锁住",4000)
+        end
         mSleep(2000)
 
         if mode=="搓丸子" or mode=="搓丸子(觉醒)" then
