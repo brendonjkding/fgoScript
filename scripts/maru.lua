@@ -1,5 +1,6 @@
 UI = {
-    { 'DropList{抽友情|搓丸子|搓丸子(觉醒)|抽无限池|刷助战|检查更新|测试|关闭}',      'mode',    '功能：' }
+    { 'DropList{抽友情|搓丸子|搓丸子(觉醒)|抽无限池|刷助战|检查更新|测试|关闭}',      'mode',    '功能：' },
+    { 'DropList{否|是}', 'is_tw_server', '是台服：' }
 }
 
 function init_summon_and_bomb_points()
@@ -11,7 +12,10 @@ function init_summon_and_bomb_points()
     ce_fodder_scroll_bar_arrived_bottom_points={{ 0xFAF3DE }, 90, 28, 1062, 28, 1062}
 
     summon_interface_left_arrow={ 373,52  }
-    friend_summon_interface_points={{ 0x1081D2, 1, -173, 0x0B7FE6, -77, -1, 0xE3FA8E, -83, -408, 0xACF14F }, 90, 93, 346, 177, 754}
+    friend_summon_interface_points={{ 0x28D3F4, 50, -3, 0x167DE4, 60, -77, 0x17BCF2, 58, -136, 0x03A0E2, 55, -180, 0x1085CB, 24, -214, 0x1289D7, -10, -209, 0x23B6FC }, 90, 165, 758, 235, 972}
+    if is_tw_server=="是" then
+        friend_summon_interface_points={{ 0x1081D2, 1, -173, 0x0B7FE6, -77, -1, 0xE3FA8E, -83, -408, 0xACF14F }, 90, 93, 346, 177, 754}
+    end
     summon_10_button={ 169,858 }
     summon_again_points={{ 0x0DACE6, 48, 72, 0x1D66A9, 0, 128, 0x003787, 40, 142, 0x0670A4, 46, 190, 0x2980CA, 0, 204, 0x17ABE6 }, 90, 27, 688, 75, 892}
     summon_again_button={  54,795 }
@@ -115,6 +119,7 @@ end
 function make_bomb()
     tap(table.unpack(menu_button))
     tap(table.unpack(enhance_button))
+    mSleep(2000)
     tap(table.unpack(enhance_ce_button))
     x, y = findMultiColorInRegionFuzzy(table.unpack(enhance_ce_interface_points));
     if x == -1 and y == -1 then  -- 
@@ -177,9 +182,14 @@ function make_bomb()
         tap(table.unpack(bottom_right))
         tap(table.unpack(ce_enhance_ok_button))
         mSleep(1000)
-        for i=1,10 do
-            tap(table.unpack(blank_area))
+        x, y = findMultiColorInRegionFuzzy(table.unpack(enhance_ce_interface_points));
+        while x == -1 and y == -1 do  --
+            for i=1,10 do
+                tap(table.unpack(blank_area))
+            end
+            x, y = findMultiColorInRegionFuzzy(table.unpack(enhance_ce_interface_points));
         end
+
         x, y = findMultiColorInRegionFuzzy(table.unpack(ce_base_slot_points));
         if x ~= -1 and y ~= -1 then  -- 如果找到了
             logDebug("满了一个丸子")

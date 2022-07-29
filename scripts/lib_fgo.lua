@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=185
+    VERSION=186
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -242,7 +242,7 @@ function init_points()
     support_selection_class_button_y={["全"]=94,["剑"]=164,["弓"]=234,["枪"]=304,["骑"]=374,
         ["术"]=444,["杀"]=514,["狂"]=584,["EXT"]=654,["MIX"]=724}
 
-    support_update_list_button={612,881}
+    support_update_list_button=(is_tw_server=="是" and {{612,881}} or {{612,970}})[1]
     support_update_list_yes_button={162,870}
     support_scroll_bar_arrived_bottom_points={{ 0xF7FCF4 }, 90, 19, 1308, 19, 1308}
     support_scroll_bar_slot_points={{ 0x55636B }, 80, 11, 1308, 17, 1308}
@@ -273,6 +273,7 @@ function init_points()
     support_servant_points["狐狸"]={ 0xB18B34, 2, 26, 0xE28875, 8, 49, 0xF7C268, 8, 70, 0xF6E4C4, 13, 98, 0xF9CD76, 13, 111, 0xD07765, 13, 152, 0xFEFFF2 }
     support_servant_points["花嫁"]={ 0xF4E1A9, 4, 28, 0x171304, -4, 32, 0x83B132, -4, 53, 0xFCF3DB, 12, 74, 0xAFD85A, 18, 74, 0x10170D, 18, 93, 0xF6DC93, 18, 119, 0x957B49, 18, 126, 0xDEE0D7 }
     support_servant_points["C呆"]={ 0xFDFFFB, -16, 0, 0xAF4451, -29, -7, 0xFCFC53, -38, -7, 0xAAF7D1, -45, -13, 0xFBFCF1, -7, -36, 0x65403B, -3, -56, 0xFEF6EC, -33, -57, 0xE1C3B5, 2, -78, 0xE2EEB3, 8, -78, 0x88403F }
+    support_servant_points["杀狐"]={ 0xE8A1BF, -20, 12, 0xFAF5F0, -16, 25, 0xAD7E29, -20, 32, 0xFAF9F4, -1, 46, 0xE8A3BE, -21, 58, 0xFEFCF6, -18, 75, 0xC08617, -26, 88, 0xFABFD9, -49, 47, 0xDDCBBD, -54, 45, 0xF6E7D1, -49, 114, 0xAACA93 }
 
     sp_icon_start_x=4
     sp_icon_start_y=23
@@ -387,13 +388,12 @@ function init_points()
     bond_points={{ 0x48A9C3, -16, 0, 0x0209AF, -15, 35, 0x006402, -2, 33, 0x50E35B, -2, 39, 0x6BE670 }, 90, 291, 595, 307, 634}
     bond_points2={{ 0x110F14, 1, 14, 0xE4B41F, -10, 22, 0x161314, 2, 34, 0xE8BA21, 5, 55, 0xD3A522 }, 90, 542, 75, 557, 130}
     bond_upgraded_points={{ 0x7642E0, 6, 3, 0x2E7AEE, 16, 10, 0x6FE29D, 17, -7, 0xF2AC9E }, 90, 223, 702, 240, 719}
-    bond_upgraded_points2={{ 0xEEBF28, -2, 20, 0xEABB25, 7, 78, 0xDFB627, -2, 114, 0xEFBD25, -3, 136, 0xEABB25, -10, 183, 0xE0A413, -8, 213, 0xEAAC1B }, 90, 340, 694, 420, 907}
     all_servants_incapacitated_points={{ 0x7632D8, 19, 9, 0x77E890, 26, 3, 0xF9EAC0, 15, -7, 0xE171A0, 13, 3, 0xF1F9F9 }, 90, 602, 963, 628, 979}
     lost_connection_points={{ 0xD4D5D7, 0, -37, 0x000000, 0, -43, 0xD8D8D4, 0, -47, 0x000000, 0, -53, 0xD0D0D0, 0, -58, 0x000000, 0, -66, 0xDCDBDC, 3, -73, 0x000000 }, 90, 158, 866, 161, 939}
     connection_retry_button={165, 859}
     restore_battle_points={{ 0xCECFD0, 21, -29, 0xF0F0F0, -1, -186, 0xD2D3D3, -10, -433, 0xDADDDD, 13, -433, 0xE0E0E0, 19, -601, 0xEDEDED, -7, -616, 0xD5D7D7 }, 90, 162, 368, 193, 984};
     restore_battle_button=connection_retry_button
-    battle_finished_points={bond_points,bond_points2,bond_upgraded_points,all_servants_incapacitated_points,bond_upgraded_points2}
+    battle_finished_points={bond_points,bond_points2,bond_upgraded_points,all_servants_incapacitated_points}
     rainbow_trophy_points={{ 0x67431B, 2, 1, 0x7A5E24, 2, 2, 0x736333, 3, 3, 0x577254, 5, 3, 0x4A7265, 8, 4, 0x4A616E, 8, 5, 0x5B4871 }, 90, 712, 1003, 720, 1008}
     ce_detail_points={{ 0xF5F5F4, -44, 0, 0xDBDEDF, -284, -40, 0x084D9C, -272, -35, 0xF7F7FB, -274, -26, 0x0849AD, -270, -18, 0xD3E2F4 }, 90, 445, 9, 729, 49}
     
@@ -1471,7 +1471,16 @@ function select_support_servant_automatically()
             if x ~= -1 and y ~= -1 then  -- 如果到底了
                 update_support_list()
             else
-                press_and_move_upward(6)
+                if require_support_from_friends=="是" then
+                    friend_icon_x, friend_icon_y = findMultiColorInRegionFuzzy(sp_friend_icon_points, 90, sp_icon_start_x, sp_friend_icon_start_y, sp_icon_end_x, sp_friend_icon_end_y);
+                    if friend_icon_x==-1 and friend_icon_y==-1 then
+                        update_support_list()
+                    else
+                        press_and_move_upward(6)
+                    end
+                else
+                    press_and_move_upward(6)
+                end
             end
         else
             update_support_list()
