@@ -25,7 +25,7 @@ function init(is_debug, skip_loading_liboc)
     end
 end
 function init_basic_variables()
-    VERSION=186
+    VERSION=187
     -- 适用屏幕参数
     SCREEN_RESOLUTION="750x1334";
     SCREEN_COLOR_BITS=32;
@@ -274,6 +274,8 @@ function init_points()
     support_servant_points["花嫁"]={ 0xF4E1A9, 4, 28, 0x171304, -4, 32, 0x83B132, -4, 53, 0xFCF3DB, 12, 74, 0xAFD85A, 18, 74, 0x10170D, 18, 93, 0xF6DC93, 18, 119, 0x957B49, 18, 126, 0xDEE0D7 }
     support_servant_points["C呆"]={ 0xFDFFFB, -16, 0, 0xAF4451, -29, -7, 0xFCFC53, -38, -7, 0xAAF7D1, -45, -13, 0xFBFCF1, -7, -36, 0x65403B, -3, -56, 0xFEF6EC, -33, -57, 0xE1C3B5, 2, -78, 0xE2EEB3, 8, -78, 0x88403F }
     support_servant_points["杀狐"]={ 0xE8A1BF, -20, 12, 0xFAF5F0, -16, 25, 0xAD7E29, -20, 32, 0xFAF9F4, -1, 46, 0xE8A3BE, -21, 58, 0xFEFCF6, -18, 75, 0xC08617, -26, 88, 0xFABFD9, -49, 47, 0xDDCBBD, -54, 45, 0xF6E7D1, -49, 114, 0xAACA93 }
+    support_servant_points["奥伯龙"]={ 0x8C8C8D, -12, 9, 0xC1ADA6, -28, 10, 0xEAD9C4, -39, 28, 0xCCB3A3, -51, 18, 0x5A524B, -54, 16, 0xF7E7D6, -48, 49, 0xFEF2E1, -51, 55, 0x4C504F, -13, 82, 0x7982DA, -42, 84, 0xF0F349, -52, 84, 0xB3EBCD}
+    support_servant_points["奥伯龙(二破)"]={ 0xDFC0B3, -6, 2, 0xEFE0D5, -10, 8, 0x284252, -13, 10, 0x183243, -16, 2, 0xFBFBF9, -27, 2, 0xF3E8D3, -35, 49, 0xF7E7D6, -40, 49, 0x746464, -40, 61, 0xBFADA8, -2, 106, 0xF9FFFD, -40, 95, 0xF7FD5A, -48, 95, 0xB6F3D1}
 
     sp_icon_start_x=4
     sp_icon_start_y=23
